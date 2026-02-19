@@ -1,34 +1,60 @@
-# 模块二：收入模块 (Earner)
+# 模块二：赚取引擎 (Earner)
+
+> **v2 — 基于 00-redesign-proposal.md 重构**
+> 核心变更：完全移除 Faucet + execa；改用 BountyBoard Move 合约 + OpenClaw Exec Tool 实现真实链上收入。
 
 ## 概述
 
-Earner 是 Agent 的"赚钱引擎"，负责执行各种收入策略。在 MVP 阶段，采用“真实本地工作 -> 链上奖励结算”的叙事：先执行可验证的系统任务（文件扫描/系统体检/git状态），再通过 Testnet Faucet 完成奖励结算。
+Earner 是 Agent 的"收入引擎"。它在 Sui 链上的 BountyBoard 合约中发现可用赏金任务，通过 OpenClaw Exec Tool 执行任务，并将输出的 SHA-256 哈希作为工作证明提交到链上领取奖励。
 
-## 核心职责
+**这不是"假装赚钱"，而是"做任务领奖金"。**
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Earner                               │
-├─────────────────────────────────────────────────────────────┤
-│  收入策略                                                    │
-│  ├─ Work-to-Reward（MVP核心）                               │
-│  ├─ 空投领取（可选扩展）                                     │
-│  ├─ 任务奖励（可选扩展）                                     │
-│  └─ 套利策略（高级扩展）                                     │
-├─────────────────────────────────────────────────────────────┤
-│  收入记录                                                    │
-│  ├─ 记录每笔收入的来源、金额、时间、交易ID                    │
-│  └─ 通知 Ledger 模块更新账本                                 │
-└─────────────────────────────────────────────────────────────┘
-```
+## 核心变更
+
+| 项目 | 旧方案 (v1) | 新方案 (v2) |
+|------|-------------|-------------|
+| 收入来源 | 🚨 Sui Faucet（开发者工具，非收入） | ✅ BountyBoard 合约（链上赏金） |
+| 执行方式 | 🚨 `execa` 裸调子进程 | ✅ OpenClaw Exec Tool RPC |
+| 工作证明 | 无 | ✅ SHA-256(task_output) 提交链上 |
+| 合约交互 | 无合约 | ✅ 自部署 BountyBoard Move 合约 |
+| 任务类型 | 只有 `requestFromFaucet()` | ✅ lint / test / format / audit / custom |
 
 ## 技术依赖
 
 ```json
 {
-  "@mysten/sui": "^1.x.x",
-  "axios": "^1.x.x",
-  "execa": "^9.x.x"
+  "@mysten/sui": "^1.x.x"
+}
+```
+
+运行环境依赖：
+- OpenClaw Gateway (`http://127.0.0.1:18789`)
+- BountyBoard Move 合约（已部署到 Sui Testnet）
+
+## BountyBoard 合约概要
+
+详细合约代码见 [00-redesign-proposal.md](00-redesign-proposal.md) § 3.3。核心函数：
+
+```move
+module bounty_board::bounty_board {
+    // 赏金发布者存入 SUI 到奖池
+    public entry fun deposit(board: &mut BountyBoard, coin: Coin<SUI>, ctx: &mut TxContext);
+
+    // 发布赏金任务
+    public entry fun post_bounty(
+        board: &mut BountyBoard,
+        description: vector<u8>,
+        reward_amount: u64,
+        ctx: &mut TxContext
+    );
+
+    // Agent 领取赏金 — 需提交 SHA-256 工作证明
+    public entry fun claim_reward(
+        board: &mut BountyBoard,
+        bounty_id: u64,
+        proof_hash: vector<u8>,
+        ctx: &mut TxContext
+    );
 }
 ```
 
@@ -37,58 +63,86 @@ Earner 是 Agent 的"赚钱引擎"，负责执行各种收入策略。在 MVP �
 ### 类型定义
 
 ```typescript
-// 收入记录
-interface IncomeRecord {
-  // 唯一标识
-  id: string;
-  // 收入类型
-  type: 'faucet' | 'airdrop' | 'task_reward' | 'arbitrage';
-  // 金额（MIST）
-  amount: bigint;
-  // 金额（格式化）
-  amountFormatted: string;
-  // 交易摘要（如果有）
-  txDigest?: string;
-  // 时间戳
-  timestamp: Date;
-  // 来源描述
-  source: string;
-  // 状态
-  status: 'pending' | 'confirmed' | 'failed';
+// 赏金任务
+interface BountyTask {
+  // 链上赏金 ID
+  bountyId: number;
+  // 任务描述
+  description: string;
+  // 奖励金额（MIST）
+  rewardAmount: bigint;
+  // 发布者地址
+  poster: string;
+  // 是否已完成
+  completed: boolean;
+  // 任务类型推断
+  taskType: TaskType;
 }
 
-// 收入策略配置
-interface EarnerConfig {
-  // 钱包管理器实例
-  walletManager: WalletManager;
-  // Faucet 请求间隔（毫秒）
-  faucetCooldown: number;
-  // 最大重试次数
-  maxRetries: number;
-}
+// 任务类型
+type TaskType = 'lint' | 'test' | 'format' | 'audit' | 'custom';
 
-// Faucet 响应
-interface FaucetResponse {
+// 任务执行结果
+interface TaskResult {
+  // 执行的赏金任务
+  bounty: BountyTask;
+  // 任务输出内容
+  output: string;
+  // 输出的 SHA-256 哈希（工作证明）
+  outputHash: string;
+  // 执行是否成功
   success: boolean;
-  txDigest?: string;
-  amount?: bigint;
+  // 执行耗时（ms）
+  duration: number;
+  // 错误信息
   error?: string;
 }
 
-// 本地工作证明
-interface WorkProof {
-  // 任务类型
-  taskType: 'tmp_scan' | 'system_check' | 'git_status';
-  // 人类可读任务名
-  taskName: string;
-  // 关键输出摘要（用于日志和上链描述）
-  summary: string;
-  // 原始命令输出（可选保存到本地）
-  rawOutput: string;
-  // 执行耗时
-  durationMs: number;
+// 赏金领取结果
+interface ClaimResult {
+  // 赏金 ID
+  bountyId: number;
+  // 领取金额
+  rewardAmount: bigint;
+  // 交易摘要
+  txDigest: string;
+  // 交易 Explorer 链接
+  explorerUrl: string;
+  // 工作证明哈希
+  proofHash: string;
   // 是否成功
   success: boolean;
+  // 错误信息
+  error?: string;
+}
+
+// 一次完整赚取周期的结果
+interface EarnResult {
+  // 本轮找到的任务数
+  tasksFound: number;
+  // 本轮完成的任务数
+  tasksCompleted: number;
+  // 本轮赚取的总金额（MIST）
+  totalEarned: bigint;
+  // 各任务的领取结果
+  claims: ClaimResult[];
+  // 时间戳
+  timestamp: Date;
+}
+
+// OpenClaw Exec 请求
+interface ExecRequest {
+  command: string;
+  host: 'gateway' | 'sandbox' | 'node';
+  timeout?: number;
+  security?: 'normal' | 'high';
+}
+
+// OpenClaw Exec 响应
+interface ExecResponse {
+  output: string;
+  exitCode: number;
+  duration: number;
 }
 ```
 
@@ -97,404 +151,535 @@ interface WorkProof {
 ```typescript
 class Earner {
   /**
-   * 初始化收入模块
+   * 初始化 Earner
+   * @param wallet WalletManager 实例
+   * @param config 赏金板配置（合约地址等）
    */
-  async initialize(config: EarnerConfig): Promise<void>;
+  constructor(wallet: WalletManager, config: EarnerConfig);
 
   /**
-   * 执行一轮赚钱操作
-   * @returns 本轮所有收入记录
+   * 执行一个完整的赚取周期
+   * 1. 查询可用赏金
+   * 2. 选择最优任务
+   * 3. 通过 OpenClaw Exec Tool 执行任务
+   * 4. 计算 SHA-256 哈希
+   * 5. 调用合约 claim_reward
+   * 6. 返回赚取结果
    */
-  async earn(): Promise<IncomeRecord[]>;
+  async earn(): Promise<EarnResult>;
 
   /**
-    * 执行真实本地工作（用于证明 Agent 在“打工”）
-    */
-    async simulateWork(): Promise<WorkProof>;
-
-    /**
-   * 从 Faucet 领取测试代币（MVP核心）
-   * @returns 收入记录
+   * 查询 BountyBoard 上所有可用（未完成）赏金
    */
-  async requestFaucet(): Promise<IncomeRecord>;
+  async getAvailableBounties(): Promise<BountyTask[]>;
 
   /**
-   * 获取所有收入记录
+   * 选择最优赏金（按奖励金额降序 + 任务类型匹配度）
    */
-  getIncomeHistory(): IncomeRecord[];
+  selectBestBounty(bounties: BountyTask[]): BountyTask | null;
 
   /**
-   * 获取总收入
+   * 通过 OpenClaw Exec Tool 执行任务
    */
-  getTotalIncome(): bigint;
+  async executeTask(bounty: BountyTask): Promise<TaskResult>;
 
   /**
-   * 注册收入回调（通知 Ledger）
+   * 调用 BountyBoard 合约 claim_reward
    */
-  onIncome(callback: (record: IncomeRecord) => void): void;
+  async claimBountyReward(taskResult: TaskResult): Promise<ClaimResult>;
 }
 ```
 
 ## 实现细节
 
-### 1. Real Local Work + Faucet 结算
+### 1. 查询 BountyBoard 可用赏金
 
 ```typescript
-import axios from 'axios';
-import { execa } from 'execa';
-import os from 'node:os';
-import path from 'node:path';
+import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
+import { createHash } from 'node:crypto';
 
 class Earner {
-  private walletManager: WalletManager;
-  private incomeHistory: IncomeRecord[] = [];
-  private callbacks: ((record: IncomeRecord) => void)[] = [];
-  private lastFaucetTime: number = 0;
-  private config: EarnerConfig;
+  private wallet: WalletManager;
+  private client: SuiClient;
+  private openclawBaseUrl = 'http://127.0.0.1:18789';
+  private bountyPackageId: string;
+  private bountyBoardId: string;
 
-  async initialize(config: EarnerConfig): Promise<void> {
-    this.walletManager = config.walletManager;
-    this.config = config;
-    console.log('✓ Earner module initialized');
+  constructor(wallet: WalletManager, config: EarnerConfig) {
+    this.wallet = wallet;
+    this.client = new SuiClient({ url: getFullnodeUrl(config.network) });
+    this.bountyPackageId = config.bountyPackageId;
+    this.bountyBoardId = config.bountyBoardId;
   }
 
-  async requestFaucet(): Promise<IncomeRecord> {
-    const address = this.walletManager.getAddress();
-    
-    // 检查冷却时间
-    const now = Date.now();
-    if (now - this.lastFaucetTime < this.config.faucetCooldown) {
-      const waitTime = this.config.faucetCooldown - (now - this.lastFaucetTime);
-      throw new Error(`Faucet cooldown: wait ${waitTime}ms`);
-    }
+  async getAvailableBounties(): Promise<BountyTask[]> {
+    // 读取 BountyBoard 共享对象
+    const boardObj = await this.client.getObject({
+      id: this.bountyBoardId,
+      options: { showContent: true }
+    });
 
-    // 记录请求前余额
-    const balanceBefore = (await this.walletManager.getBalance()).sui;
+    const fields = (boardObj.data?.content as any)?.fields;
+    if (!fields?.bounties) return [];
 
-    // 先执行真实本地工作，再进行链上奖励结算
-    const workProof = await this.simulateWork();
-    if (!workProof.success) {
-      throw new Error(`Local work failed: ${workProof.taskName}`);
-    }
+    // 解析赏金列表，过滤已完成的
+    const bounties: BountyTask[] = fields.bounties
+      .map((b: any, index: number) => ({
+        bountyId: index,
+        description: new TextDecoder().decode(
+          new Uint8Array(b.fields.description)
+        ),
+        rewardAmount: BigInt(b.fields.reward_amount),
+        poster: b.fields.poster,
+        completed: b.fields.completed,
+        taskType: this.inferTaskType(
+          new TextDecoder().decode(new Uint8Array(b.fields.description))
+        )
+      }))
+      .filter((b: BountyTask) => !b.completed);
 
-    console.log(`📥 Settling task reward via Faucet for ${address}...`);
-
-    try {
-      // Sui Testnet Faucet API
-      const response = await axios.post(
-        'https://faucet.testnet.sui.io/v1/gas',
-        {
-          FixedAmountRequest: {
-            recipient: address
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          timeout: 30000
-        }
-      );
-
-      this.lastFaucetTime = Date.now();
-
-      // 等待交易确认
-      await this.waitForBalanceChange(balanceBefore);
-
-      // 计算实际收入
-      const balanceAfter = (await this.walletManager.getBalance()).sui;
-      const amount = balanceAfter - balanceBefore;
-
-      const record: IncomeRecord = {
-        id: this.generateId(),
-        type: 'task_reward',
-        amount,
-        amountFormatted: this.formatSui(amount),
-        txDigest: response.data?.transferredGasObjects?.[0]?.digest,
-        timestamp: new Date(),
-        source: `Task Reward: ${workProof.taskName} | ${workProof.summary} (settled via Sui Faucet)`,
-        status: 'confirmed'
-      };
-
-      this.incomeHistory.push(record);
-      this.notifyCallbacks(record);
-
-      console.log(`✓ Task reward received: ${record.amountFormatted}`);
-      return record;
-
-    } catch (error) {
-      const record: IncomeRecord = {
-        id: this.generateId(),
-        type: 'task_reward',
-        amount: 0n,
-        amountFormatted: '0 SUI',
-        timestamp: new Date(),
-        source: 'Task Reward Settlement (FAILED)',
-        status: 'failed'
-      };
-
-      console.error(`✗ Faucet request failed: ${error}`);
-      return record;
-    }
+    console.log(`📋 Found ${bounties.length} available bounties`);
+    return bounties;
   }
 
-  async simulateWork(): Promise<WorkProof> {
-    const taskTypePool: WorkProof['taskType'][] = ['tmp_scan', 'system_check', 'git_status'];
-    const taskType = taskTypePool[Math.floor(Math.random() * taskTypePool.length)];
-    const startedAt = Date.now();
-
-    try {
-      if (taskType === 'tmp_scan') {
-        console.log('🛠️  Working: Scanning temp directory for reclaimable space');
-        const tmpDir = os.tmpdir();
-        const command = process.platform === 'win32'
-          ? `Get-ChildItem -Recurse -File \"${tmpDir}\" -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum | Select-Object -ExpandProperty Sum`
-          : `find \"${tmpDir}\" -type f -print0 | du --files0-from=- -cb 2>/dev/null | tail -1 | awk '{print $1}'`;
-
-        const { stdout } = await execa(process.platform === 'win32' ? 'powershell' : 'bash', process.platform === 'win32'
-          ? ['-NoProfile', '-Command', command]
-          : ['-lc', command]);
-
-        const bytes = Number((stdout || '0').trim() || '0');
-        const mb = (bytes / 1024 / 1024).toFixed(2);
-        return {
-          taskType,
-          taskName: 'Temp Cleanup Audit',
-          summary: `Scanned ${tmpDir}, reclaimable ≈ ${mb} MB`,
-          rawOutput: stdout,
-          durationMs: Date.now() - startedAt,
-          success: true
-        };
-      }
-
-      if (taskType === 'system_check') {
-        console.log('🛠️  Working: Running system health check');
-        const command = process.platform === 'win32'
-          ? 'Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize,LoadPercentage | Format-List'
-          : 'uptime; df -h /';
-
-        const { stdout } = await execa(process.platform === 'win32' ? 'powershell' : 'bash', process.platform === 'win32'
-          ? ['-NoProfile', '-Command', command]
-          : ['-lc', command]);
-
-        return {
-          taskType,
-          taskName: 'System Health Check',
-          summary: 'Collected CPU/Memory/Disk snapshot',
-          rawOutput: stdout,
-          durationMs: Date.now() - startedAt,
-          success: true
-        };
-      }
-
-      console.log('🛠️  Working: Checking git repository status');
-      const cwd = process.cwd();
-      const { stdout } = await execa('git', ['status', '--short'], { cwd });
-      const changed = stdout.trim() ? stdout.trim().split('\n').length : 0;
-
-      return {
-        taskType,
-        taskName: 'Git Integrity Check',
-        summary: `Scanned repo ${path.basename(cwd)}, changed files: ${changed}`,
-        rawOutput: stdout,
-        durationMs: Date.now() - startedAt,
-        success: true
-      };
-    } catch (error) {
-      return {
-        taskType,
-        taskName: 'Local Work Failed',
-        summary: error instanceof Error ? error.message : 'Unknown local task error',
-        rawOutput: '',
-        durationMs: Date.now() - startedAt,
-        success: false
-      };
-    }
-  }
-
-  private async waitForBalanceChange(
-    previousBalance: bigint, 
-    maxWait: number = 30000
-  ): Promise<void> {
-    const startTime = Date.now();
-    
-    while (Date.now() - startTime < maxWait) {
-      const currentBalance = (await this.walletManager.getBalance()).sui;
-      if (currentBalance > previousBalance) {
-        return;
-      }
-      await this.sleep(1000);
-    }
-    
-    throw new Error('Timeout waiting for balance change');
-  }
-
-  private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  /**
+   * 从赏金描述推断任务类型
+   */
+  private inferTaskType(description: string): TaskType {
+    const desc = description.toLowerCase();
+    if (desc.includes('lint')) return 'lint';
+    if (desc.includes('test')) return 'test';
+    if (desc.includes('format')) return 'format';
+    if (desc.includes('audit')) return 'audit';
+    return 'custom';
   }
 }
 ```
 
-### 2. 备选收入策略（扩展）
+### 2. 通过 OpenClaw Exec Tool 执行任务
 
 ```typescript
-// 模拟任务奖励（用于演示）
-async simulateTaskReward(taskName: string): Promise<IncomeRecord> {
-  // 这是一个模拟方法，用于演示 Agent 完成任务获得报酬
-  // 实际实现可以对接真实的任务平台
-  
-  console.log(`📋 Completing task: ${taskName}...`);
-  
-  // 模拟任务执行时间
-  await this.sleep(2000);
-  
-  // 模拟奖励（实际中会从链上获取）
-  const simulatedReward = 100_000_000n; // 0.1 SUI
-  
-  const record: IncomeRecord = {
-    id: this.generateId(),
-    type: 'task_reward',
-    amount: simulatedReward,
-    amountFormatted: this.formatSui(simulatedReward),
-    timestamp: new Date(),
-    source: `Task: ${taskName}`,
-    status: 'confirmed'
+/**
+ * 核心改动：不再使用 execa 直接调用子进程
+ * 改为通过 OpenClaw Gateway 的 exec RPC 执行命令
+ * - 有安全沙箱保护
+ * - 有超时自动终止
+ * - 有审计日志
+ */
+async executeTask(bounty: BountyTask): Promise<TaskResult> {
+  const startTime = Date.now();
+  const command = this.getCommandForTaskType(bounty.taskType);
+
+  console.log(`⚙️ Executing task #${bounty.bountyId}: ${bounty.description}`);
+  console.log(`  Command: ${command}`);
+
+  try {
+    // 通过 OpenClaw Exec Tool 执行，而不是直接 execa
+    const execResult = await this.execViaOpenClaw({
+      command,
+      host: 'gateway',   // 在 Gateway 主机上执行
+      timeout: 30,        // 30 秒超时
+      security: 'normal'
+    });
+
+    const output = execResult.output;
+    const outputHash = this.sha256(output);
+
+    console.log(`  ✓ Task completed (${Date.now() - startTime}ms)`);
+    console.log(`  Output hash: ${outputHash.slice(0, 16)}...`);
+
+    return {
+      bounty,
+      output,
+      outputHash,
+      success: true,
+      duration: Date.now() - startTime
+    };
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error(`  ✗ Task failed: ${errMsg}`);
+
+    return {
+      bounty,
+      output: '',
+      outputHash: '',
+      success: false,
+      duration: Date.now() - startTime,
+      error: errMsg
+    };
+  }
+}
+
+/**
+ * 根据任务类型返回对应的命令
+ */
+private getCommandForTaskType(taskType: TaskType): string {
+  const commands: Record<TaskType, string> = {
+    lint:   'npx eslint . --fix --format json 2>&1 || true',
+    test:   'npx vitest run --reporter=json 2>&1 || true',
+    format: 'npx prettier --write "src/**/*.ts" 2>&1 || true',
+    audit:  'npm audit --json 2>&1 || true',
+    custom: 'echo "custom task placeholder"'
+  };
+  return commands[taskType];
+}
+
+/**
+ * 计算 SHA-256 哈希 — 这就是提交到链上的工作证明
+ */
+private sha256(data: string): string {
+  return createHash('sha256').update(data).digest('hex');
+}
+
+/**
+ * 通过 OpenClaw Gateway RPC 执行命令
+ * ❌ 不再使用 execa / child_process
+ * ✅ 改用 HTTP RPC → OpenClaw Exec Tool
+ */
+private async execViaOpenClaw(req: ExecRequest): Promise<ExecResponse> {
+  const response = await fetch(`${this.openclawBaseUrl}/rpc`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.OPENCLAW_TOKEN}`
+    },
+    body: JSON.stringify({
+      method: 'exec',
+      params: {
+        command: req.command,
+        host: req.host,
+        timeout: req.timeout || 30,
+        security: req.security || 'normal'
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`OpenClaw exec failed: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return {
+    output: result.output || '',
+    exitCode: result.exitCode ?? 0,
+    duration: result.duration ?? 0
+  };
+}
+```
+
+### 3. 链上领取赏金
+
+```typescript
+/**
+ * 构建并发送 claim_reward 交易
+ * - 将 SHA-256 工作证明提交到链上
+ * - 合约验证后将 SUI 奖励转入 Agent 地址
+ */
+async claimBountyReward(taskResult: TaskResult): Promise<ClaimResult> {
+  const { bounty, outputHash } = taskResult;
+
+  console.log(`💰 Claiming reward for bounty #${bounty.bountyId}...`);
+  console.log(`  Reward: ${Number(bounty.rewardAmount) / 1e9} SUI`);
+  console.log(`  Proof: ${outputHash.slice(0, 16)}...`);
+
+  try {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.bountyPackageId}::bounty_board::claim_reward`,
+      arguments: [
+        tx.object(this.bountyBoardId),                              // BountyBoard
+        tx.pure.u64(bounty.bountyId),                               // bounty_id
+        tx.pure.vector('u8', Buffer.from(outputHash, 'hex'))        // proof_hash
+      ]
+    });
+
+    const result = await this.wallet.signAndExecute(tx);
+
+    if (result.success) {
+      console.log(`  ✓ Claimed! TX: ${result.digest}`);
+      console.log(`  Explorer: ${result.explorerUrl}`);
+    } else {
+      console.log(`  ✗ Claim failed: ${result.error}`);
+    }
+
+    return {
+      bountyId: bounty.bountyId,
+      rewardAmount: bounty.rewardAmount,
+      txDigest: result.digest,
+      explorerUrl: result.explorerUrl,
+      proofHash: outputHash,
+      success: result.success,
+      error: result.error
+    };
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return {
+      bountyId: bounty.bountyId,
+      rewardAmount: bounty.rewardAmount,
+      txDigest: '',
+      explorerUrl: '',
+      proofHash: outputHash,
+      success: false,
+      error: errMsg
+    };
+  }
+}
+```
+
+### 4. 完整赚取周期编排
+
+```typescript
+/**
+ * 执行一个完整的赚取周期
+ * Agent 的 runCycle() 会调用此方法
+ */
+async earn(): Promise<EarnResult> {
+  console.log('\n═══════════════════════════════════════');
+  console.log('  💼 Earner: Starting earn cycle');
+  console.log('═══════════════════════════════════════\n');
+
+  const startTime = Date.now();
+  const claims: ClaimResult[] = [];
+  let totalEarned = 0n;
+
+  // Step 1: 查询可用赏金
+  const bounties = await this.getAvailableBounties();
+
+  if (bounties.length === 0) {
+    console.log('⚠️ No bounties available. Waiting for next cycle.');
+    return {
+      tasksFound: 0,
+      tasksCompleted: 0,
+      totalEarned: 0n,
+      claims: [],
+      timestamp: new Date()
+    };
+  }
+
+  // Step 2: 选择最优赏金
+  const bestBounty = this.selectBestBounty(bounties);
+  if (!bestBounty) {
+    return {
+      tasksFound: bounties.length,
+      tasksCompleted: 0,
+      totalEarned: 0n,
+      claims: [],
+      timestamp: new Date()
+    };
+  }
+
+  // Step 3: 执行任务
+  const taskResult = await this.executeTask(bestBounty);
+
+  if (!taskResult.success) {
+    console.log('⚠️ Task execution failed');
+    return {
+      tasksFound: bounties.length,
+      tasksCompleted: 0,
+      totalEarned: 0n,
+      claims: [],
+      timestamp: new Date()
+    };
+  }
+
+  // Step 4: 领取赏金
+  const claimResult = await this.claimBountyReward(taskResult);
+  claims.push(claimResult);
+
+  if (claimResult.success) {
+    totalEarned += claimResult.rewardAmount;
+  }
+
+  const result: EarnResult = {
+    tasksFound: bounties.length,
+    tasksCompleted: claimResult.success ? 1 : 0,
+    totalEarned,
+    claims,
+    timestamp: new Date()
   };
 
-  this.incomeHistory.push(record);
-  this.notifyCallbacks(record);
+  console.log(`\n📊 Earn cycle summary:`);
+  console.log(`  Tasks found: ${result.tasksFound}`);
+  console.log(`  Tasks completed: ${result.tasksCompleted}`);
+  console.log(`  Total earned: ${Number(totalEarned) / 1e9} SUI`);
+  console.log(`  Duration: ${Date.now() - startTime}ms\n`);
 
-  console.log(`✓ Task completed, earned: ${record.amountFormatted}`);
-  return record;
+  return result;
+}
+
+/**
+ * 选择最优赏金 — 按奖励金额降序
+ */
+selectBestBounty(bounties: BountyTask[]): BountyTask | null {
+  if (bounties.length === 0) return null;
+
+  // 按奖励金额排序，优先高奖励
+  const sorted = [...bounties].sort(
+    (a, b) => Number(b.rewardAmount - a.rewardAmount)
+  );
+
+  return sorted[0];
 }
 ```
 
-### 3. 收入统计
-
-```typescript
-getIncomeHistory(): IncomeRecord[] {
-  return [...this.incomeHistory];
-}
-
-getTotalIncome(): bigint {
-  return this.incomeHistory
-    .filter(r => r.status === 'confirmed')
-    .reduce((sum, r) => sum + r.amount, 0n);
-}
-
-getTotalIncomeFormatted(): string {
-  return this.formatSui(this.getTotalIncome());
-}
-
-onIncome(callback: (record: IncomeRecord) => void): void {
-  this.callbacks.push(callback);
-}
-
-private notifyCallbacks(record: IncomeRecord): void {
-  this.callbacks.forEach(cb => cb(record));
-}
-
-private generateId(): string {
-  return `income_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
-
-private formatSui(mist: bigint): string {
-  const sui = Number(mist) / 1_000_000_000;
-  return sui.toFixed(4) + ' SUI';
-}
-```
-
-## Faucet 限制与应对
-
-| Faucet 限制 | 应对策略 |
-|-------------|----------|
-| 每地址每天限额 | 演示前预先领取足够代币 |
-| 请求频率限制 | 设置 cooldown，避免被封 |
-| 网络不稳定 | 重试机制 + 超时处理 |
-| 可能临时下线 | 准备备用 Faucet 或预充值，保留 simulateTaskReward 兜底 |
-
-## 演示注意事项
+## 完整流程图
 
 ```
-⚠️ 重要：演示前准备
-
-1. 提前24小时从 Faucet 领取足够代币，避免实时领取失败
-2. 准备一个有余额的备用钱包
-3. 测试 simulateWork() 是否真的执行了本地命令（tmp/system/git 至少命中其一）
-4. 如果 Faucet 不可用，使用 simulateTaskReward() 模拟“任务奖励结算”
+┌────────────────────────────────────────────────────────────────┐
+│                     Earner.earn() 完整流程                      │
+├────────────────────────────────────────────────────────────────┤
+│                                                                │
+│  ┌─────────────────┐     ┌──────────────────┐                 │
+│  │ 1. 查询 BountyBoard  │──→│ 2. 选择最优赏金   │                │
+│  │    getAvailableBounties│   selectBestBounty │                │
+│  └─────────────────┘     └────────┬─────────┘                 │
+│           │                       │                            │
+│     Sui RPC 读取            按奖励金额排序                      │
+│     BountyBoard 对象                                           │
+│                                   │                            │
+│                       ┌───────────▼──────────┐                │
+│                       │ 3. OpenClaw Exec Tool │                │
+│                       │    executeTask()      │                │
+│                       └───────────┬──────────┘                │
+│                                   │                            │
+│                          HTTP RPC → Gateway                   │
+│                          command 在沙箱中执行                   │
+│                                   │                            │
+│                       ┌───────────▼──────────┐                │
+│                       │ 4. SHA-256 哈希计算    │                │
+│                       │    sha256(output)     │                │
+│                       └───────────┬──────────┘                │
+│                                   │                            │
+│                       ┌───────────▼──────────┐                │
+│                       │ 5. claim_reward TX    │                │
+│                       │    Move 合约调用      │                │
+│                       └───────────┬──────────┘                │
+│                                   │                            │
+│                          链上验证 + SUI 转入                   │
+│                                   │                            │
+│                       ┌───────────▼──────────┐                │
+│                       │ 6. 返回 EarnResult    │                │
+│                       │    含 TX + Explorer   │                │
+│                       └──────────────────────┘                │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-## 与其他模块的关系
+## 安全设计
+
+| 方面 | 说明 |
+|------|------|
+| 命令注入 | OpenClaw Exec Tool 有内置的命令过滤和安全策略 |
+| 超时保护 | 每个任务 30 秒超时，防止无限挂起 |
+| 工作证明 | SHA-256(output) 提交链上，可事后审计 |
+| 合约权限 | 任何地址可领取，但每个赏金只能领取一次 |
+| 重入保护 | Move 语言原生防重入 |
+
+## 与旧版的关键差异
 
 ```
-┌─────────────────┐
-│  WalletManager  │
-└────────┬────────┘
-         │ 提供地址和余额查询
-         ▼
-┌─────────────────┐         ┌─────────────┐
-│     Earner      │────────▶│   Ledger    │
-└─────────────────┘ 收入通知 └─────────────┘
+旧版 Earner（v1）:                    新版 Earner（v2）:
+┌──────────────────────┐              ┌──────────────────────┐
+│ requestFromFaucet()  │              │ getAvailableBounties()│
+│   ↓                  │              │   ↓                  │
+│ import { execa }     │              │ executeTask()        │
+│ execa('curl', [...]) │              │   → OpenClaw exec RPC│
+│   ↓                  │              │   ↓                  │
+│ balance += faucetAmt │              │ sha256(output)       │
+│                      │              │   ↓                  │
+│ ❌ 无合约交互         │              │ claimBountyReward()  │
+│ ❌ Faucet ≠ 收入      │              │   → Move TX on-chain │
+│ ❌ 无工作证明         │              │   ↓                  │
+│                      │              │ ✅ 含 Explorer 链接   │
+│                      │              │ ✅ 含工作证明哈希     │
+└──────────────────────┘              └──────────────────────┘
 ```
 
 ## 单元测试要点
 
 ```typescript
-describe('Earner', () => {
-  it('should request faucet successfully', async () => {
-    const earner = new Earner();
-    await earner.initialize({ walletManager, faucetCooldown: 0, maxRetries: 3 });
-    
-    const record = await earner.requestFaucet();
-    expect(record.status).toBe('confirmed');
-    expect(record.amount).toBeGreaterThan(0n);
-    expect(record.type).toBe('task_reward');
+describe('Earner v2', () => {
+  it('should query available bounties from BountyBoard', async () => {
+    const bounties = await earner.getAvailableBounties();
+    expect(Array.isArray(bounties)).toBe(true);
+    bounties.forEach(b => {
+      expect(b.bountyId).toBeGreaterThanOrEqual(0);
+      expect(b.rewardAmount).toBeGreaterThan(0n);
+      expect(b.completed).toBe(false);
+    });
   });
 
-  it('should simulate work before settlement', async () => {
-    const earner = new Earner();
-    await earner.initialize({ walletManager, faucetCooldown: 0, maxRetries: 3 });
-
-    const workProof = await earner.simulateWork();
-    expect(workProof.taskName.length).toBeGreaterThan(0);
-    expect(workProof.durationMs).toBeGreaterThan(0);
-    expect(typeof workProof.success).toBe('boolean');
+  it('should execute task via OpenClaw exec tool (not execa)', async () => {
+    const result = await earner.executeTask(mockBounty);
+    expect(result.output).toBeTruthy();
+    expect(result.outputHash).toMatch(/^[a-f0-9]{64}$/);
   });
 
-  it('should track total income', async () => {
-    const earner = new Earner();
-    // ... 模拟多笔收入
-    
-    const total = earner.getTotalIncome();
-    expect(total).toBeGreaterThan(0n);
+  it('should claim reward on-chain with proof hash', async () => {
+    const claim = await earner.claimBountyReward(mockTaskResult);
+    expect(claim.txDigest).toBeTruthy();
+    expect(claim.explorerUrl).toContain('suiscan.xyz');
+    expect(claim.proofHash).toMatch(/^[a-f0-9]{64}$/);
   });
 
-  it('should respect faucet cooldown', async () => {
-    const earner = new Earner();
-    await earner.initialize({ walletManager, faucetCooldown: 60000, maxRetries: 3 });
-    
-    await earner.requestFaucet();
-    await expect(earner.requestFaucet()).rejects.toThrow(/cooldown/);
+  it('should NOT import or use execa', () => {
+    // 确保旧版依赖已完全移除
+    const sourceCode = readFileSync('src/earner.ts', 'utf-8');
+    expect(sourceCode).not.toContain('execa');
+    expect(sourceCode).not.toContain('faucet');
+    expect(sourceCode).not.toContain('Faucet');
+  });
+
+  it('should select highest reward bounty', () => {
+    const bounties = [
+      { ...mockBounty, rewardAmount: 100n },
+      { ...mockBounty, rewardAmount: 500n },
+      { ...mockBounty, rewardAmount: 200n }
+    ];
+    const best = earner.selectBestBounty(bounties);
+    expect(best?.rewardAmount).toBe(500n);
   });
 });
 ```
 
+## 与其他模块的关系
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Agent (Cron 触发)                      │
+│                         │                                │
+│                    ┌────▼────┐                           │
+│                    │ Earner  │ ◄── 本模块                │
+│                    └────┬────┘                           │
+│                         │                                │
+│           ┌─────────────┼─────────────┐                  │
+│           ▼             ▼             ▼                  │
+│     WalletManager   OpenClaw       BountyBoard           │
+│     (签名+广播TX)    Exec Tool      Move 合约            │
+│                     (执行命令)      (赏金管理)            │
+│                                       │                  │
+│                                  Sui Testnet             │
+└──────────────────────────────────────────────────────────┘
+```
+
 ## 开发优先级
 
-1. **P0 必须**: `simulateWork()` - 执行真实本地工作（不是纯日志）
-2. **P0 必须**: `requestFaucet()` - 奖励结算通道
-3. **P0 必须**: `getTotalIncome()` - 统计展示
-4. **P1 重要**: `onIncome()` - 与 Ledger 联动
-5. **P2 可选**: `simulateTaskReward()` - 演示备用
+1. **P0 必须**: `getAvailableBounties()` — 合约读取
+2. **P0 必须**: `executeTask()` — OpenClaw Exec Tool 调用
+3. **P0 必须**: `claimBountyReward()` — Move TX 构建与发送
+4. **P0 必须**: `earn()` — 完整编排流程
+5. **P1 重要**: 任务类型推断与命令映射
+6. **P2 可选**: 多任务并行执行策略
 
 ## 预计开发时间
 
 | 任务 | 时间 |
 |------|------|
-| Faucet 请求实现 | 3小时 |
-| 本地工作执行（tmp/system/git） | 3小时 |
-| 余额变化检测 | 1小时 |
-| 收入统计 | 1小时 |
-| 回调机制 | 1小时 |
-| 单元测试 | 2小时 |
-| **总计** | **11小时** |
+| BountyBoard 合约部署 | 3 小时 |
+| `getAvailableBounties()` 合约读取 | 2 小时 |
+| `executeTask()` OpenClaw Exec 集成 | 2 小时 |
+| `claimBountyReward()` Move TX | 3 小时 |
+| `earn()` 编排 + SHA-256 哈希 | 2 小时 |
+| 单元测试 | 2 小时 |
+| **总计** | **14 小时** |

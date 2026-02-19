@@ -1,262 +1,387 @@
-# 模块六：Demo 演示方案
+# 模块六：演示计划 (Demo Plan)
+
+> **v2 — 基于 00-redesign-proposal.md 重构**
+> 核心变更：完全重设 6 幕演示剧本；移除 Faucet 依赖；以 BountyBoard 合约 + OpenClaw 工具链 + 链上验证为核心。
 
 ## 概述
 
-这是一份详细的 90 秒演示脚本，用于在黑客松中展示 "Infinite Money Glitch" 项目。目标是在有限时间内清晰展示 Agent 的核心价值：在“生存压力”下自主打工赚取 Gas，并将收入用于 Seal 加密后的 Walrus 备份，形成可持续保护循环。
+90 秒 Demo，展示 Agent 从"生存危机"到"链上盈利"的完整自主经济循环。每一步都有真实的链上交易和 Explorer 链接可验证。
 
-## Demo 核心信息
+**核心叙事：Agent 快没钱了 → 发现链上赏金 → 用 OpenClaw 做任务 → 领取 SUI → 用 Seal 保护数据 → 用 Walrus 存储 → 展示盈利报表**
 
-| 项目 | 内容 |
-|------|------|
-| **项目名** | Infinite Money Glitch |
-| **赛道** | Track 2: Local God Mode |
-| **一句话** | A self-sovereign digital entity that works to protect you. |
-| **时长** | 90 秒 |
-| **评审重点** | 资格、技术价值、创造力、Sui 集成 |
+## 与旧版差异
 
-## 90 秒脚本（The Sustainable Cycle）
+| 项目 | 旧方案 (v1) | 新方案 (v2) |
+|------|-------------|-------------|
+| 收入来源 | 🚨 Faucet 水龙头 | ✅ BountyBoard 合约赏金 |
+| 执行工具 | 🚨 execa 子进程 | ✅ OpenClaw Exec Tool |
+| 加密 | 🚨 sleep(200) 假加密 | ✅ Seal SDK 真实加密 |
+| 验证 | 无 | ✅ Browser Tool → Explorer |
+| 稳定性 | 🚨 依赖外部 Faucet | ✅ 自建合约，完全自控 |
+| 可审计性 | 无 | ✅ 审计包 + SHA-256 校验和 |
 
-### 第一幕：生存危机（0:00 - 0:15）
+## 演前准备
 
-**画面**：终端启动，顶部常驻生存面板
+### 环境要求
 
-**旁白/字幕**：
-> "If this agent stops earning, it loses gas. If it loses gas, it loses memory protection."
+```bash
+# 1. OpenClaw Gateway 运行中
+openclaw gateway start
 
-**终端输出**：
+# 2. 环境变量就绪（通过 OpenClaw skills.entries 注入）
+# SUI_PRIVATE_KEY=<base64>
+# BOUNTY_PACKAGE_ID=0x...
+# BOUNTY_BOARD_ID=0x...
+# SEAL_PACKAGE_ID=0x...
+
+# 3. BountyBoard 合约已部署 + 已存入 SUI + 已发布赏金
+# （见下方"合约预置"）
+
+# 4. Agent 代码已编译
+npm run build
 ```
-🤖 AGENT HEALTH: [████░░░░░░] 40% (STABLE)
-📉 Burn Rate: 0.0500 SUI / cycle
-📈 Est. Runway: 3.0 cycles
 
-⚠️  SURVIVAL PRESSURE DETECTED: earnings required.
+### 合约预置（Demo 前 10 分钟完成）
+
+```bash
+# 部署 BountyBoard Move 合约
+sui client publish --path ./contracts/bounty_board --gas-budget 100000000
+
+# 存入 SUI 到奖池（2 SUI）
+sui client call \
+  --package $BOUNTY_PACKAGE_ID \
+  --module bounty_board \
+  --function deposit \
+  --args $BOUNTY_BOARD_ID <coin_object_id> \
+  --gas-budget 10000000
+
+# 发布 3 个赏金任务
+sui client call \
+  --package $BOUNTY_PACKAGE_ID \
+  --module bounty_board \
+  --function post_bounty \
+  --args $BOUNTY_BOARD_ID '"Run eslint on the project"' 500000000 \
+  --gas-budget 10000000
+
+sui client call \
+  --package $BOUNTY_PACKAGE_ID \
+  --module bounty_board \
+  --function post_bounty \
+  --args $BOUNTY_BOARD_ID '"Run test suite"' 300000000 \
+  --gas-budget 10000000
+
+sui client call \
+  --package $BOUNTY_PACKAGE_ID \
+  --module bounty_board \
+  --function post_bounty \
+  --args $BOUNTY_BOARD_ID '"Format source code"' 200000000 \
+  --gas-budget 10000000
 ```
 
-**关键点**：
-- 先展示“为什么必须赚钱”
-- 给评委直接张力（不是普通记账脚本）
+### 稳定性保证
+
+| 风险 | 缓解措施 |
+|------|----------|
+| BountyBoard 无赏金 | 演前预发布 3 个赏金，确保至少有 1 个可领取 |
+| Seal Key Server 不可达 | Testnet Key Server 有冗余；提前验证连通性 |
+| Walrus 节点延迟 | 设置 30 秒超时；演前上传一次预热 |
+| OpenClaw Gateway 崩溃 | 演前 restart + health check |
+| 余额不足 | Agent 钱包预留 ≥ 0.5 SUI |
+
+## 演示剧本：6 幕 (90 秒)
+
+### 🎬 Act 1 — 生存危机 (0:00 ~ 0:15)
+
+**目标**：让观众看到 Agent 的"求生欲"
+
+```
+讲述：
+"这是一个自主经济 Agent。它有一个 Sui 钱包，但余额快见底了。"
+
+终端输出：
+╔══════════════════════════════════════════════════╗
+║  🤖 Agent Status: STARVATION MODE               ║
+║  💰 Balance: 0.0100 SUI                         ║
+║  ⚠️  Below survival threshold (0.01 SUI)         ║
+║  🔗 Wallet: https://suiscan.xyz/testnet/account/0x1234...abcd ║
+╚══════════════════════════════════════════════════╝
+
+操作：
+- 运行 `node dist/main.js`
+- 展示 Agent 初始化，钱包地址 + Explorer 链接
+- 强调：这是一个真实的链上钱包，不是模拟
+```
+
+**评审看点**：
+- ✅ 真实 Sui 钱包地址
+- ✅ Explorer 链接可点击验证
+- ✅ STARVATION 模式激活（非静态文本）
 
 ---
 
-### 第二幕：工作换酬（0:15 - 0:35）
+### 🎬 Act 2 — 赏金发现 (0:15 ~ 0:25)
 
-**画面**：Agent 执行本地任务并结算奖励
+**目标**：展示 Agent 如何在链上发现赚钱机会
 
-**旁白/字幕**：
-> "The agent works first, then settles reward on-chain."
-
-**终端输出**：
 ```
-📥 EARNING PHASE
-─────────────────
-🛠️  Working: Temp Cleanup Audit
-   > powershell -NoProfile -Command "Get-ChildItem $env:TEMP -Recurse -File ..."
-   ✓ Scanned C:\Users\...\AppData\Local\Temp
-   ✓ Reclaimable size ≈ 842.31 MB
+讲述：
+"Agent 扫描了链上的 BountyBoard 合约，发现了 3 个可用赏金。"
 
-# 备选任务（现场按环境二选一）
-# 1) System Health Check: uptime / df -h 或 Win32_OperatingSystem
-# 2) Git Integrity Check: git status --short
+终端输出：
+📋 Found 3 available bounties:
+  #0  "Run eslint on the project"    → 0.5000 SUI
+  #1  "Run test suite"               → 0.3000 SUI
+  #2  "Format source code"           → 0.2000 SUI
 
-📥 Settling task reward via Faucet...
-✓ Task reward received: +0.5000 SUI
+⚙️ Selected bounty #0 (highest reward: 0.5000 SUI)
+
+操作：
+- Agent 自动读取 BountyBoard 合约
+- 展示赏金列表（来自链上，非硬编码）
+- 指出 Agent 选择了奖励最高的任务
 ```
 
-**关键点**：
-- 叙事从“领水龙头”升级为“真实本地工作 + 结算”
-- 符合 Local God Mode（本地执行能力）
+**评审看点**：
+- ✅ 数据来自链上合约（可用 Explorer 验证 BountyBoard 对象）
+- ✅ 智能选择策略（奖励排序）
+- ✅ 不是 Faucet，是真正的"工作任务"
 
 ---
 
-### 第三幕：加密保护（0:35 - 0:55）
+### 🎬 Act 3 — OpenClaw 执行 (0:25 ~ 0:40)
 
-**画面**：Agent 使用收入为“加密备份”付费
+**目标**：展示 Agent 通过 OpenClaw 执行任务（核心 OpenClaw 集成展示）
 
-**旁白/字幕**：
-> "Now it spends that income to protect your digital life."
-
-**终端输出**：
 ```
-📤 SPENDING PHASE
-─────────────────
-🔐 Encrypting data with Seal...
-🔒 Data encrypted via Seal Protocol
-📤 Uploading encrypted backup to Walrus...
-✓ Encrypted blob uploaded: blob_id_abc123...
-✓ Cost: 0.0500 SUI
+讲述：
+"Agent 通过 OpenClaw 的 Exec Tool 执行 lint 任务——不是直接调用子进程，
+而是通过 Gateway RPC，有安全沙箱和超时保护。"
+
+终端输出：
+⚙️ Executing task #0: "Run eslint on the project"
+  Command: npx eslint . --fix --format json 2>&1 || true
+  → Sent to OpenClaw Gateway (http://127.0.0.1:18789/rpc)
+  → Method: exec | Host: gateway | Timeout: 30s
+
+  ✓ Task completed (2847ms)
+  Output hash: e3b0c44298fc1c14...  (SHA-256 proof)
+
+操作：
+- 展示 HTTP RPC 调用（不是 execa）
+- 强调 OpenClaw Exec Tool 的安全特性
+- SHA-256 哈希 = 工作证明（将提交到链上）
 ```
 
-**关键点**：
-- 补齐 Seal 安全层
-- 支出有意义：用于保护，而不是“存日志而存日志”
+**评审看点**：
+- ✅ **OpenClaw Exec Tool** 直接集成（非 execa wrapper）
+- ✅ Gateway RPC URL 可见
+- ✅ SHA-256 工作证明机制
+- ✅ 超时保护
 
 ---
 
-### 第四幕：经营结果（0:55 - 1:15）
+### 🎬 Act 4 — 链上领取 (0:40 ~ 0:55)
 
-**画面**：展示 P&L + 单位经济指标
+**目标**：展示 Agent 在链上领取赏金（Move 合约交互）
 
-**旁白/字幕**：
-> "This is a sustainable cycle: work, earn, protect, survive."
-
-**终端输出**：
 ```
-💰 P&L: +0.4500 SUI
-📈 ROI: 900.00%
-📉 Burn Rate: 0.0500 SUI / cycle
-📈 Runway: 29.0 cycles
-✅ Health: PROFITABLE
+讲述：
+"Agent 将工作证明的 SHA-256 哈希提交到 BountyBoard 合约，
+领取了 0.5 SUI 的赏金。这是真实的链上交易。"
+
+终端输出：
+💰 Claiming reward for bounty #0...
+  Reward: 0.5000 SUI
+  Proof: e3b0c44298fc1c14...
+
+  ✓ Claimed! TX: 7YKz...9fD
+  Explorer: https://suiscan.xyz/testnet/tx/7YKz...9fD
+
+  💰 [Ledger] +0.5000 SUI | bounty_reward | Bounty #0 reward claimed
+    ↳ Explorer: https://suiscan.xyz/testnet/tx/7YKz...9fD
+
+操作：
+- 展示 Move call 交易发送
+- 点击 Explorer 链接验证交易成功
+- 展示 Ledger 自动记录
 ```
 
-**关键点**：
-- 展示可持续经营，不是单次好运
-- 评委能快速看到商业可行性
+**评审看点**：
+- ✅ Move 合约调用（`bounty_board::claim_reward`）
+- ✅ 链上交易 + Explorer 验证
+- ✅ SHA-256 proof_hash 提交链上
+- ✅ Ledger 自动记账
 
 ---
 
-### 第五幕：链上复验（1:15 - 1:30）
+### 🎬 Act 5 — Seal 加密 + Walrus 存储 (0:55 ~ 1:15)
 
-**画面**：切换到 Sui Explorer + Blob 记录
+**目标**：展示 Agent 用赚来的 SUI 购买安全服务
 
-**旁白/字幕**：
-> "Every step is verifiable on-chain. A self-sovereign digital entity that works to protect you."
+```
+讲述：
+"Agent 用赚来的 SUI 做了一件有意义的事：用 Seal 加密保护 SSH 密钥，
+然后上传到 Walrus 去中心化存储。注意密文比明文大——这证明加密是真实的。"
 
-**Sui Explorer 展示**：
-- Task reward settlement 交易
-- Walrus 支付交易
-- 对应加密 blob 记录
+终端输出：
+🛡️ Protecting "ssh-public-key" (742 bytes)...
 
-## 演示准备清单
+🔐 Creating Seal Allowlist policy on-chain...
+  ✓ Policy created: 0xABCD...1234
+  Allowed addresses: [0x1234...abcd] (Agent only)
 
-### 演示前 24 小时
+🔒 Encrypting 742 bytes with Seal...
+  ✓ Encrypted: 742 → 1184 bytes
+  Size ratio: 1.60x  ← 密文 > 明文！真实加密！
+  Duration: 834ms
 
-- [ ] 从 Testnet Faucet 预先领取足够代币
-- [ ] 测试完整流程 10 次，确保稳定
-- [ ] 准备备用钱包（已有余额）
-- [ ] 测试网络连接稳定性
-- [ ] 准备离线录屏作为备用
+📤 Uploading 1184 bytes to Walrus...
+  ✓ Uploaded: blobId = WRs7...xyz
+  Duration: 1203ms
 
-### 演示前 1 小时
+  💸 [Ledger] -0.0023 SUI | seal_encryption | Protected "ssh-public-key"
 
-- [ ] 检查 Sui Testnet 状态
-- [ ] 检查 Walrus 服务状态
-- [ ] 重置 Agent 到干净状态
-- [ ] 准备好 Sui Explorer 标签页
-- [ ] 关闭无关程序，清理桌面
-- [ ] 预跑 3 类本地任务（tmp_scan/system_check/git_status）各 1 次
-- [ ] 确认演示目录有 git 仓库（用于 git status 备选）
+操作：
+- 强调 1.60x 的大小膨胀（v1 是 1.0x，假加密）
+- Seal Allowlist 策略创建在链上
+- Walrus blobId 是真实的存储凭证
+```
 
-### 演示设备
+**评审看点**：
+- ✅ **真实 Seal SDK** 加密（非 `sleep(200)`）
+- ✅ 密文 > 明文（加密开销可验证）
+- ✅ Allowlist 策略链上创建
+- ✅ Walrus 上传 + blobId
+- ✅ 保护的是有价值的数据（SSH 密钥）
 
-- [ ] 终端字体放大（便于录屏）
-- [ ] 深色主题（视觉效果好）
-- [ ] 录屏软件准备就绪
-- [ ] 麦克风测试（如需旁白）
+---
+
+### 🎬 Act 6 — 盈利报表 + Explorer 验证 (1:15 ~ 1:30)
+
+**目标**：展示 Agent 的自我审计和盈利能力
+
+```
+讲述：
+"最后，Agent 生成了财务报表。它赚了 0.5 SUI，花了 0.0023 SUI——
+净利润 0.4977 SUI，利润率 99.5%。这就是 Infinite Money Glitch。"
+
+终端输出：
+📦 Generating audit package...
+  Entries: 2
+  On-chain TXs: 2
+  Work proofs: 1
+  Checksum: 7f83b165...
+
+╔══════════════════════════════════════════════════╗
+║           💰 Agent Financial Report 💰           ║
+╠══════════════════════════════════════════════════╣
+║  📈 +0.5000 SUI  bounty_reward   Bounty #0      ║
+║     ↳ https://suiscan.xyz/testnet/tx/7YKz...9fD  ║
+║  📉 -0.0023 SUI  seal_encryption SSH key         ║
+╠══════════════════════════════════════════════════╣
+║  Total Income:  +0.5000 SUI                      ║
+║  Total Expense: -0.0023 SUI                      ║
+║  Net Profit:    +0.4977 SUI                      ║
+║  Margin:        99.5%                            ║
+║  Status:        🟢 PROFITABLE                    ║
+╠══════════════════════════════════════════════════╣
+║  🔗 Wallet: https://suiscan.xyz/testnet/account/0x1234...abcd ║
+╚══════════════════════════════════════════════════╝
+
+🔍 On-chain Verification (Browser Tool):
+  ✓ 7YKz...9fD → Verified on Explorer
+  Total: 1/1 verified
+
+✓ Cycle #1 completed in 8234ms
+
+操作：
+- 展示 P&L 报表（每一行都有 Explorer 链接）
+- 指出净利润为正 → Agent 可以自我维持
+- Browser Tool 验证交易在 Explorer 上可查
+- 最后点击 Wallet Explorer 链接，展示链上资产变化
+```
+
+**评审看点**：
+- ✅ 完整 P&L 报表（含 Explorer 链接）
+- ✅ 审计包 + SHA-256 校验和
+- ✅ Browser Tool 链上验证
+- ✅ Agent 盈利 → "Infinite Money Glitch" 叙事成立
+- ✅ 所有数据可在 Sui Explorer 上独立验证
+
+---
+
+## 时间线总览
+
+```
+0:00          0:15         0:25         0:40         0:55         1:15         1:30
+  │            │            │            │            │            │            │
+  ▼            ▼            ▼            ▼            ▼            ▼            ▼
+┌──────────┬──────────┬──────────────┬──────────────┬────────────┬──────────────┐
+│ Act 1    │ Act 2    │ Act 3        │ Act 4        │ Act 5      │ Act 6        │
+│ 生存危机  │ 赏金发现  │ OpenClaw执行  │ 链上领取     │ Seal+Walrus│ 报表+验证    │
+│          │          │              │              │            │              │
+│ STARVE   │ BountyBd │ Exec Tool    │ Move TX      │ 真实加密   │ P&L + Audit  │
+│ 余额展示  │ 链上查询  │ SHA-256      │ claim_reward │ 密文>明文  │ Browser验证  │
+│ Explorer │ 任务选择  │ Gateway RPC  │ Explorer✓    │ blobId     │ Explorer✓    │
+└──────────┴──────────┴──────────────┴──────────────┴────────────┴──────────────┘
+  15s         10s         15s           15s           20s          15s
+```
+
+## 关键评审对标
+
+根据 Hackathon Track 2 (Local God Mode) 评审标准：
+
+| 评审维度 | Demo 展示点 | 对应幕 |
+|---------|------------|--------|
+| **OpenClaw 集成深度** | Exec Tool RPC 执行任务 | Act 3 |
+| | Browser Tool Explorer 验证 | Act 6 |
+| | Cron 定时触发（可提及） | Act 1 |
+| | Skill 服务形态（可提及） | Act 1 |
+| **Sui 链上交互** | Move 合约 claim_reward | Act 4 |
+| | BountyBoard 合约读取 | Act 2 |
+| | 链上 Allowlist 策略 | Act 5 |
+| **创新性** | 自主经济循环 | 全程 |
+| | SHA-256 工作证明 | Act 3-4 |
+| | 审计包 + 校验和 | Act 6 |
+| **完成度** | 端到端可运行 | 全程 |
+| | 真实链上交易可验证 | Act 4, 6 |
 
 ## 备用方案
 
-### 方案 A：Faucet 不可用
+### 如果赏金已被领完
 
-如果 Testnet Faucet 临时下线：
-1. 使用预充值的钱包
-2. 保留“真实本地工作”步骤，改为展示本地任务报告 + 预充值结算
-3. 修改旁白："Agent completed real local work and settled from pre-funded budget"
-
-### 方案 B：Walrus 上传失败
-
-如果 Walrus 服务不稳定：
-1. 使用模拟上传（本地保存日志）
-2. 减少上传数据量
-3. 展示之前成功上传的加密 Blob ID
-
-### 方案 C：网络完全不可用
-
-使用预先录制的视频：
-- 录制一份完整的成功演示
-- 保存为备用
-- 演示时播放视频 + 现场讲解
-
-## 评审加分点
-
-| 评审维度 | Demo 中如何体现 |
-|----------|----------------|
-| **资格** | 使用 Sui Testnet，真实交易 |
-| **技术价值** | Wallet + Work-to-Reward + Seal + Walrus + Ledger 完整架构 |
-| **创造力** | "Agent 在生存压力下自主打工并保护用户数据" |
-| **Sui 集成** | 钱包、交易、Walrus、Seal |
-| **可验证** | Sui Explorer + Blob 记录链上复验 |
-
-## 社区投票钩子
-
-**Slogan 选项**：
-1. "The Autonomous Insurance Agent for Your Digital Life"
-2. "Work. Earn. Encrypt. Protect."
-3. "A Self-Sovereign Digital Entity That Works for You"
-
-**传播要点**：
-- 简单易懂：Agent 先干活，再结算奖励
-- 新奇有趣：Infinite Money Glitch 名字本身就是梗
-- 可验证：链上可查
-
-## 时间分配总结
-
-| 幕数 | 时间 | 内容 | 秒数 |
-|------|------|------|------|
-| 1 | 0:00-0:15 | 开场 + 初始化 | 15s |
-| 2 | 0:15-0:35 | 赚钱阶段 | 20s |
-| 3 | 0:35-0:55 | 花钱阶段 | 20s |
-| 4 | 0:55-1:15 | 损益报表 | 20s |
-| 5 | 1:15-1:30 | 链上验证 + 结尾 | 15s |
-
-**总计**: 90 秒
-
-## 演示脚本（逐字稿）
-
-```
-[0:00] If this agent cannot earn, it cannot buy gas.
-
-[0:05] If it cannot buy gas, it cannot protect your digital memory.
-
-[0:10] This is Infinite Money Glitch.
-
-[0:15] Watch: it starts in survival mode and needs to work.
-
-[0:20] It performs a real local task first.
-
-[0:25] Then it settles that work as an on-chain task reward.
-
-[0:30] No prompt required. Fully autonomous.
-
-[0:35] Now it spends that reward to protect your data.
-
-[0:40] Data is encrypted via Seal and stored on Walrus.
-
-[0:45] Every spend is a security decision, not just an expense.
-
-[0:50] And the result?
-
-[0:55] Income: 0.5 SUI. Expense: 0.05 SUI.
-
-[1:00] Net Profit: 0.45 SUI.
-
-[1:05] Burn rate and runway show this cycle is sustainable.
-
-[1:10] Every transaction and blob record is verifiable on-chain.
-
-[1:15] This is Infinite Money Glitch.
-
-[1:20] Built with OpenClaw, Sui, Walrus, and Seal.
-
-[1:25] A self-sovereign digital entity that works to protect you.
-
-[1:30] [END]
+```bash
+# 快速补发赏金
+sui client call \
+  --package $BOUNTY_PACKAGE_ID \
+  --module bounty_board \
+  --function post_bounty \
+  --args $BOUNTY_BOARD_ID '"Emergency lint task"' 500000000 \
+  --gas-budget 10000000
 ```
 
-## 后续改进方向
+### 如果 Seal Key Server 超时
 
-如果时间允许，可以在 Demo 中增加：
+```
+# 跳过 Seal 加密步骤，展示到 Act 4 即可
+# 讲述："在生产环境中，Agent 还会用 Seal 加密保护数据..."
+```
 
-1. **多轮循环**：展示 Agent 持续运行多个周期
-2. **策略切换**：展示不同的赚钱策略
-3. **风险控制**：展示余额不足时的处理
-4. **历史记录**：展示从 Walrus 读取历史报表
+### 如果时间不足
+
+```
+# 精简版：Act 1 + Act 3 + Act 4 + Act 6 = 60 秒
+# 跳过 Act 2（赏金发现）和 Act 5（Seal+Walrus）
+# 重点突出 OpenClaw Exec Tool + Move 合约 + P&L
+```
+
+## 演后 Q&A 准备
+
+| 可能问题 | 回答要点 |
+|---------|---------|
+| "这跟用 Faucet 有什么区别？" | BountyBoard 是自部署合约，赏金来自存入的 SUI，不是免费水龙头 |
+| "OpenClaw 在哪里体现？" | Exec Tool (Act 3), Browser Tool (Act 6), Cron 触发, Skill 配置 |
+| "Agent 怎么知道做什么任务？" | 读取链上 BountyBoard 合约的 bounties 数组 |
+| "工作怎么验证？" | SHA-256(task_output) 作为 proof_hash 提交链上 |
+| "Seal 加密是真的吗？" | 看密文大小膨胀率 — 1.6x 证明有真实加密开销 |
+| "不依赖外部服务吗？" | 合约自部署自控 + OpenClaw 本地网关 + Sui/Walrus/Seal 用公共测试网 |

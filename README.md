@@ -1,8 +1,8 @@
-# Infinite Money Glitch 🤖💰
+# Infinite Money Glitch 
 
 > **OpenClaw x Sui Hackathon - Track 2: Local God Mode**
 
-## 一句话介绍
+## 介绍
 
 一个拥有自己钱包、能通过“本地工作”赚取资金、并用 Seal+Walrus 保护用户关键数据的**自主数字保险 Agent**。
 
@@ -112,7 +112,7 @@ npm run start
 1:30  └─────────────────────────────────────────┘
 ```
 
-## 为什么这个项目能赢
+## 项目
 
 1. **官方认可**: Track 2 明确提到 "Infinite Money Glitch" 创意
 2. **叙事升级**: "Agent 打工赚 Gas，反哺用户数据安全"，不再只是 Faucet 脚本

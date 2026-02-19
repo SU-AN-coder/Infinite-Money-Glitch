@@ -1,30 +1,29 @@
-# 模块四：账本模块 (Ledger)
+# 模块四：账本系统 (Ledger)
+
+> **v2 — 基于 00-redesign-proposal.md 重构**
+> 核心变更：新增审计包生成、链上证明字段（taskHash / bountyId / blobId / sealPolicyId / explorerUrl），保留 P&L 报表和 CLI 格式化。
 
 ## 概述
 
-Ledger 是 Agent 的"财务总管"，负责统一管理所有收支记录，计算损益，生成财务报表。它是连接 Earner 和 Spender 的核心数据层。
+Ledger 是 Agent 的"财务审计"模块。它记录每一笔收入和支出，生成可审计的审计包（audit package），并提供链上交易的 Explorer 链接，使 Agent 的全部经济活动可追溯、可验证。
 
-## 核心职责
+## 核心变更
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         Ledger                              │
-├─────────────────────────────────────────────────────────────┤
-│  数据汇总                                                    │
-│  ├─ 接收 Earner 的收入记录                                   │
-│  ├─ 接收 Spender 的支出记录                                  │
-│  └─ 维护完整的交易历史                                       │
-├─────────────────────────────────────────────────────────────┤
-│  损益计算                                                    │
-│  ├─ 实时计算总收入                                           │
-│  ├─ 实时计算总支出                                           │
-│  └─ 计算净利润 = 收入 - 支出                                 │
-├─────────────────────────────────────────────────────────────┤
-│  报表生成                                                    │
-│  ├─ 生成损益表 (P&L Statement)                               │
-│  ├─ 生成交易明细表                                           │
-│  └─ 生成 Demo 展示用的格式化报表                             │
-└─────────────────────────────────────────────────────────────┘
+| 项目 | 旧方案 (v1) | 新方案 (v2) |
+|------|-------------|-------------|
+| 交易记录 | 仅金额 + 方向 | ✅ 含链上证明字段 |
+| 审计能力 | 无 | ✅ `generateAuditPackage()` 导出完整审计包 |
+| 链上关联 | 无 | ✅ txDigest + Explorer URL |
+| 工作证明 | 无 | ✅ taskHash (SHA-256) |
+| 存储证明 | 无 | ✅ blobId + sealPolicyId |
+| 报表能力 | P&L 报表 | ✅ P&L + 审计报表 |
+
+## 技术依赖
+
+```json
+{
+  // 无额外依赖，纯 TypeScript 实现
+}
 ```
 
 ## 接口设计
@@ -32,77 +31,114 @@ Ledger 是 Agent 的"财务总管"，负责统一管理所有收支记录，计�
 ### 类型定义
 
 ```typescript
-// 账本条目（统一格式）
+// 交易方向
+type TransactionDirection = 'income' | 'expense';
+
+// 交易来源
+type TransactionSource =
+  | 'bounty_reward'     // BountyBoard 赏金奖励
+  | 'seal_encryption'   // Seal 加密费用
+  | 'walrus_storage'    // Walrus 存储费用
+  | 'gas_fee'           // 链上 Gas 费用
+  | 'transfer'          // SUI 转账
+  | 'other';            // 其他
+
+// 账本条目（v2 新增链上证明字段）
 interface LedgerEntry {
-  // 唯一标识
+  // 唯一 ID
   id: string;
-  // 条目类型
-  type: 'income' | 'expense';
-  // 金额（MIST，正数）
-  amount: bigint;
-  // 金额（格式化）
-  amountFormatted: string;
-  // 交易摘要
-  txDigest?: string;
   // 时间戳
   timestamp: Date;
-  // 描述
+  // 交易方向
+  direction: TransactionDirection;
+  // 交易来源
+  source: TransactionSource;
+  // 金额（MIST）
+  amount: bigint;
+  // 说明
   description: string;
-  // 分类标签
-  category: string;
+
+  // ─── v2 新增：链上证明字段 ───
+  // 任务输出 SHA-256 哈希（Earner 提交的工作证明）
+  taskHash?: string;
+  // BountyBoard 赏金 ID
+  bountyId?: number;
+  // 交易摘要
+  txDigest?: string;
+  // Walrus blob ID
+  blobId?: string;
+  // Seal 策略 ID
+  sealPolicyId?: string;
+  // Sui Explorer 链接
+  explorerUrl?: string;
+
+  // ─── 衍生字段 ───
+  // 关联的任务类型
+  taskType?: string;
+  // 交易后余额（快照）
+  balanceAfter?: bigint;
 }
 
-// 损益报表
+// P&L 报表
 interface ProfitLossReport {
-  // 报表生成时间
-  generatedAt: Date;
-  // 报表周期
+  // 报表期间
   period: {
-    start: Date;
-    end: Date;
+    from: Date;
+    to: Date;
   };
-  // 收入汇总
-  income: {
-    total: bigint;
-    totalFormatted: string;
-    byCategory: Record<string, bigint>;
-    count: number;
-  };
-  // 支出汇总
-  expense: {
-    total: bigint;
-    totalFormatted: string;
-    byCategory: Record<string, bigint>;
-    count: number;
-  };
+  // 总收入
+  totalIncome: bigint;
+  // 总支出
+  totalExpense: bigint;
   // 净利润
-  netProfit: {
-    amount: bigint;
-    amountFormatted: string;
-    isPositive: boolean;
-  };
-  // 钱包余额
-  currentBalance: {
-    amount: bigint;
-    amountFormatted: string;
-  };
-  // 经营指标
-  unitEconomics: {
-    cycles: number;
-    avgIncomePerCycle: string;
-    avgExpensePerCycle: string;
-    roiPercent: string;
-    burnRatePerCycle: string;
-    runwayCycles: string;
-  };
+  netProfit: bigint;
+  // 净利润率
+  profitMargin: number;
+  // 交易笔数
+  transactionCount: number;
+  // 按来源的收入明细
+  incomeBySource: Map<TransactionSource, bigint>;
+  // 按来源的支出明细
+  expenseBySource: Map<TransactionSource, bigint>;
+  // Wallet Explorer 链接
+  walletExplorerUrl: string;
 }
 
-// 账本配置
-interface LedgerConfig {
-  // 钱包管理器（用于查询当前余额）
-  walletManager: WalletManager;
-  // 自动保存间隔（毫秒，0 表示不自动保存）
-  autoSaveInterval: number;
+// 审计包（v2 新增）
+interface AuditPackage {
+  // 生成时间
+  generatedAt: Date;
+  // Agent 地址
+  agentAddress: string;
+  // Wallet Explorer 链接
+  walletExplorerUrl: string;
+  // 所有账本条目
+  entries: LedgerEntry[];
+  // P&L 报表
+  profitLoss: ProfitLossReport;
+  // 链上交易汇总
+  onChainTransactions: {
+    digest: string;
+    explorerUrl: string;
+    direction: TransactionDirection;
+    amount: bigint;
+    source: TransactionSource;
+  }[];
+  // 加密存储汇总
+  encryptedStorage: {
+    blobId: string;
+    sealPolicyId: string;
+    label: string;
+    size: number;
+  }[];
+  // 工作证明汇总
+  workProofs: {
+    taskHash: string;
+    bountyId: number;
+    txDigest: string;
+  }[];
+  // 校验和（整个审计包的 SHA-256）
+  checksum: string;
 }
 ```
 
@@ -111,445 +147,501 @@ interface LedgerConfig {
 ```typescript
 class Ledger {
   /**
-   * 初始化账本
+   * 初始化 Ledger
    */
-  async initialize(config: LedgerConfig): Promise<void>;
+  constructor(config?: LedgerConfig);
 
   /**
-   * 记录收入
+   * 记录一笔交易（v2 增强版，含链上证明字段）
    */
-  recordIncome(record: IncomeRecord): void;
+  record(entry: Omit<LedgerEntry, 'id' | 'timestamp'>): LedgerEntry;
 
   /**
-   * 记录支出
+   * 记录 Earner 收入（便捷方法）
    */
-  recordExpense(record: ExpenseRecord): void;
+  recordEarning(claimResult: ClaimResult): LedgerEntry;
 
   /**
-   * 获取所有账本条目
+   * 记录 Spender 支出（便捷方法）
    */
-  getEntries(): LedgerEntry[];
+  recordSpending(protectionResult: ProtectionResult): LedgerEntry;
 
   /**
-   * 获取总收入
+   * 获取所有条目
    */
-  getTotalIncome(): bigint;
+  getEntries(filter?: LedgerFilter): LedgerEntry[];
 
   /**
-   * 获取总支出
+   * 生成 P&L 报表
    */
-  getTotalExpense(): bigint;
+  generatePnL(from?: Date, to?: Date): ProfitLossReport;
 
   /**
-   * 获取净利润
+   * 生成审计包（v2 新增）
    */
-  getNetProfit(): bigint;
+  generateAuditPackage(agentAddress: string): AuditPackage;
 
   /**
-   * 生成损益报表
+   * CLI 格式化输出
    */
-  async generateReport(): Promise<ProfitLossReport>;
-
-  /**
-   * 生成 CLI 展示用的格式化报表
-   */
-  formatReportForCLI(report: ProfitLossReport): string;
+  printSummary(): void;
 
   /**
    * 导出为 JSON
    */
   exportToJson(): string;
-
-  /**
-   * 清空账本（重置）
-   */
-  clear(): void;
 }
 ```
 
 ## 实现细节
 
-### 1. 收支记录
+### 1. 核心记录逻辑
 
 ```typescript
+import { createHash, randomUUID } from 'node:crypto';
+
 class Ledger {
   private entries: LedgerEntry[] = [];
-  private config: LedgerConfig;
-  private walletManager: WalletManager;
+  private walletExplorerUrl: string = '';
 
-  async initialize(config: LedgerConfig): Promise<void> {
-    this.config = config;
-    this.walletManager = config.walletManager;
-    console.log('✓ Ledger initialized');
+  constructor(config?: LedgerConfig) {
+    if (config?.walletExplorerUrl) {
+      this.walletExplorerUrl = config.walletExplorerUrl;
+    }
   }
 
-  recordIncome(record: IncomeRecord): void {
-    if (record.status !== 'confirmed') {
-      return; // 只记录已确认的交易
-    }
-
-    const entry: LedgerEntry = {
-      id: record.id,
-      type: 'income',
-      amount: record.amount,
-      amountFormatted: record.amountFormatted,
-      txDigest: record.txDigest,
-      timestamp: record.timestamp,
-      description: record.source,
-      category: record.type // faucet, airdrop, task_reward, etc.
+  /**
+   * 通用记录方法 — 支持所有 v2 证明字段
+   */
+  record(entry: Omit<LedgerEntry, 'id' | 'timestamp'>): LedgerEntry {
+    const fullEntry: LedgerEntry = {
+      id: randomUUID(),
+      timestamp: new Date(),
+      ...entry
     };
 
-    this.entries.push(entry);
-    this.logEntry(entry);
-  }
+    this.entries.push(fullEntry);
 
-  recordExpense(record: ExpenseRecord): void {
-    if (record.status !== 'confirmed') {
-      return;
+    const icon = entry.direction === 'income' ? '💰' : '💸';
+    const sign = entry.direction === 'income' ? '+' : '-';
+    const amount = Number(entry.amount) / 1e9;
+
+    console.log(
+      `${icon} [Ledger] ${sign}${amount.toFixed(4)} SUI | ${entry.source} | ${entry.description}`
+    );
+
+    // 如果有 Explorer 链接，一并输出
+    if (fullEntry.explorerUrl) {
+      console.log(`  ↳ Explorer: ${fullEntry.explorerUrl}`);
     }
 
-    const entry: LedgerEntry = {
-      id: record.id,
-      type: 'expense',
-      amount: record.amount,
-      amountFormatted: record.amountFormatted,
-      txDigest: record.txDigest,
-      timestamp: record.timestamp,
-      description: record.purpose,
-      category: record.type // storage, gas, api, etc.
-    };
-
-    this.entries.push(entry);
-    this.logEntry(entry);
-  }
-
-  private logEntry(entry: LedgerEntry): void {
-    const symbol = entry.type === 'income' ? '📥' : '📤';
-    const sign = entry.type === 'income' ? '+' : '-';
-    console.log(`${symbol} [Ledger] ${sign}${entry.amountFormatted} | ${entry.description}`);
+    return fullEntry;
   }
 }
 ```
 
-### 2. 损益计算
+### 2. 便捷记录方法
 
 ```typescript
-getTotalIncome(): bigint {
-  return this.entries
-    .filter(e => e.type === 'income')
-    .reduce((sum, e) => sum + e.amount, 0n);
+/**
+ * 记录 Earner 的赏金收入
+ * 自动填充 taskHash、bountyId、txDigest、explorerUrl
+ */
+recordEarning(claimResult: ClaimResult): LedgerEntry {
+  return this.record({
+    direction: 'income',
+    source: 'bounty_reward',
+    amount: claimResult.rewardAmount,
+    description: `Bounty #${claimResult.bountyId} reward claimed`,
+    taskHash: claimResult.proofHash,              // SHA-256 工作证明
+    bountyId: claimResult.bountyId,               // BountyBoard ID
+    txDigest: claimResult.txDigest,                // 链上交易摘要
+    explorerUrl: claimResult.explorerUrl           // Sui Explorer 链接
+  });
 }
 
-getTotalExpense(): bigint {
-  return this.entries
-    .filter(e => e.type === 'expense')
-    .reduce((sum, e) => sum + e.amount, 0n);
-}
-
-getNetProfit(): bigint {
-  return this.getTotalIncome() - this.getTotalExpense();
-}
-
-isProfit(): boolean {
-  return this.getNetProfit() > 0n;
-}
-
-getIncomeByCategory(): Record<string, bigint> {
-  const result: Record<string, bigint> = {};
-  
-  this.entries
-    .filter(e => e.type === 'income')
-    .forEach(e => {
-      result[e.category] = (result[e.category] || 0n) + e.amount;
-    });
-  
-  return result;
-}
-
-getExpenseByCategory(): Record<string, bigint> {
-  const result: Record<string, bigint> = {};
-  
-  this.entries
-    .filter(e => e.type === 'expense')
-    .forEach(e => {
-      result[e.category] = (result[e.category] || 0n) + e.amount;
-    });
-  
-  return result;
+/**
+ * 记录 Spender 的保护支出
+ * 自动填充 blobId、sealPolicyId
+ */
+recordSpending(protectionResult: ProtectionResult): LedgerEntry {
+  return this.record({
+    direction: 'expense',
+    source: 'seal_encryption',
+    amount: protectionResult.gasSpent,
+    description: `Protected "${protectionResult.label}"`,
+    blobId: protectionResult.upload?.blobId,                  // Walrus blobId
+    sealPolicyId: protectionResult.encryption?.sealPolicyId,  // Seal 策略
+    explorerUrl: protectionResult.upload?.explorerUrl          // 上传 TX Explorer
+  });
 }
 ```
 
-### 3. 报表生成
+### 3. P&L 报表生成
 
 ```typescript
-async generateReport(): Promise<ProfitLossReport> {
-  const currentBalance = await this.walletManager.getBalance();
-  
-  const incomeEntries = this.entries.filter(e => e.type === 'income');
-  const expenseEntries = this.entries.filter(e => e.type === 'expense');
-  
-  const totalIncome = this.getTotalIncome();
-  const totalExpense = this.getTotalExpense();
+/**
+ * 生成 P&L（Profit & Loss）报表
+ */
+generatePnL(from?: Date, to?: Date): ProfitLossReport {
+  const filtered = this.getEntries({ from, to });
+
+  let totalIncome = 0n;
+  let totalExpense = 0n;
+  const incomeBySource = new Map<TransactionSource, bigint>();
+  const expenseBySource = new Map<TransactionSource, bigint>();
+
+  for (const entry of filtered) {
+    if (entry.direction === 'income') {
+      totalIncome += entry.amount;
+      incomeBySource.set(
+        entry.source,
+        (incomeBySource.get(entry.source) || 0n) + entry.amount
+      );
+    } else {
+      totalExpense += entry.amount;
+      expenseBySource.set(
+        entry.source,
+        (expenseBySource.get(entry.source) || 0n) + entry.amount
+      );
+    }
+  }
+
   const netProfit = totalIncome - totalExpense;
-  const cycles = Math.max(1, expenseEntries.length || incomeEntries.length || 1);
-  const avgIncome = totalIncome / BigInt(cycles);
-  const avgExpense = totalExpense / BigInt(cycles);
-  const roiBasis = totalExpense === 0n ? 1n : totalExpense;
-  const roiPercent = Number((netProfit * 10000n) / roiBasis) / 100;
-  const runwayCycles = avgExpense > 0n
-    ? Number(currentBalance.sui / avgExpense).toFixed(1)
-    : '∞';
-  
-  // 确定报表周期
-  const timestamps = this.entries.map(e => e.timestamp.getTime());
-  const periodStart = timestamps.length > 0 
-    ? new Date(Math.min(...timestamps)) 
-    : new Date();
-  const periodEnd = new Date();
+  const profitMargin = totalIncome > 0n
+    ? Number(netProfit) / Number(totalIncome)
+    : 0;
 
   return {
-    generatedAt: new Date(),
     period: {
-      start: periodStart,
-      end: periodEnd
+      from: from || filtered[0]?.timestamp || new Date(),
+      to: to || filtered[filtered.length - 1]?.timestamp || new Date()
     },
-    income: {
-      total: totalIncome,
-      totalFormatted: this.formatSui(totalIncome),
-      byCategory: this.getIncomeByCategory(),
-      count: incomeEntries.length
-    },
-    expense: {
-      total: totalExpense,
-      totalFormatted: this.formatSui(totalExpense),
-      byCategory: this.getExpenseByCategory(),
-      count: expenseEntries.length
-    },
-    netProfit: {
-      amount: netProfit,
-      amountFormatted: this.formatSui(netProfit < 0n ? -netProfit : netProfit),
-      isPositive: netProfit >= 0n
-    },
-    currentBalance: {
-      amount: currentBalance.sui,
-      amountFormatted: currentBalance.suiFormatted
-    },
-    unitEconomics: {
-      cycles,
-      avgIncomePerCycle: this.formatSui(avgIncome),
-      avgExpensePerCycle: this.formatSui(avgExpense),
-      roiPercent: `${roiPercent.toFixed(2)}%`,
-      burnRatePerCycle: this.formatSui(avgExpense),
-      runwayCycles
-    }
+    totalIncome,
+    totalExpense,
+    netProfit,
+    profitMargin,
+    transactionCount: filtered.length,
+    incomeBySource,
+    expenseBySource,
+    walletExplorerUrl: this.walletExplorerUrl
   };
 }
-```
 
-### 4. CLI 格式化输出
+/**
+ * 获取条目（可选过滤）
+ */
+getEntries(filter?: LedgerFilter): LedgerEntry[] {
+  if (!filter) return [...this.entries];
 
-```typescript
-formatReportForCLI(report: ProfitLossReport): string {
-  const lines: string[] = [];
-  
-  // 标题
-  lines.push('');
-  lines.push('╔════════════════════════════════════════════════════════╗');
-  lines.push('║          💰 AGENT PROFIT & LOSS STATEMENT 💰          ║');
-  lines.push('╠════════════════════════════════════════════════════════╣');
-  
-  // 周期
-  const periodStr = `${this.formatDate(report.period.start)} ~ ${this.formatDate(report.period.end)}`;
-  lines.push(`║  Period: ${this.padRight(periodStr, 45)}║`);
-  lines.push('╠════════════════════════════════════════════════════════╣');
-  
-  // 收入部分
-  lines.push('║  📥 INCOME                                             ║');
-  lines.push(`║     Total: ${this.padRight('+' + report.income.totalFormatted, 43)}║`);
-  for (const [category, amount] of Object.entries(report.income.byCategory)) {
-    const formatted = this.formatSui(amount as bigint);
-    lines.push(`║       └─ ${this.padRight(category + ': +' + formatted, 44)}║`);
-  }
-  lines.push('╠════════════════════════════════════════════════════════╣');
-  
-  // 支出部分
-  lines.push('║  📤 EXPENSE                                            ║');
-  lines.push(`║     Total: ${this.padRight('-' + report.expense.totalFormatted, 43)}║`);
-  for (const [category, amount] of Object.entries(report.expense.byCategory)) {
-    const formatted = this.formatSui(amount as bigint);
-    lines.push(`║       └─ ${this.padRight(category + ': -' + formatted, 44)}║`);
-  }
-  lines.push('╠════════════════════════════════════════════════════════╣');
-  
-  // 净利润
-  const profitSign = report.netProfit.isPositive ? '+' : '-';
-  const profitEmoji = report.netProfit.isPositive ? '✅' : '❌';
-  lines.push('║  💵 NET PROFIT                                         ║');
-  lines.push(`║     ${profitEmoji} ${this.padRight(profitSign + report.netProfit.amountFormatted, 48)}║`);
-  lines.push('╠════════════════════════════════════════════════════════╣');
-  
-  // 当前余额
-  lines.push('║  🏦 CURRENT BALANCE                                    ║');
-  lines.push(`║     ${this.padRight(report.currentBalance.amountFormatted, 49)}║`);
-  lines.push('╠════════════════════════════════════════════════════════╣');
-
-  // 经营指标
-  lines.push('║  📈 UNIT ECONOMICS                                    ║');
-  lines.push(`║     Cycles: ${this.padRight(String(report.unitEconomics.cycles), 43)}║`);
-  lines.push(`║     Avg Income/Cycle: ${this.padRight('+' + report.unitEconomics.avgIncomePerCycle, 33)}║`);
-  lines.push(`║     Avg Expense/Cycle: ${this.padRight('-' + report.unitEconomics.avgExpensePerCycle, 32)}║`);
-  lines.push(`║     ROI: ${this.padRight(report.unitEconomics.roiPercent, 46)}║`);
-  lines.push(`║     Burn Rate: ${this.padRight(report.unitEconomics.burnRatePerCycle, 40)}║`);
-  lines.push(`║     Runway: ${this.padRight(report.unitEconomics.runwayCycles + ' cycles', 41)}║`);
-  lines.push('╚════════════════════════════════════════════════════════╝');
-  lines.push('');
-  
-  return lines.join('\n');
-}
-
-private padRight(str: string, length: number): string {
-  return str.padEnd(length, ' ');
-}
-
-private formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
-}
-
-private formatSui(mist: bigint): string {
-  const sui = Number(mist) / 1_000_000_000;
-  return sui.toFixed(4) + ' SUI';
+  return this.entries.filter(entry => {
+    if (filter.from && entry.timestamp < filter.from) return false;
+    if (filter.to && entry.timestamp > filter.to) return false;
+    if (filter.direction && entry.direction !== filter.direction) return false;
+    if (filter.source && entry.source !== filter.source) return false;
+    return true;
+  });
 }
 ```
 
-### 5. JSON 导出
+### 4. 审计包生成（v2 新增核心功能）
 
 ```typescript
+/**
+ * 生成完整的审计包
+ * 包含所有交易记录、链上证明、加密存储记录和工作证明
+ * 整个审计包会计算 SHA-256 校验和
+ */
+generateAuditPackage(agentAddress: string): AuditPackage {
+  console.log('\n📦 Generating audit package...');
+
+  const entries = this.getEntries();
+  const profitLoss = this.generatePnL();
+
+  // 链上交易汇总
+  const onChainTransactions = entries
+    .filter(e => e.txDigest)
+    .map(e => ({
+      digest: e.txDigest!,
+      explorerUrl: e.explorerUrl || '',
+      direction: e.direction,
+      amount: e.amount,
+      source: e.source
+    }));
+
+  // 加密存储汇总
+  const encryptedStorage = entries
+    .filter(e => e.blobId)
+    .map(e => ({
+      blobId: e.blobId!,
+      sealPolicyId: e.sealPolicyId || '',
+      label: e.description,
+      size: 0  // 需从 Spender 结果中获取
+    }));
+
+  // 工作证明汇总
+  const workProofs = entries
+    .filter(e => e.taskHash && e.bountyId !== undefined)
+    .map(e => ({
+      taskHash: e.taskHash!,
+      bountyId: e.bountyId!,
+      txDigest: e.txDigest || ''
+    }));
+
+  // 构建审计包（不含 checksum）
+  const packageData = {
+    generatedAt: new Date(),
+    agentAddress,
+    walletExplorerUrl: this.walletExplorerUrl,
+    entries,
+    profitLoss,
+    onChainTransactions,
+    encryptedStorage,
+    workProofs
+  };
+
+  // 计算校验和
+  const checksum = createHash('sha256')
+    .update(JSON.stringify(packageData, (_, v) =>
+      typeof v === 'bigint' ? v.toString() : v
+    ))
+    .digest('hex');
+
+  const auditPackage: AuditPackage = {
+    ...packageData,
+    checksum
+  };
+
+  console.log(`  ✓ Audit package generated`);
+  console.log(`  Entries: ${entries.length}`);
+  console.log(`  On-chain TXs: ${onChainTransactions.length}`);
+  console.log(`  Encrypted blobs: ${encryptedStorage.length}`);
+  console.log(`  Work proofs: ${workProofs.length}`);
+  console.log(`  Checksum: ${checksum.slice(0, 16)}...`);
+
+  return auditPackage;
+}
+```
+
+### 5. CLI 格式化输出
+
+```typescript
+/**
+ * CLI 摘要输出 — 适合 demo 演示
+ */
+printSummary(): void {
+  const pnl = this.generatePnL();
+  const entries = this.getEntries();
+
+  console.log('\n╔══════════════════════════════════════════════════╗');
+  console.log('║           💰 Agent Financial Report 💰           ║');
+  console.log('╠══════════════════════════════════════════════════╣');
+
+  // 交易明细
+  console.log('║ Recent Transactions:                             ║');
+  const recent = entries.slice(-5);
+  for (const entry of recent) {
+    const icon = entry.direction === 'income' ? '📈' : '📉';
+    const sign = entry.direction === 'income' ? '+' : '-';
+    const amount = (Number(entry.amount) / 1e9).toFixed(4);
+    const source = entry.source.padEnd(16);
+    console.log(`║  ${icon} ${sign}${amount} SUI  ${source}  ${entry.description.slice(0, 20)}║`);
+    if (entry.explorerUrl) {
+      console.log(`║     ↳ ${entry.explorerUrl.slice(0, 44)}║`);
+    }
+  }
+
+  // P&L 汇总
+  console.log('╠══════════════════════════════════════════════════╣');
+  const income = (Number(pnl.totalIncome) / 1e9).toFixed(4);
+  const expense = (Number(pnl.totalExpense) / 1e9).toFixed(4);
+  const net = (Number(pnl.netProfit) / 1e9).toFixed(4);
+  const margin = (pnl.profitMargin * 100).toFixed(1);
+  const status = pnl.netProfit > 0n ? '🟢 PROFITABLE' : '🔴 LOSS';
+
+  console.log(`║  Total Income:  +${income} SUI                  ║`);
+  console.log(`║  Total Expense: -${expense} SUI                  ║`);
+  console.log(`║  Net Profit:    ${net} SUI                       ║`);
+  console.log(`║  Margin:        ${margin}%                       ║`);
+  console.log(`║  Status:        ${status}                        ║`);
+  console.log(`║  Transactions:  ${pnl.transactionCount}          ║`);
+
+  // Explorer 链接
+  if (pnl.walletExplorerUrl) {
+    console.log('╠══════════════════════════════════════════════════╣');
+    console.log(`║  🔗 Wallet: ${pnl.walletExplorerUrl}            ║`);
+  }
+
+  console.log('╚══════════════════════════════════════════════════╝\n');
+}
+
+/**
+ * 导出为 JSON（支持 bigint 序列化）
+ */
 exportToJson(): string {
-  const data = {
-    exportedAt: new Date().toISOString(),
-    entries: this.entries.map(e => ({
-      ...e,
-      amount: e.amount.toString(),
-      timestamp: e.timestamp.toISOString()
-    })),
-    summary: {
-      totalIncome: this.getTotalIncome().toString(),
-      totalExpense: this.getTotalExpense().toString(),
-      netProfit: this.getNetProfit().toString(),
-      entryCount: this.entries.length
+  return JSON.stringify(
+    this.entries,
+    (_, value) => (typeof value === 'bigint' ? value.toString() : value),
+    2
+  );
+}
+```
+
+## 数据结构示例
+
+### 一条完整的 v2 LedgerEntry
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "timestamp": "2026-02-28T14:30:00.000Z",
+  "direction": "income",
+  "source": "bounty_reward",
+  "amount": "500000000",
+  "description": "Bounty #3 reward claimed",
+  "taskHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "bountyId": 3,
+  "txDigest": "HZzz...abc",
+  "blobId": null,
+  "sealPolicyId": null,
+  "explorerUrl": "https://suiscan.xyz/testnet/tx/HZzz...abc"
+}
+```
+
+### 审计包 JSON 片段
+
+```json
+{
+  "generatedAt": "2026-02-28T15:00:00.000Z",
+  "agentAddress": "0x1234...abcd",
+  "walletExplorerUrl": "https://suiscan.xyz/testnet/account/0x1234...abcd",
+  "entries": [ "..." ],
+  "profitLoss": {
+    "totalIncome": "1500000000",
+    "totalExpense": "200000000",
+    "netProfit": "1300000000",
+    "profitMargin": 0.8667
+  },
+  "onChainTransactions": [
+    {
+      "digest": "HZzz...abc",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/HZzz...abc",
+      "direction": "income",
+      "amount": "500000000",
+      "source": "bounty_reward"
     }
-  };
-  
-  return JSON.stringify(data, null, 2);
+  ],
+  "workProofs": [
+    {
+      "taskHash": "e3b0c44298fc...",
+      "bountyId": 3,
+      "txDigest": "HZzz...abc"
+    }
+  ],
+  "checksum": "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
 }
-
-getEntries(): LedgerEntry[] {
-  return [...this.entries];
-}
-
-clear(): void {
-  this.entries = [];
-  console.log('✓ Ledger cleared');
-}
-```
-
-## CLI 输出示例
-
-```
-╔════════════════════════════════════════════════════════╗
-║          💰 AGENT PROFIT & LOSS STATEMENT 💰          ║
-╠════════════════════════════════════════════════════════╣
-║  Period: 2026-02-16 ~ 2026-02-16                       ║
-╠════════════════════════════════════════════════════════╣
-║  📥 INCOME                                             ║
-║     Total: +0.5000 SUI                                 ║
-║       └─ task_reward: +0.5000 SUI                      ║
-╠════════════════════════════════════════════════════════╣
-║  📤 EXPENSE                                            ║
-║     Total: -0.0500 SUI                                 ║
-║       └─ storage: -0.0500 SUI                          ║
-╠════════════════════════════════════════════════════════╣
-║  💵 NET PROFIT                                         ║
-║     ✅ +0.4500 SUI                                     ║
-╠════════════════════════════════════════════════════════╣
-║  🏦 CURRENT BALANCE                                    ║
-║     1.4500 SUI                                         ║
-╚════════════════════════════════════════════════════════╝
-```
-
-## 与其他模块的关系
-
-```
-┌─────────────┐                        ┌─────────────┐
-│   Earner    │──── recordIncome() ───▶│             │
-└─────────────┘                        │             │
-                                       │   Ledger    │
-┌─────────────┐                        │             │
-│   Spender   │──── recordExpense() ──▶│             │
-└─────────────┘                        └──────┬──────┘
-                                              │
-                                              ▼
-                                       ┌─────────────┐
-                                       │   Report    │
-                                       │ (CLI/JSON)  │
-                                       └─────────────┘
 ```
 
 ## 单元测试要点
 
 ```typescript
-describe('Ledger', () => {
-  it('should record income', () => {
-    const ledger = new Ledger();
-    ledger.recordIncome(mockIncomeRecord);
-    
-    expect(ledger.getTotalIncome()).toBe(mockIncomeRecord.amount);
+describe('Ledger v2', () => {
+  it('should record entry with proof fields', () => {
+    const entry = ledger.record({
+      direction: 'income',
+      source: 'bounty_reward',
+      amount: 500_000_000n,
+      description: 'test bounty',
+      taskHash: 'abc123...',
+      bountyId: 1,
+      txDigest: 'TX123...',
+      explorerUrl: 'https://suiscan.xyz/testnet/tx/TX123...'
+    });
+    expect(entry.taskHash).toBe('abc123...');
+    expect(entry.bountyId).toBe(1);
+    expect(entry.explorerUrl).toContain('suiscan.xyz');
   });
 
-  it('should calculate net profit', () => {
-    const ledger = new Ledger();
-    ledger.recordIncome({ ...mockIncome, amount: 1000n });
-    ledger.recordExpense({ ...mockExpense, amount: 300n });
-    
-    expect(ledger.getNetProfit()).toBe(700n);
+  it('should generate P&L with correct calculations', () => {
+    ledger.record({ direction: 'income', source: 'bounty_reward', amount: 1000n, description: 'a' });
+    ledger.record({ direction: 'expense', source: 'gas_fee', amount: 200n, description: 'b' });
+    const pnl = ledger.generatePnL();
+    expect(pnl.netProfit).toBe(800n);
+    expect(pnl.profitMargin).toBeCloseTo(0.8);
   });
 
-  it('should group by category', () => {
-    const ledger = new Ledger();
-    ledger.recordIncome({ ...mockIncome, type: 'task_reward', amount: 100n });
-    ledger.recordIncome({ ...mockIncome, type: 'task_reward', amount: 200n });
-    
-    const byCategory = ledger.getIncomeByCategory();
-    expect(byCategory['task_reward']).toBe(300n);
+  it('should generate audit package with checksum', () => {
+    const pkg = ledger.generateAuditPackage('0xtest');
+    expect(pkg.checksum).toMatch(/^[a-f0-9]{64}$/);
+    expect(pkg.agentAddress).toBe('0xtest');
+    expect(pkg.entries.length).toBeGreaterThan(0);
   });
 
-  it('should generate report', async () => {
-    const ledger = new Ledger();
-    await ledger.initialize({ walletManager, autoSaveInterval: 0 });
-    
-    const report = await ledger.generateReport();
-    expect(report.generatedAt).toBeDefined();
-    expect(report.netProfit).toBeDefined();
+  it('should include Explorer links in audit package', () => {
+    const pkg = ledger.generateAuditPackage('0xtest');
+    for (const tx of pkg.onChainTransactions) {
+      expect(tx.explorerUrl).toContain('suiscan.xyz');
+    }
+  });
+
+  it('recordEarning should auto-fill proof fields from ClaimResult', () => {
+    const entry = ledger.recordEarning({
+      bountyId: 5,
+      rewardAmount: 1_000_000_000n,
+      txDigest: 'TX_EARN_1',
+      explorerUrl: 'https://suiscan.xyz/testnet/tx/TX_EARN_1',
+      proofHash: 'sha256hash...',
+      success: true
+    });
+    expect(entry.taskHash).toBe('sha256hash...');
+    expect(entry.bountyId).toBe(5);
+    expect(entry.txDigest).toBe('TX_EARN_1');
   });
 });
 ```
 
+## 与其他模块的关系
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                  Agent (runCycle)                         │
+│                       │                                  │
+│           ┌───────────┼───────────┐                      │
+│           ▼           ▼           ▼                      │
+│       Earner      Spender     ┌──────┐                  │
+│           │           │       │Ledger│ ◄─ 本模块        │
+│           │           │       └──┬───┘                  │
+│           │           │          │                       │
+│           └─── recordEarning ────┘                       │
+│           └─── recordSpending ───┘                       │
+│                                  │                       │
+│                        generateAuditPackage              │
+│                                  │                       │
+│                           ┌──────▼──────┐               │
+│                           │  审计报表    │               │
+│                           │  P&L + TXs  │               │
+│                           │  + Explorer │               │
+│                           └─────────────┘               │
+└──────────────────────────────────────────────────────────┘
+```
+
 ## 开发优先级
 
-1. **P0 必须**: `recordIncome()`, `recordExpense()` - 收支记录
-2. **P0 必须**: `getNetProfit()` - 核心计算
-3. **P0 必须**: `formatReportForCLI()` - Demo 展示
-4. **P1 重要**: `generateReport()` - 完整报表
-5. **P2 可选**: `exportToJson()` - 数据持久化
+1. **P0 必须**: `record()` — 含 v2 证明字段
+2. **P0 必须**: `recordEarning()` / `recordSpending()` — 便捷方法
+3. **P0 必须**: `generatePnL()` — P&L 报表
+4. **P1 重要**: `generateAuditPackage()` — 审计包 + 校验和
+5. **P1 重要**: `printSummary()` — CLI 格式化
+6. **P2 可选**: 持久化（写入文件 / 上传 Walrus）
 
 ## 预计开发时间
 
 | 任务 | 时间 |
 |------|------|
-| 收支记录 | 1小时 |
-| 损益计算 | 1小时 |
-| 报表生成 | 2小时 |
-| CLI 格式化 | 2小时 |
-| JSON 导出 | 1小时 |
-| 单元测试 | 1小时 |
-| **总计** | **8小时** |
+| 类型定义 + 核心 `record()` | 1 小时 |
+| 便捷记录方法 | 1 小时 |
+| P&L 报表 | 2 小时 |
+| 审计包生成 + 校验和 | 3 小时 |
+| CLI 格式化 | 1 小时 |
+| 单元测试 | 2 小时 |
+| **总计** | **10 小时** |

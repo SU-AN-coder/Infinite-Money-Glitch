@@ -1,31 +1,95 @@
-# 模块五：Agent 主循环 (Agent)
+# 模块五：Agent 核心 (Agent)
+
+> **v2 — 基于 00-redesign-proposal.md 重构**
+> 核心变更：移除 `while(running)` 轮询循环；改为 OpenClaw Cron 驱动的 Skill 服务；新增审计阶段和 Browser Tool 验证。
 
 ## 概述
 
-Agent 是整个系统的"大脑"，负责协调所有模块，执行主循环逻辑，做出"赚钱"和"花钱"的决策。它是将所有模块串联起来的核心调度器。
+Agent 是整个系统的"大脑"——协调 Wallet、Earner、Spender、Ledger 四个模块完成自主经济循环。它不再是一个自旋的 `while` 循环，而是一个由 OpenClaw Cron 触发的 **Skill 服务**，每次被调用时执行一个完整的 `runCycle()`。
 
-## 核心职责
+## 核心变更
 
+| 项目 | 旧方案 (v1) | 新方案 (v2) |
+|------|-------------|-------------|
+| 生命周期 | 🚨 `while(running)` 无限循环 | ✅ OpenClaw Cron 定时触发 |
+| 触发方式 | 代码内 `setInterval` / `sleep` | ✅ Cron job → `every: "5m"` |
+| 服务形态 | 独立 Node.js 脚本 | ✅ OpenClaw Skill 服务 |
+| 周期内容 | 赚 → 花（2 步） | ✅ 健康检查 → 赚 → 花 → 审计 → 验证 → 报告（6 步） |
+| 错误恢复 | `try/catch` + continue | ✅ STARVATION 模式 + 降级策略 |
+| 验证 | 无 | ✅ OpenClaw Browser Tool 链上验证 |
+
+## 技术依赖
+
+```json
+{
+  "@mysten/sui": "^1.x.x",
+  "@mysten/seal": "^0.x.x",
+  "@mysten/walrus": "^1.x.x"
+}
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                          Agent                              │
-├─────────────────────────────────────────────────────────────┤
-│  模块协调                                                    │
-│  ├─ 初始化所有子模块                                         │
-│  ├─ 连接模块间的事件回调                                     │
-│  └─ 统一错误处理和日志                                       │
-├─────────────────────────────────────────────────────────────┤
-│  主循环逻辑                                                  │
-│  ├─ 检查当前状态                                             │
-│  ├─ 决定是否执行赚钱操作                                     │
-│  ├─ 决定是否执行花钱操作                                     │
-│  └─ 生成并展示报表                                           │
-├─────────────────────────────────────────────────────────────┤
-│  用户交互                                                    │
-│  ├─ CLI 命令处理                                             │
-│  ├─ 状态展示                                                 │
-│  └─ 优雅退出                                                 │
-└─────────────────────────────────────────────────────────────┘
+
+运行环境依赖：
+- OpenClaw Gateway (`http://127.0.0.1:18789`)
+- OpenClaw Cron（定时触发）
+- BountyBoard Move 合约（已部署）
+
+## Agent 作为 OpenClaw Skill
+
+### SKILL.md
+
+```markdown
+---
+name: infinite-money-glitch
+description: Self-sustaining autonomous agent on Sui blockchain
+metadata:
+  openclaw:
+    requires:
+      bins:
+        - node
+        - npx
+      env:
+        - SUI_PRIVATE_KEY
+        - BOUNTY_PACKAGE_ID
+        - BOUNTY_BOARD_ID
+    os:
+      - macos
+      - linux
+      - windows
+    emoji: 💰
+---
+
+# Infinite Money Glitch Agent
+
+A self-sustaining agent that earns SUI through BountyBoard tasks,
+spends SUI on Seal encryption and Walrus storage, and reports
+profit/loss with on-chain proof.
+
+## Usage
+
+\`\`\`
+Run a single economic cycle: earn → spend → audit → verify → report
+\`\`\`
+```
+
+### OpenClaw Cron 配置
+
+```json
+{
+  "cron": {
+    "jobs": [
+      {
+        "id": "img-heartbeat",
+        "schedule": {
+          "every": "5m"
+        },
+        "skill": "infinite-money-glitch",
+        "prompt": "Run one economic cycle: check health, earn bounty, spend on protection, audit, verify on explorer, report P&L",
+        "session": "main",
+        "delivery": "announce"
+      }
+    ]
+  }
+}
 ```
 
 ## 接口设计
@@ -33,63 +97,88 @@ Agent 是整个系统的"大脑"，负责协调所有模块，执行主循环逻
 ### 类型定义
 
 ```typescript
-// Agent 配置
-interface AgentConfig {
-  // 网络
-  network: 'testnet' | 'mainnet' | 'devnet';
-  // 私钥来源
-  keySource: 'generate' | 'import';
-  // 私钥存储路径
-  keyStorePath?: string;
-  // Walrus 配置
-  walrus: {
-    publisherUrl: string;
-    aggregatorUrl: string;
-  };
-  // 自动运行模式
-  autoMode: boolean;
-  // 自动运行间隔（毫秒）
-  autoInterval: number;
-}
+// Agent 运行模式
+type AgentMode = 'NORMAL' | 'STARVATION' | 'ERROR';
 
 // Agent 状态
 interface AgentState {
-  // 是否已初始化
-  initialized: boolean;
-  // 是否正在运行
-  running: boolean;
-  // 钱包地址
-  address: string;
-  // 当前余额
-  balance: bigint;
-  // 总收入
-  totalIncome: bigint;
-  // 总支出
-  totalExpense: bigint;
-  // 净利润
-  netProfit: bigint;
-  // 循环次数
+  // 当前模式
+  mode: AgentMode;
+  // 已执行周期数
   cycleCount: number;
-  // 单周期燃烧率（支出）
-  burnRate: bigint;
-  // 预计可运行周期
-  runwayCycles: number;
-  // 生存状态
-  healthStatus: 'PROFITABLE' | 'STABLE' | 'STARVATION_IMMINENT';
+  // 最后一次周期时间
+  lastCycleAt: Date | null;
+  // 连续失败次数
+  consecutiveFailures: number;
+  // 总收入（MIST）
+  totalEarned: bigint;
+  // 总支出（MIST）
+  totalSpent: bigint;
+  // Wallet Explorer URL
+  walletExplorerUrl: string;
 }
 
-// 循环结果
+// 单次周期结果
 interface CycleResult {
-  // 循环编号
+  // 周期编号
   cycleNumber: number;
-  // 收入记录
-  incomes: IncomeRecord[];
-  // 支出记录
-  expenses: ExpenseRecord[];
-  // 本轮净利润
-  netProfit: bigint;
-  // 执行时间
+  // 执行模式
+  mode: AgentMode;
+  // 各阶段结果
+  phases: {
+    healthCheck: HealthCheckResult;
+    earn: EarnResult | null;
+    spend: SpendResult | null;
+    audit: AuditPackage | null;
+    verify: VerifyResult | null;
+    report: ReportResult;
+  };
+  // 总耗时
   duration: number;
+  // 是否成功
+  success: boolean;
+  // 错误信息
+  error?: string;
+}
+
+// 健康检查结果
+interface HealthCheckResult {
+  // 余额
+  balance: bigint;
+  // 是否足够操作
+  sufficientBalance: boolean;
+  // BountyBoard 合约可达
+  bountyBoardReachable: boolean;
+  // OpenClaw Gateway 可达
+  openclawGatewayReachable: boolean;
+  // 建议模式
+  recommendedMode: AgentMode;
+}
+
+// 链上验证结果（从 Browser Tool 获取）
+interface VerifyResult {
+  // 验证的交易数
+  transactionsVerified: number;
+  // 所有交易是否可在 Explorer 中确认
+  allVerified: boolean;
+  // Explorer 截图 URL（可选）
+  screenshotUrl?: string;
+  // 验证详情
+  details: {
+    txDigest: string;
+    verified: boolean;
+    explorerUrl: string;
+  }[];
+}
+
+// 报告结果
+interface ReportResult {
+  // P&L 摘要
+  pnlSummary: string;
+  // 生存状态
+  survivalStatus: string;
+  // 下次周期预计时间
+  nextCycleAt: Date;
 }
 ```
 
@@ -98,504 +187,592 @@ interface CycleResult {
 ```typescript
 class Agent {
   /**
-   * 初始化 Agent 和所有子模块
+   * 初始化 Agent（组装所有模块）
    */
-  async initialize(config: AgentConfig): Promise<void>;
+  constructor(config: AgentConfig);
 
   /**
-   * 启动 Agent（进入主循环）
-   */
-  async start(): Promise<void>;
-
-  /**
-   * 停止 Agent
-   */
-  async stop(): Promise<void>;
-
-  /**
-   * 执行单个循环
+   * 执行一个完整的经济周期（由 OpenClaw Cron 触发）
+   * 这是 Agent 的核心入口点
+   *
+   * 6 步流程：
+   * 1. 健康检查 — 余额、合约可达性
+   * 2. 赚取 — BountyBoard 任务
+   * 3. 支出 — Seal 加密 + Walrus 存储
+   * 4. 审计 — 生成审计包
+   * 5. 验证 — Browser Tool 检查 Explorer
+   * 6. 报告 — P&L 输出
    */
   async runCycle(): Promise<CycleResult>;
+
+  /**
+   * 健康检查
+   */
+  async healthCheck(): Promise<HealthCheckResult>;
+
+  /**
+   * 使用 OpenClaw Browser Tool 验证链上交易
+   */
+  async verifyOnChain(txDigests: string[]): Promise<VerifyResult>;
 
   /**
    * 获取当前状态
    */
   getState(): AgentState;
-
-  /**
-   * 展示状态到 CLI
-   */
-  displayStatus(): void;
-
-  /**
-   * 展示最终报表
-   */
-  async displayFinalReport(): Promise<void>;
 }
 ```
 
 ## 实现细节
 
-### 1. 模块初始化
+### 1. Agent 初始化
 
 ```typescript
 class Agent {
-  private walletManager: WalletManager;
+  private wallet: WalletManager;
   private earner: Earner;
   private spender: Spender;
   private ledger: Ledger;
+
+  private state: AgentState;
   private config: AgentConfig;
-  private running: boolean = false;
-  private cycleCount: number = 0;
-  private lastCycleExpense: bigint = 0n;
+  private openclawBaseUrl = 'http://127.0.0.1:18789';
 
-  async initialize(config: AgentConfig): Promise<void> {
+  // STARVATION 阈值 — 低于此余额进入饥饿模式
+  private STARVATION_THRESHOLD = 10_000_000n; // 0.01 SUI
+
+  constructor(config: AgentConfig) {
     this.config = config;
-    
-    console.log('');
-    console.log('╔════════════════════════════════════════════════════════╗');
-    console.log('║        🤖 INFINITE MONEY GLITCH - INITIALIZING 🤖      ║');
-    console.log('╚════════════════════════════════════════════════════════╝');
-    console.log('');
 
-    // 1. 初始化钱包
-    this.walletManager = new WalletManager();
-    await this.walletManager.initialize({
-      keySource: config.keySource,
-      network: config.network,
-      keyStorePath: config.keyStorePath
-    });
-
-    // 2. 初始化账本
+    // 组装模块
+    this.wallet = new WalletManager();
     this.ledger = new Ledger();
-    await this.ledger.initialize({
-      walletManager: this.walletManager,
-      autoSaveInterval: 0
+    this.earner = new Earner(this.wallet, {
+      network: config.network,
+      bountyPackageId: config.bountyPackageId,
+      bountyBoardId: config.bountyBoardId
+    });
+    this.spender = new Spender(this.wallet, {
+      network: config.network,
+      sealPackageId: config.sealPackageId
     });
 
-    // 3. 初始化收入模块
-    this.earner = new Earner();
-    await this.earner.initialize({
-      walletManager: this.walletManager,
-      faucetCooldown: 60000, // 1分钟冷却
-      maxRetries: 3
-    });
-    // 连接收入回调
-    this.earner.onIncome((record) => {
-      this.ledger.recordIncome(record);
+    this.state = {
+      mode: 'NORMAL',
+      cycleCount: 0,
+      lastCycleAt: null,
+      consecutiveFailures: 0,
+      totalEarned: 0n,
+      totalSpent: 0n,
+      walletExplorerUrl: ''
+    };
+  }
+
+  /**
+   * 入口：初始化所有模块
+   */
+  async initialize(): Promise<void> {
+    console.log('\n🤖 Agent initializing...\n');
+
+    await this.wallet.initialize({
+      keySource: 'env',
+      network: this.config.network,
+      bountyPackageId: this.config.bountyPackageId,
+      bountyBoardId: this.config.bountyBoardId
     });
 
-    // 4. 初始化支出模块
-    this.spender = new Spender();
-    await this.spender.initialize({
-      walletManager: this.walletManager,
-      walrus: config.walrus,
-      maxSingleExpense: 100_000_000n // 0.1 SUI 上限
-    });
-    // 连接支出回调
-    this.spender.onExpense((record) => {
-      this.ledger.recordExpense(record);
-    });
-
-    console.log('');
-    console.log('✓ All modules initialized');
-    console.log('');
-
-    // 显示初始状态
-    await this.displayStatus();
+    this.state.walletExplorerUrl = this.wallet.getExplorerUrl();
+    console.log(`\n✓ Agent initialized. Wallet: ${this.wallet.getAddress()}`);
+    console.log(`  Explorer: ${this.state.walletExplorerUrl}\n`);
   }
 }
 ```
 
-### 2. 主循环逻辑
+### 2. 核心运行周期（6 步）
 
 ```typescript
-async start(): Promise<void> {
-  if (this.running) {
-    console.log('Agent is already running');
-    return;
-  }
+/**
+ * ✅ 新版 runCycle() — 由 OpenClaw Cron 触发
+ * ❌ 旧版 while(running) 循环已删除
+ */
+async runCycle(): Promise<CycleResult> {
+  const cycleNum = ++this.state.cycleCount;
+  const startTime = Date.now();
 
-  this.running = true;
-  console.log('');
-  console.log('🚀 Agent started');
-  console.log('');
+  console.log('\n╔══════════════════════════════════════════════════╗');
+  console.log(`║  🔄 Cycle #${cycleNum} | Mode: ${this.state.mode.padEnd(12)}        ║`);
+  console.log('╠══════════════════════════════════════════════════╣');
 
-  if (this.config.autoMode) {
-    // 自动模式：持续循环
-    while (this.running) {
-      await this.runCycle();
-      
-      if (this.running) {
-        console.log(`⏳ Waiting ${this.config.autoInterval / 1000}s for next cycle...`);
-        await this.sleep(this.config.autoInterval);
+  const phases: CycleResult['phases'] = {
+    healthCheck: {} as HealthCheckResult,
+    earn: null,
+    spend: null,
+    audit: null,
+    verify: null,
+    report: {} as ReportResult
+  };
+
+  try {
+    // ━━━━━━━ Phase 1: 健康检查 ━━━━━━━
+    console.log('\n📋 Phase 1: Health Check');
+    phases.healthCheck = await this.healthCheck();
+    this.state.mode = phases.healthCheck.recommendedMode;
+
+    if (!phases.healthCheck.bountyBoardReachable) {
+      throw new Error('BountyBoard contract unreachable');
+    }
+
+    // ━━━━━━━ Phase 2: 赚取 ━━━━━━━
+    console.log('\n💼 Phase 2: Earn');
+    if (this.state.mode === 'STARVATION') {
+      console.log('  ⚠️ STARVATION mode — prioritizing earning');
+    }
+    phases.earn = await this.earner.earn();
+
+    if (phases.earn.claims.length > 0) {
+      for (const claim of phases.earn.claims) {
+        if (claim.success) {
+          this.ledger.recordEarning(claim);
+          this.state.totalEarned += claim.rewardAmount;
+        }
       }
     }
-  } else {
-    // 单次模式：执行一次循环后停止
-    await this.runCycle();
-    await this.stop();
-  }
-}
 
-async stop(): Promise<void> {
-  this.running = false;
-  console.log('');
-  console.log('🛑 Agent stopping...');
-  
-  // 显示最终报表
-  await this.displayFinalReport();
-  
-  console.log('');
-  console.log('✓ Agent stopped');
-}
+    // ━━━━━━━ Phase 3: 支出（STARVATION 模式跳过）━━━━━━━
+    console.log('\n💸 Phase 3: Spend');
+    if (this.state.mode === 'STARVATION') {
+      console.log('  ⏭️ Skipping spend — STARVATION mode');
+    } else {
+      phases.spend = await this.spender.spend();
 
-async runCycle(): Promise<CycleResult> {
-  this.cycleCount++;
-  const startTime = Date.now();
-  
-  console.log('');
-  console.log(`═══════════════════ CYCLE #${this.cycleCount} ═══════════════════`);
-  console.log('');
-
-  const incomes: IncomeRecord[] = [];
-  const expenses: ExpenseRecord[] = [];
-
-  // 步骤 1: 显示当前余额
-  const balanceBefore = await this.walletManager.getBalance();
-  console.log(`💰 Current Balance: ${balanceBefore.suiFormatted}`);
-  const burnRate = this.lastCycleExpense;
-  const runwayCycles = burnRate > 0n ? Number(balanceBefore.sui / burnRate) : 999;
-  const healthStatus = this.getHealthStatus(balanceBefore.sui, burnRate, this.ledger.getNetProfit());
-
-  this.renderHealthBar(balanceBefore.sui, burnRate, runwayCycles, healthStatus);
-  console.log('');
-
-  // 步骤 2: 尝试赚钱（先执行真实本地任务，再链上结算）
-  console.log('📥 EARNING PHASE');
-  console.log('─────────────────');
-  try {
-    const income = await this.earner.requestFaucet();
-    if (income.status === 'confirmed') {
-      incomes.push(income);
+      if (phases.spend && phases.spend.protections.length > 0) {
+        for (const protection of phases.spend.protections) {
+          if (protection.success) {
+            this.ledger.recordSpending(protection);
+            this.state.totalSpent += protection.gasSpent;
+          }
+        }
+      }
     }
-  } catch (error) {
-    console.log(`   Reward settlement skipped: ${error}`);
-  }
-  console.log('');
 
-  // 步骤 3: 尝试花钱（上传加密备份到 Walrus）
-  console.log('📤 SPENDING PHASE');
-  console.log('─────────────────');
-  try {
-    // 准备要上传的日志
-    const logContent = this.prepareLogContent();
-    const expense = await this.spender.uploadToWalrus(
-      logContent,
-      `agent_log_cycle_${this.cycleCount}.json`
+    // ━━━━━━━ Phase 4: 审计 ━━━━━━━
+    console.log('\n📦 Phase 4: Audit');
+    phases.audit = this.ledger.generateAuditPackage(
+      this.wallet.getAddress()
     );
-    if (expense.status === 'confirmed') {
-      expenses.push(expense);
+
+    // ━━━━━━━ Phase 5: 链上验证（Browser Tool）━━━━━━━
+    console.log('\n🔍 Phase 5: On-chain Verification');
+    const txDigests = this.collectTxDigests(phases);
+    if (txDigests.length > 0) {
+      phases.verify = await this.verifyOnChain(txDigests);
+    } else {
+      console.log('  No transactions to verify this cycle');
     }
+
+    // ━━━━━━━ Phase 6: 报告 ━━━━━━━
+    console.log('\n📊 Phase 6: Report');
+    this.ledger.printSummary();
+    phases.report = this.generateReport();
+
+    // 成功 → 重置失败计数
+    this.state.consecutiveFailures = 0;
+    this.state.lastCycleAt = new Date();
+
+    const result: CycleResult = {
+      cycleNumber: cycleNum,
+      mode: this.state.mode,
+      phases,
+      duration: Date.now() - startTime,
+      success: true
+    };
+
+    console.log(`\n✓ Cycle #${cycleNum} completed in ${result.duration}ms`);
+    console.log('╚══════════════════════════════════════════════════╝\n');
+
+    return result;
+
   } catch (error) {
-    console.log(`   Upload skipped: ${error}`);
+    this.state.consecutiveFailures++;
+    const errMsg = error instanceof Error ? error.message : String(error);
+
+    console.error(`\n✗ Cycle #${cycleNum} failed: ${errMsg}`);
+    console.log('╚══════════════════════════════════════════════════╝\n');
+
+    return {
+      cycleNumber: cycleNum,
+      mode: this.state.mode,
+      phases,
+      duration: Date.now() - startTime,
+      success: false,
+      error: errMsg
+    };
   }
-  console.log('');
-
-  // 步骤 4: 显示本轮结果
-  const balanceAfter = await this.walletManager.getBalance();
-  const netProfit = this.calculateNetProfit(incomes, expenses);
-  this.lastCycleExpense = this.sumRecords(expenses);
-  
-  console.log('📊 CYCLE RESULT');
-  console.log('─────────────────');
-  console.log(`   Income:  +${this.formatSui(this.sumRecords(incomes))}`);
-  console.log(`   Expense: -${this.formatSui(this.sumRecords(expenses))}`);
-  console.log(`   Net:     ${netProfit >= 0n ? '+' : ''}${this.formatSui(netProfit)}`);
-  console.log(`   Balance: ${balanceAfter.suiFormatted}`);
-  if (healthStatus === 'STARVATION_IMMINENT') {
-    console.log('   🚨 STARVATION IMMINENT: Agent must earn immediately to survive.');
-  } else if (healthStatus === 'PROFITABLE') {
-    console.log('   ✅ PROFITABLE: Sustainable operating state.');
-  }
-  console.log('');
-
-  const duration = Date.now() - startTime;
-  
-  return {
-    cycleNumber: this.cycleCount,
-    incomes,
-    expenses,
-    netProfit,
-    duration
-  };
-}
-
-private prepareLogContent(): string {
-  return JSON.stringify({
-    agentId: this.walletManager.getAddress(),
-    cycle: this.cycleCount,
-    timestamp: new Date().toISOString(),
-    state: this.getState(),
-    workProofMode: 'real-local-task',
-    expectedTasks: ['tmp_scan', 'system_check', 'git_status'],
-    message: 'Agent is running and profitable!'
-  }, null, 2);
-}
-
-private sumRecords(records: (IncomeRecord | ExpenseRecord)[]): bigint {
-  return records.reduce((sum, r) => sum + r.amount, 0n);
-}
-
-private calculateNetProfit(
-  incomes: IncomeRecord[], 
-  expenses: ExpenseRecord[]
-): bigint {
-  return this.sumRecords(incomes) - this.sumRecords(expenses);
 }
 ```
 
-### 3. 状态展示
+### 3. 健康检查
 
 ```typescript
-getState(): AgentState {
-  const totalExpense = this.ledger.getTotalExpense();
-  const burnRate = this.lastCycleExpense;
-  const runwayCycles = burnRate > 0n ? Number(totalExpense / burnRate) : 999;
-  const healthStatus = this.getHealthStatus(0n, burnRate, this.ledger.getNetProfit());
+/**
+ * 检查 Agent 运行环境是否正常
+ */
+async healthCheck(): Promise<HealthCheckResult> {
+  // 1. 查余额
+  const balance = await this.wallet.getBalance();
+  const sufficientBalance = balance.sui > this.STARVATION_THRESHOLD;
 
-  return {
-    initialized: true,
-    running: this.running,
-    address: this.walletManager.getAddress(),
-    balance: 0n, // 需要异步获取
-    totalIncome: this.ledger.getTotalIncome(),
-    totalExpense,
-    netProfit: this.ledger.getNetProfit(),
-    cycleCount: this.cycleCount,
-    burnRate,
-    runwayCycles,
-    healthStatus
+  // 2. BountyBoard 可达性
+  let bountyBoardReachable = false;
+  try {
+    const bounties = await this.earner.getAvailableBounties();
+    bountyBoardReachable = true;
+  } catch {
+    bountyBoardReachable = false;
+  }
+
+  // 3. OpenClaw Gateway 可达性
+  let openclawGatewayReachable = false;
+  try {
+    const resp = await fetch(`${this.openclawBaseUrl}/health`);
+    openclawGatewayReachable = resp.ok;
+  } catch {
+    openclawGatewayReachable = false;
+  }
+
+  // 4. 推断模式
+  let recommendedMode: AgentMode = 'NORMAL';
+  if (!sufficientBalance) {
+    recommendedMode = 'STARVATION';
+  }
+  if (this.state.consecutiveFailures >= 3) {
+    recommendedMode = 'ERROR';
+  }
+
+  const result: HealthCheckResult = {
+    balance: balance.sui,
+    sufficientBalance,
+    bountyBoardReachable,
+    openclawGatewayReachable,
+    recommendedMode
   };
+
+  console.log(`  Balance: ${balance.suiFormatted}`);
+  console.log(`  Sufficient: ${sufficientBalance ? '✓' : '✗'}`);
+  console.log(`  BountyBoard: ${bountyBoardReachable ? '✓' : '✗'}`);
+  console.log(`  Gateway: ${openclawGatewayReachable ? '✓' : '✗'}`);
+  console.log(`  Mode: ${recommendedMode}`);
+
+  return result;
 }
+```
 
-async displayStatus(): Promise<void> {
-  const balance = await this.walletManager.getBalance();
-  const burnRate = this.lastCycleExpense;
-  const runwayCycles = burnRate > 0n ? Number(balance.sui / burnRate).toFixed(1) : '∞';
-  const healthStatus = this.getHealthStatus(balance.sui, burnRate, this.ledger.getNetProfit());
-  
-  console.log('╔════════════════════════════════════════════════════════╗');
-  console.log('║               🤖 AGENT STATUS 🤖                       ║');
-  console.log('╠════════════════════════════════════════════════════════╣');
-  console.log(`║  Address: ${this.walletManager.getAddress().slice(0, 20)}...║`);
-  console.log(`║  Network: ${this.padRight(this.config.network, 44)}║`);
-  console.log(`║  Balance: ${this.padRight(balance.suiFormatted, 44)}║`);
-  console.log(`║  Burn Rate/Cycle: ${this.padRight(this.formatSui(burnRate), 35)}║`);
-  console.log(`║  Runway: ${this.padRight(runwayCycles + ' cycles', 42)}║`);
-  console.log(`║  Health: ${this.padRight(healthStatus, 42)}║`);
-  console.log('╚════════════════════════════════════════════════════════╝');
-}
+### 4. Browser Tool 链上验证
 
-async displayFinalReport(): Promise<void> {
-  const report = await this.ledger.generateReport();
-  const formatted = this.ledger.formatReportForCLI(report);
-  console.log(formatted);
-  
-  // 显示成功/失败结论
-  if (report.netProfit.isPositive) {
-    console.log('🎉 SUCCESS: Agent made a profit!');
-    console.log('   The Infinite Money Glitch is REAL.');
-  } else {
-    console.log('📉 Agent operated at a loss this session.');
-    console.log('   Adjusting strategies for next run...');
-  }
-}
+```typescript
+/**
+ * 使用 OpenClaw Browser Tool 访问 Sui Explorer 验证交易
+ * 这是 Agent"自证清白"的关键步骤
+ */
+async verifyOnChain(txDigests: string[]): Promise<VerifyResult> {
+  console.log(`  Verifying ${txDigests.length} transactions...`);
 
-private padRight(str: string, length: number): string {
-  return str.padEnd(length, ' ');
-}
+  const details: VerifyResult['details'] = [];
 
-private formatSui(mist: bigint): string {
-  const sui = Number(mist) / 1_000_000_000;
-  return sui.toFixed(4) + ' SUI';
-}
+  for (const digest of txDigests) {
+    const explorerUrl = `https://suiscan.xyz/testnet/tx/${digest}`;
 
-private getHealthStatus(balance: bigint, burnRate: bigint, netProfit: bigint): AgentState['healthStatus'] {
-  if (netProfit > 0n) {
-    return 'PROFITABLE';
-  }
+    try {
+      // 使用 OpenClaw Browser Tool 访问 Explorer
+      const response = await fetch(`${this.openclawBaseUrl}/rpc`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENCLAW_TOKEN}`
+        },
+        body: JSON.stringify({
+          method: 'browser',
+          params: {
+            action: 'navigate',
+            url: explorerUrl
+          }
+        })
+      });
 
-  if (burnRate > 0n) {
-    const runway = Number(balance / burnRate);
-    if (runway <= 3) {
-      return 'STARVATION_IMMINENT';
+      const result = await response.json();
+
+      // 检查页面快照中是否包含交易成功标志
+      const snapshotResp = await fetch(`${this.openclawBaseUrl}/rpc`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENCLAW_TOKEN}`
+        },
+        body: JSON.stringify({
+          method: 'browser',
+          params: {
+            action: 'snapshot'
+          }
+        })
+      });
+
+      const snapshot = await snapshotResp.json();
+      const pageText = snapshot.text || '';
+      const verified = pageText.includes('Success') || pageText.includes(digest);
+
+      details.push({
+        txDigest: digest,
+        verified,
+        explorerUrl
+      });
+
+      console.log(`  ${verified ? '✓' : '✗'} ${digest.slice(0, 12)}... → ${explorerUrl}`);
+
+    } catch (error) {
+      details.push({
+        txDigest: digest,
+        verified: false,
+        explorerUrl
+      });
+      console.log(`  ✗ ${digest.slice(0, 12)}... → verification failed`);
     }
   }
 
-  return 'STABLE';
+  const allVerified = details.every(d => d.verified);
+  console.log(`  Total: ${details.filter(d => d.verified).length}/${details.length} verified`);
+
+  return {
+    transactionsVerified: details.filter(d => d.verified).length,
+    allVerified,
+    details
+  };
 }
 
-private renderHealthBar(
-  balance: bigint,
-  burnRate: bigint,
-  runwayCycles: number,
-  healthStatus: AgentState['healthStatus']
-): void {
-  const maxFuel = 2_000_000_000n; // 2 SUI 作为展示上限
-  const fuelPercent = Math.max(0, Math.min(100, Number((balance * 100n) / maxFuel)));
-  const filled = Math.floor(fuelPercent / 10);
-  const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
+/**
+ * 从周期各阶段收集所有 TX digests
+ */
+private collectTxDigests(phases: CycleResult['phases']): string[] {
+  const digests: string[] = [];
 
-  console.log(`🤖 AGENT HEALTH: [${bar}] ${fuelPercent}% (${healthStatus})`);
-  console.log(`📉 Burn Rate: ${this.formatSui(burnRate)} / cycle`);
-  console.log(`📈 Est. Runway: ${runwayCycles === 999 ? '∞' : runwayCycles + ' cycles'}`);
-}
+  // 从 Earner claims 收集
+  if (phases.earn?.claims) {
+    for (const claim of phases.earn.claims) {
+      if (claim.txDigest) digests.push(claim.txDigest);
+    }
+  }
 
-private sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  // 从 Spender protections 收集（upload TX）
+  if (phases.spend?.protections) {
+    for (const p of phases.spend.protections) {
+      if (p.upload?.txDigest) digests.push(p.upload.txDigest);
+    }
+  }
+
+  return digests;
 }
 ```
 
-## 主流程图
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Agent.start()                            │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  while (running)     │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        runCycle()                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐       │
-│  │ 1. 显示余额   │───▶│ 2. 赚钱      │───▶│ 3. 花钱      │       │
-│  │              │    │ (Faucet)    │    │ (Walrus)    │       │
-│  └──────────────┘    └──────────────┘    └──────────────┘       │
-│                                                 │               │
-│                                                 ▼               │
-│                              ┌──────────────────────────┐       │
-│                              │ 4. 显示本轮结果           │       │
-│                              │    - Income              │       │
-│                              │    - Expense             │       │
-│                              │    - Net Profit          │       │
-│                              └──────────────────────────┘       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  sleep(interval)     │
-                    └──────────────────────┘
-                               │
-                               └──────────▶ (循环)
-                               
-                    ┌──────────────────────┐
-                    │  Agent.stop()        │
-                    └──────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  displayFinalReport()│
-                    └──────────────────────┘
-```
-
-## 入口文件
+### 5. 报告生成
 
 ```typescript
-// src/index.ts
-import { Agent } from './agent/Agent';
+/**
+ * 生成周期报告
+ */
+private generateReport(): ReportResult {
+  const pnl = this.ledger.generatePnL();
+  const netProfit = Number(pnl.netProfit) / 1e9;
+  const totalIncome = Number(pnl.totalIncome) / 1e9;
+  const totalExpense = Number(pnl.totalExpense) / 1e9;
 
+  const survivalStatus = pnl.netProfit > 0n
+    ? '🟢 PROFITABLE — Agent is self-sustaining'
+    : pnl.netProfit === 0n
+      ? '🟡 BREAK-EVEN — Agent is surviving'
+      : '🔴 LOSS — Agent needs more bounties';
+
+  const pnlSummary = [
+    `Income: +${totalIncome.toFixed(4)} SUI`,
+    `Expense: -${totalExpense.toFixed(4)} SUI`,
+    `Net: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(4)} SUI`,
+    `Margin: ${(pnl.profitMargin * 100).toFixed(1)}%`,
+    `Wallet: ${this.state.walletExplorerUrl}`
+  ].join('\n');
+
+  console.log(`  ${survivalStatus}`);
+  console.log(`  P&L: ${netProfit >= 0 ? '+' : ''}${netProfit.toFixed(4)} SUI`);
+
+  return {
+    pnlSummary,
+    survivalStatus,
+    nextCycleAt: new Date(Date.now() + 5 * 60 * 1000) // 5 分钟后
+  };
+}
+```
+
+### 6. 程序入口
+
+```typescript
+/**
+ * 程序入口 — 被 OpenClaw Cron 调用
+ * 不再是 while(running)，而是单次执行
+ */
 async function main() {
-  const agent = new Agent();
-  
-  // 解析命令行参数
-  const args = process.argv.slice(2);
-  const autoMode = args.includes('--auto');
-  
-  await agent.initialize({
+  const agent = new Agent({
     network: 'testnet',
-    keySource: process.env.PRIVATE_KEY ? 'import' : 'generate',
-    keyStorePath: './.agent/wallet.json',
-    walrus: {
-      publisherUrl: 'https://publisher.testnet.walrus.wal.app',
-      aggregatorUrl: 'https://aggregator.testnet.walrus.wal.app'
-    },
-    autoMode,
-    autoInterval: 60000 // 1分钟
+    bountyPackageId: process.env.BOUNTY_PACKAGE_ID!,
+    bountyBoardId: process.env.BOUNTY_BOARD_ID!,
+    sealPackageId: process.env.SEAL_PACKAGE_ID!
   });
 
-  // 处理退出信号
-  process.on('SIGINT', async () => {
-    console.log('\n\nReceived SIGINT, stopping agent...');
-    await agent.stop();
-    process.exit(0);
-  });
+  await agent.initialize();
+  const result = await agent.runCycle();
 
-  // 启动
-  await agent.start();
+  // 输出结果供 OpenClaw 读取
+  console.log(JSON.stringify({
+    success: result.success,
+    cycle: result.cycleNumber,
+    mode: result.mode,
+    duration: result.duration,
+    earned: result.phases.earn?.totalEarned?.toString() || '0',
+    spent: result.phases.spend?.totalGasSpent?.toString() || '0'
+  }));
+
+  process.exit(result.success ? 0 : 1);
 }
 
 main().catch(console.error);
 ```
 
+## 与 v1 的关键差异
+
+```
+旧版 Agent (v1):                     新版 Agent (v2):
+┌──────────────────────┐              ┌──────────────────────┐
+│ async run() {        │              │ // OpenClaw Cron ─→  │
+│   while(running) {   │              │ async runCycle() {   │
+│     await earn();    │              │   healthCheck();     │
+│     await spend();   │              │   earn();            │
+│     await sleep(60s);│              │   spend();           │
+│   }                  │              │   audit();           │
+│ }                    │              │   verifyOnChain();   │
+│                      │              │   report();          │
+│ ❌ 永不停止            │              │ }                    │
+│ ❌ 无审计              │              │                      │
+│ ❌ 无验证              │              │ ✅ Cron 定时触发      │
+│ ❌ 无健康检查          │              │ ✅ 6 步完整周期       │
+│ ❌ 无 STARVATION 模式  │              │ ✅ Browser Tool 验证 │
+└──────────────────────┘              └──────────────────────┘
+```
+
+## STARVATION 模式
+
+```
+                  余额检查
+                    │
+          ┌─────────┤
+          │         │
+    余额 > 0.01    余额 ≤ 0.01
+          │         │
+    NORMAL 模式    STARVATION 模式
+    ┌─────────┐    ┌─────────┐
+    │ earn()  │    │ earn()  │ ← 只赚不花
+    │ spend() │    │  skip   │ ← 跳过支出
+    │ audit() │    │ audit() │
+    │ verify()│    │ verify()│
+    │ report()│    │ report()│
+    └─────────┘    └─────────┘
+```
+
 ## 单元测试要点
 
 ```typescript
-describe('Agent', () => {
-  it('should initialize all modules', async () => {
-    const agent = new Agent();
-    await agent.initialize(mockConfig);
-    
-    const state = agent.getState();
-    expect(state.initialized).toBe(true);
-    expect(state.address).toMatch(/^0x/);
-  });
-
-  it('should run a single cycle', async () => {
-    const agent = new Agent();
-    await agent.initialize(mockConfig);
-    
+describe('Agent v2', () => {
+  it('should complete a full 6-phase cycle', async () => {
     const result = await agent.runCycle();
-    expect(result.cycleNumber).toBe(1);
-    expect(result.duration).toBeGreaterThan(0);
+    expect(result.success).toBe(true);
+    expect(result.phases.healthCheck).toBeTruthy();
+    expect(result.phases.report).toBeTruthy();
   });
 
-  it('should calculate net profit correctly', async () => {
-    const agent = new Agent();
-    await agent.initialize(mockConfig);
-    
+  it('should skip spending in STARVATION mode', async () => {
+    // 模拟低余额
+    agent['state'].mode = 'STARVATION';
+    const result = await agent.runCycle();
+    expect(result.phases.spend).toBeNull();
+  });
+
+  it('should NOT have while(running) loop', () => {
+    const source = readFileSync('src/agent.ts', 'utf-8');
+    expect(source).not.toContain('while(running)');
+    expect(source).not.toContain('while (running)');
+    expect(source).not.toContain('while(this.running)');
+  });
+
+  it('should verify transactions via Browser Tool', async () => {
+    const verifyResult = await agent.verifyOnChain(['TX_DIGEST_1']);
+    expect(verifyResult.details[0].explorerUrl).toContain('suiscan.xyz');
+  });
+
+  it('should increment cycle count', async () => {
+    const before = agent.getState().cycleCount;
     await agent.runCycle();
-    
-    const state = agent.getState();
-    expect(state.netProfit).toBe(
-      state.totalIncome - state.totalExpense
-    );
+    expect(agent.getState().cycleCount).toBe(before + 1);
+  });
+
+  it('should enter ERROR mode after 3 consecutive failures', async () => {
+    agent['state'].consecutiveFailures = 3;
+    const health = await agent.healthCheck();
+    expect(health.recommendedMode).toBe('ERROR');
   });
 });
 ```
 
+## 与其他模块的关系
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                    OpenClaw Cron                              │
+│                  "every: 5m"                                 │
+│                       │                                      │
+│                  ┌────▼────┐                                │
+│                  │  Agent  │ ◄── 本模块（大脑）               │
+│                  └────┬────┘                                │
+│                       │                                      │
+│    ┌──────────────────┼──────────────────┐                   │
+│    │           │             │           │                   │
+│    ▼           ▼             ▼           ▼                   │
+│ Wallet      Earner       Spender     Ledger                 │
+│ (银行)      (赚钱)       (花钱)      (记账)                  │
+│    │           │             │           │                   │
+│    │      BountyBoard    Seal+Walrus   审计包                │
+│    │      (Move合约)     (加密+存储)   (P&L)                 │
+│    │           │             │           │                   │
+│    └───────────┴─────────────┴───────────┘                   │
+│                       │                                      │
+│                   Sui Testnet                                │
+│                       │                                      │
+│              OpenClaw Browser Tool                           │
+│              (Explorer 验证)                                 │
+└──────────────────────────────────────────────────────────────┘
+```
+
 ## 开发优先级
 
-1. **P0 必须**: `initialize()` - 模块初始化
-2. **P0 必须**: `runCycle()` - 核心循环
-3. **P0 必须**: `displayFinalReport()` - Demo 展示
-4. **P1 重要**: `start()`, `stop()` - 生命周期
-5. **P2 可选**: 自动模式循环
+1. **P0 必须**: `initialize()` — 模块组装
+2. **P0 必须**: `runCycle()` — 6 步核心周期
+3. **P0 必须**: `healthCheck()` — 健康检查 + STARVATION 模式
+4. **P1 重要**: `verifyOnChain()` — Browser Tool 验证
+5. **P1 重要**: SKILL.md + Cron 配置
+6. **P2 可选**: 多周期状态持久化
 
 ## 预计开发时间
 
 | 任务 | 时间 |
 |------|------|
-| 模块初始化 | 2小时 |
-| 主循环逻辑 | 3小时 |
-| 状态展示 | 2小时 |
-| 入口文件 | 1小时 |
-| 单元测试 | 2小时 |
-| **总计** | **10小时** |
+| Agent 初始化 + 模块组装 | 2 小时 |
+| `runCycle()` 6 步编排 | 4 小时 |
+| `healthCheck()` + STARVATION 模式 | 2 小时 |
+| Browser Tool 验证 | 3 小时 |
+| SKILL.md + Cron 配置 | 1 小时 |
+| 程序入口 + 错误处理 | 1 小时 |
+| 单元测试 | 2 小时 |
+| **总计** | **15 小时** |

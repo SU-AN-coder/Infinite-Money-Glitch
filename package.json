@@ -1,0 +1,38 @@
+{
+  "name": "infinite-money-glitch",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous economic agent on Sui",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsx src/index.ts",
+    "wallet:demo": "tsx src/index.ts",
+    "earner:demo": "tsx src/index.ts",
+    "spender:demo": "tsx src/index.ts",
+    "ledger:demo": "tsx src/index.ts",
+    "agent:cycle": "tsx src/index.ts",
+    "demo:run": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:e2e": "tsx src/test/e2e.ts",
+    "test:e2e:real": "tsx src/test/e2e.ts --real",
+    "evidence:generate": "tsx src/tools/evidence-cli.ts",
+    "ai-proof": "tsx src/tools/ai-dev-proof.ts",
+    "contract:build": "cd contracts && sui move build",
+    "contract:test": "cd contracts && sui move test",
+    "contract:deploy": "tsx src/tools/deploy-contract.ts"
+  },
+  "dependencies": {
+    "@mysten/seal": "^0.9.6",
+    "@mysten/sui": "^1.37.6",
+    "@mysten/walrus": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

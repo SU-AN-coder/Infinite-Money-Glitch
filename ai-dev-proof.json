@@ -1,0 +1,146 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-20T02:10:52.775Z",
+  "aiAssisted": true,
+  "aiPlatform": "GitHub Copilot",
+  "aiModel": "Claude Opus 4.5",
+  "sourceFiles": [
+    {
+      "path": "contracts/sources/bounty_board_tests.move",
+      "hash": "e09b0e63bb47f0b0f309c5fbd1722892abcbf427d9c341b111e1b1a350527805",
+      "sizeBytes": 9750,
+      "lastModified": "2026-02-20T02:00:48.787Z"
+    },
+    {
+      "path": "contracts/sources/bounty_board.move",
+      "hash": "0dc4ad58ec6bbf2cdec75d74cff1155059db3d356d81395b10beb65846cfe604",
+      "sizeBytes": 10824,
+      "lastModified": "2026-02-20T02:00:48.577Z"
+    },
+    {
+      "path": "package.json",
+      "hash": "e7a6d9907f8a34aeb7bb6e57ecb57c60ec2ef07630ee97567a82ebc5924edce9",
+      "sizeBytes": 1190,
+      "lastModified": "2026-02-20T02:04:51.440Z"
+    },
+    {
+      "path": "README.md",
+      "hash": "5311be813b7b6b8ba81e3a826478523d6afadbf25fac74180323958bda1d5cc1",
+      "sizeBytes": 8923,
+      "lastModified": "2026-02-20T02:07:05.570Z"
+    },
+    {
+      "path": "SKILL.md",
+      "hash": "b39645e4567ea67e3a9fe1f0e04dadd5f877533626750da1aeaae8293fcb6d79",
+      "sizeBytes": 690,
+      "lastModified": "2026-02-20T01:49:10.419Z"
+    },
+    {
+      "path": "src/agent/Agent.ts",
+      "hash": "6787462586f5aecb1d1d08a0f49b265f847edda8185084cd0f26cfa9ee1cc8fe",
+      "sizeBytes": 10563,
+      "lastModified": "2026-02-20T01:49:53.700Z"
+    },
+    {
+      "path": "src/agent/DemoRunner.ts",
+      "hash": "426f797c8578f63de789b6b67590eac259f45843e4c91c138354a9076d456315",
+      "sizeBytes": 1210,
+      "lastModified": "2026-02-20T01:49:53.701Z"
+    },
+    {
+      "path": "src/earn/Earner.ts",
+      "hash": "30ac3604a5bda42f2fdc1d674c89bf3d11098749ecafe819884ea637c6bbc36a",
+      "sizeBytes": 11945,
+      "lastModified": "2026-02-20T01:40:18.513Z"
+    },
+    {
+      "path": "src/evidence/EvidenceCollector.ts",
+      "hash": "6a75b960fa3cff551624e5fce98d9bf4aa825866da74323f48cc56e5149da9cf",
+      "sizeBytes": 13632,
+      "lastModified": "2026-02-20T02:01:51.213Z"
+    },
+    {
+      "path": "src/index.ts",
+      "hash": "b00d645f97f49785cd9253943c2487bccfeee210c37b94e594404396cee3df4c",
+      "sizeBytes": 5454,
+      "lastModified": "2026-02-20T01:49:53.700Z"
+    },
+    {
+      "path": "src/ledger/Ledger.ts",
+      "hash": "e4d49af9a79acabb32e8925ebadec3276d502b5f99a3c309c1b6b37ccf75e404",
+      "sizeBytes": 7553,
+      "lastModified": "2026-02-20T01:49:53.700Z"
+    },
+    {
+      "path": "src/spend/Spender.ts",
+      "hash": "bc578c636c30dcd97cd637d17f406b5e369e0b83c6a4c920e457f4bf73b17b36",
+      "sizeBytes": 9588,
+      "lastModified": "2026-02-20T01:49:53.700Z"
+    },
+    {
+      "path": "src/test/e2e.ts",
+      "hash": "e5f047d12aece401cae896f4147afdd8ae8314ea7773b5a7d036d30d6a20dd01",
+      "sizeBytes": 16507,
+      "lastModified": "2026-02-20T02:10:11.368Z"
+    },
+    {
+      "path": "src/tools/ai-dev-proof.ts",
+      "hash": "ea6c9ac8093f94468ab3953ee0eb5d72530fec018f6b694f7cd5c4f3edaccebe",
+      "sizeBytes": 12824,
+      "lastModified": "2026-02-20T02:04:28.979Z"
+    },
+    {
+      "path": "src/tools/deploy-contract.ts",
+      "hash": "30d31430d6c63263a195f470104d8f37b7134c9b49d0135678805f7771f85d4d",
+      "sizeBytes": 8625,
+      "lastModified": "2026-02-20T02:05:29.063Z"
+    },
+    {
+      "path": "src/tools/evidence-cli.ts",
+      "hash": "6043c1efa98d19d2122d011893a2b701ace089d686703bc6ee6983877561bf7c",
+      "sizeBytes": 8128,
+      "lastModified": "2026-02-20T02:06:14.673Z"
+    },
+    {
+      "path": "src/wallet/WalletManager.ts",
+      "hash": "e7b9671204a6c4d22d6a0b2202c70cab0ee5a1abcff361d3e2a04a8dc9574482",
+      "sizeBytes": 7081,
+      "lastModified": "2026-02-20T01:35:56.375Z"
+    },
+    {
+      "path": "tsconfig.json",
+      "hash": "578ddcebf8bdf2a62ae7190b111b6da072096428d83c8434ef838b2d051f0c71",
+      "sizeBytes": 388,
+      "lastModified": "2026-02-20T01:35:56.375Z"
+    }
+  ],
+  "totalSourceFiles": 18,
+  "totalSourceBytes": 144875,
+  "gitCommits": [
+    {
+      "hash": "b47e850bdbd8aff700072bbcd7106708b9705e4d",
+      "author": "SU_AN",
+      "date": "2026-02-19T20:55:44+08:00",
+      "message": "嵌入open claw"
+    },
+    {
+      "hash": "e26bed7925f1487591b96619a3d688727aff5da9",
+      "author": "SU_AN",
+      "date": "2026-02-19T16:27:16+08:00",
+      "message": "完整架构"
+    }
+  ],
+  "timeline": {
+    "firstCommit": "2026-02-19T16:27:16+08:00",
+    "lastCommit": "2026-02-19T20:55:44+08:00",
+    "totalCommits": 2,
+    "activeeDays": 1
+  },
+  "hackathon": {
+    "name": "OpenClaw x Sui Hackathon",
+    "track": "Track 2: Local God Mode - Infinite Money Glitch",
+    "submissionDeadline": "2026-03-03T23:59:59Z"
+  },
+  "checksum": "efc4d0f1045c22b30e441aac604608d6ee965248ab9343dfa35e44e2b64508fb"
+}

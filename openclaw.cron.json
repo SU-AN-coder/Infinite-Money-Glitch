@@ -1,0 +1,16 @@
+{
+  "cron": {
+    "jobs": [
+      {
+        "id": "img-heartbeat",
+        "schedule": {
+          "every": "5m"
+        },
+        "skill": "infinite-money-glitch",
+        "prompt": "Run one economic cycle: check health, earn bounty, spend on protection, audit, verify on explorer, report P&L",
+        "session": "main",
+        "delivery": "announce"
+      }
+    ]
+  }
+}

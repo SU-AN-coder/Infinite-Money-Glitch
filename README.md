@@ -20,6 +20,11 @@ Infinite Money Glitch: Agent 自主决策 → Agent 自己赚钱 → Agent 自�
 
 ```
 infinite-money-glitch/
+├── contracts/                     # Sui Move 智能合约
+│   ├── Move.toml                  # Move 包配置
+│   └── sources/
+│       ├── bounty_board.move      # 赏金板合约
+│       └── bounty_board_tests.move # 合约测试
 ├── docs/                          # 技术文档
 │   ├── 01-wallet-module.md        # 钱包模块技术方案
 │   ├── 02-earner-module.md        # 收入模块技术方案
@@ -37,12 +42,21 @@ infinite-money-glitch/
 │   ├── ledger/
 │   │   └── Ledger.ts              # 损益账本
 │   ├── agent/
-│   │   └── Agent.ts               # 主循环
-│   ├── utils/
-│   │   └── logger.ts              # 日志工具
+│   │   ├── Agent.ts               # 主循环
+│   │   └── DemoRunner.ts          # Demo 流程
+│   ├── evidence/
+│   │   └── EvidenceCollector.ts   # 链上证据收集
+│   ├── test/
+│   │   └── e2e.ts                 # 端到端测试
+│   ├── tools/
+│   │   ├── ai-dev-proof.ts        # AI 开发证明生成
+│   │   ├── deploy-contract.ts     # 合约部署脚本
+│   │   └── evidence-cli.ts        # 证据生成 CLI
 │   └── index.ts                   # 入口
 ├── package.json
 ├── tsconfig.json
+├── SKILL.md                       # OpenClaw 技能清单
+├── openclaw.cron.json             # Cron 任务配置
 └── README.md
 ```
 
@@ -69,11 +83,72 @@ npm install
 cp .env.example .env
 # 编辑 .env 设置私钥或让 Agent 自动生成
 
-# 3. 运行 Agent
+# 3. 部署合约（需要 Sui CLI）
+npm run contract:build         # 构建 Move 合约
+npm run contract:test          # 运行合约测试
+npm run contract:deploy        # 部署到 testnet
+
+# 4. 运行端到端测试
+npm run test:e2e               # Mock 模式
+npm run test:e2e:real          # 真实模式（需要 OpenClaw Gateway）
+
+# 5. 模块演示（可选，按需打开 .env 中 RUN_* 开关）
 npm run start
 
-# 4. 观看 Agent 自己赚钱、自己花钱
+# 6. 单次 Agent 6 阶段周期（模块 05）
+# 设置 RUN_AGENT=true
+npm run agent:cycle
+
+# 7. 90 秒 Demo 流程（模块 06）
+# 设置 RUN_DEMO=true
+npm run demo:run
+
+# 8. 生成证据和开发证明（Hackathon 提交用）
+npm run evidence:generate      # 生成链上证据报告
+npm run evidence:generate -- --demo  # Demo 数据
+npm run ai-proof               # 生成 AI 开发证明
 ```
+
+## 合约部署
+
+BountyBoard 是 Agent 的收入来源合约，需要先部署：
+
+```bash
+# 确保 Sui CLI 已安装
+sui --version
+
+# 配置 testnet 网络
+sui client switch --env testnet
+
+# 获取测试 SUI（Discord faucet）
+# https://discord.com/channels/916379725201563759/
+
+# 部署合约
+npm run contract:deploy
+
+# 成功后会输出：
+# BOUNTY_PACKAGE_ID=0x...
+# BOUNTY_BOARD_ID=0x...
+# 将这些值添加到 .env 文件
+```
+
+## Demo 运行建议
+
+在 `.env` 中至少配置以下变量后再运行：
+
+- `SUI_PRIVATE_KEY`
+- `BOUNTY_PACKAGE_ID`
+- `BOUNTY_BOARD_ID`
+- `SEAL_PACKAGE_ID`
+- `OPENCLAW_TOKEN`
+
+推荐演示开关：
+
+- `RUN_DEMO=true`
+- `RUN_AGENT=false`
+- `RUN_EARNER=false`
+- `RUN_SPENDER=false`
+- `RUN_LEDGER=false`
 
 ## 模块文档
 
@@ -137,8 +212,36 @@ npm run start
 
 MIT
 
-## 提交信息
+## Hackathon 提交准备
 
-- **赛道**: Track 2 - Local God Mode
-- **项目名**: Infinite Money Glitch
+### 1. 链上证据收集
+
+```bash
+# 运行几个周期后生成证据
+npm run evidence:generate
+
+# 输出文件：
+# - evidence/evidence-testnet-*.json     # 原始数据
+# - evidence/evidence-report-*.md        # Markdown 报告
+```
+
+### 2. AI 开发证明（必须）
+
+```bash
+npm run ai-proof
+
+# 输出文件：
+# - ai-dev-proof.json    # 机器可读证明
+# - ai-dev-proof.md      # 人类可读证明
+```
+
+### 3. 提交清单
+
+- [ ] 代码仓库 (GitHub)
+- [ ] 90 秒 Demo 视频
+- [ ] 合约部署记录 (deployment.json)
+- [ ] 链上证据报告 (evidence/*.md)
+- [ ] AI 开发证明 (ai-dev-proof.md)
+- [ ] README 项目说明
+
 - **Slogan**: "The Autonomous Insurance Agent for Your Digital Life."

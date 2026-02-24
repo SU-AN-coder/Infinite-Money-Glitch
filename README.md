@@ -36,7 +36,13 @@ infinite-money-glitch/
 │   ├── wallet/
 │   │   └── WalletManager.ts       # 钱包管理
 │   ├── earn/
-│   │   └── Earner.ts              # 赚钱逻辑
+│   │   ├── Earner.ts              # 赚钱逻辑（当前：bounty_board claim）
+│   │   ├── extensions/
+│   │   │   └── OpportunityExpansion.ts # 收入扩展路线图
+│   │   └── modes/                 # 预留：可插拔赚钱模式（空投/套利等）
+│   │       ├── EarnMode.ts
+│   │       ├── AirdropMode.ts
+│   │       └── ArbitrageMode.ts
 │   ├── spend/
 │   │   └── Spender.ts             # 花钱逻辑
 │   ├── ledger/
@@ -83,17 +89,25 @@ npm install
 cp .env.example .env
 # 编辑 .env 设置私钥或让 Agent 自动生成
 
+# 2.1 首次先跑环境预检（会检查：Sui 余额 / WAL 余额 / OpenClaw / 合约配置等）
+npm run preflight
+
 # 3. 部署合约（需要 Sui CLI）
 npm run contract:build         # 构建 Move 合约
 npm run contract:test          # 运行合约测试
 npm run contract:deploy        # 部署到 testnet
 
 # 4. 运行端到端测试
-npm run test:e2e               # Mock 模式
-npm run test:e2e:real          # 真实模式（需要 OpenClaw Gateway）
+npm run test:e2e               # Mock 模式（不验证链上/Walrus/OpenClaw）
+npm run test:e2e:real          # 真实模式（会进行真实 Seal+Walrus 写入）
 
-# 5. 模块演示（可选，按需打开 .env 中 RUN_* 开关）
-npm run start
+# 5. 跑一次真实闭环（推荐给评审/复验）
+#    方式 A：Demo 输出（更适合现场讲解，默认不落 evidence 文件）
+#      RUN_DEMO=true npm run start
+#
+#    方式 B：Agent cycle + 落地链上证据（推荐）
+#      RUN_AGENT=true COLLECT_EVIDENCE=true npm run start
+#      npm run evidence:generate
 
 # 6. 单次 Agent 6 阶段周期（模块 05）
 # 设置 RUN_AGENT=true
@@ -107,6 +121,44 @@ npm run demo:run
 npm run evidence:generate      # 生成链上证据报告
 npm run evidence:generate -- --demo  # Demo 数据
 npm run ai-proof               # 生成 AI 开发证明
+```
+
+## 可复验（REAL）最短路径（2026-02-24）
+
+目标：在 evidence 里同时出现 **claim txDigest（赚钱）** + **spend txDigest（花钱）** + **walrus blobId（存证）** + **deployTxDigest（可复验部署）**。
+
+```bash
+npm install
+
+# 1) 先把 .env 配好：至少需要
+#    SUI_PRIVATE_KEY / BOUNTY_PACKAGE_ID / BOUNTY_BOARD_ID / SEAL_PACKAGE_ID / OPENCLAW_TOKEN
+npm run preflight
+
+# 2) 真实集成测试（会做 Seal+Walrus 真写入）
+npm run test:e2e:real
+
+# 3) 跑一次真实闭环并落证据
+#    （若没有可领 bounty，建议打开自动 seed 确保 earned>0）
+#    EARNER_AUTO_SEED_BOUNTY=true
+RUN_AGENT=true COLLECT_EVIDENCE=true npm run start
+
+# 4) 生成/刷新证据报告（会读取 ledger.json 或最新 evidence 包）
+npm run evidence:generate
+
+# 5) 生成 AI 开发证明
+npm run ai-proof
+```
+
+产物位置：
+- `evidence/evidence-testnet-*.json`：机器可读证据包（含 txDigest/blobId/收益汇总）
+- `evidence/evidence-report-*.md`：人类可读报告
+- `deployment.json`：合约部署信息（含 deployTxDigest）
+- `ai-dev-proof.json` / `ai-dev-proof.md`：AI 开发证明
+
+如果 `deployment.json` 里 `deployTxDigest` 为空/unknown，可以跑一次同步：
+
+```bash
+npm run deployment:sync
 ```
 
 ## 合约部署
@@ -142,6 +194,14 @@ npm run contract:deploy
 - `SEAL_PACKAGE_ID`
 - `OPENCLAW_TOKEN`
 
+变量获取方式（最常用）：
+
+- `SUI_PRIVATE_KEY`：从你的 Sui 钱包导出私钥（Base64），仅本地保存。
+- `OPENCLAW_TOKEN`：OpenClaw Gateway 的访问令牌（你本地服务配置中生成）。
+- `BOUNTY_PACKAGE_ID`、`BOUNTY_BOARD_ID`：执行 `npm run contract:deploy` 后终端会输出。
+- `SEAL_PACKAGE_ID`：使用你目标网络的 Seal 包 ID（测试网可用官方/社区示例）。
+- `SEAL_KEY_SERVERS`：可选；不填会走项目默认配置，真实环境建议显式配置。
+
 推荐演示开关：
 
 - `RUN_DEMO=true`
@@ -149,6 +209,9 @@ npm run contract:deploy
 - `RUN_EARNER=false`
 - `RUN_SPENDER=false`
 - `RUN_LEDGER=false`
+
+可选（建议真实闭环时开启）：
+- `EARNER_AUTO_SEED_BOUNTY=true`：当没有可领 bounty 时，自动 `deposit + post_bounty + claim` 产出 earned>0
 
 ## 模块文档
 
@@ -207,6 +270,16 @@ npm run contract:deploy
 | Week 2 Day 3-4 | 2 | 端到端测试 + Bug修复 |
 | Week 2 Day 5 | 1 | Demo 脚本 + 录制 |
 | Week 2 Day 6-7 | 2 | 提交材料 + 备用方案 |
+
+## 扩展赚钱模式（空投/套利等）
+
+当前可复验主路径是 `bounty_board`（链上发 bounty → OpenClaw 执行 → `claim_reward`）。为了后续扩展“空投/套利/多板轮询”等更强叙事，仓库里预留了赚钱模式骨架：
+
+- `src/earn/modes/EarnMode.ts`：统一接口（启用开关 + run 结果结构）
+- `src/earn/modes/AirdropMode.ts`：空投/积分占位（默认关闭）
+- `src/earn/modes/ArbitrageMode.ts`：套利占位（默认关闭）
+
+占位模式默认不会触发任何钱包动作；只有显式打开环境变量才会尝试运行（例如 `EARN_MODE_AIRDROP=true`）。
 
 ## License
 

@@ -1,3 +1,4 @@
+import '../shared/loadEnv.js';
 /**
  * AI Development Proof Generator
  * 
@@ -108,8 +109,8 @@ export class AIDevProofGenerator {
       generatedAt: new Date().toISOString(),
       
       aiAssisted: true,
-      aiPlatform: 'GitHub Copilot',
-      aiModel: 'Claude Opus 4.5',
+      aiPlatform: process.env.AI_PLATFORM || 'GitHub Copilot',
+      aiModel: process.env.AI_MODEL || 'GPT-5.3-Codex',
       
       sourceFiles,
       totalSourceFiles: sourceFiles.length,

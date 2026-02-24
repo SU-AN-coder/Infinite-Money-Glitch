@@ -14,10 +14,13 @@
     "agent:cycle": "tsx src/index.ts",
     "demo:run": "tsx src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run -s typecheck && npm run -s contract:test && npm run -s test:e2e",
     "test:e2e": "tsx src/test/e2e.ts",
     "test:e2e:real": "tsx src/test/e2e.ts --real",
+    "preflight": "tsx src/tools/preflight.ts",
     "evidence:generate": "tsx src/tools/evidence-cli.ts",
     "ai-proof": "tsx src/tools/ai-dev-proof.ts",
+    "deployment:sync": "tsx src/tools/sync-deployment.ts",
     "contract:build": "cd contracts && sui move build",
     "contract:test": "cd contracts && sui move test",
     "contract:deploy": "tsx src/tools/deploy-contract.ts"

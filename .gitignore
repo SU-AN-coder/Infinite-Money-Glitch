@@ -12,6 +12,8 @@ deployment.json
 evidence/
 ai-dev-proof.json
 ai-dev-proof.md
+audit-log.json
+ledger.json
 
 # Logs
 npm-debug.log*
@@ -33,6 +35,11 @@ test-evidence/
 
 # Sui CLI
 .sui/
+
+# Move build artifacts
+contracts/build/
+contracts/Move.lock
+contracts/Published.toml
 
 # Misc
 *.log

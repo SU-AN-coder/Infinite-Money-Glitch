@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
+import { decodeSuiPrivateKey } from '@mysten/sui/cryptography';
 
 export type WalletNetwork = 'testnet' | 'mainnet' | 'devnet';
 
@@ -41,6 +42,15 @@ export class WalletManager {
     return process.env.OPENCLAW_BASE_URL || 'http://127.0.0.1:18789';
   }
 
+  private hasUsableToken(value: string | undefined): boolean {
+    if (!value) {
+      return false;
+    }
+
+    const token = value.trim();
+    return !!token && !token.includes('<') && !token.includes('YOUR_');
+  }
+
   async initialize(config: WalletConfig): Promise<void> {
     this.config = config;
     this.client = new SuiClient({
@@ -49,19 +59,37 @@ export class WalletManager {
 
     const envPrivateKey = process.env.SUI_PRIVATE_KEY;
 
-    if (envPrivateKey) {
-      const secret = Buffer.from(envPrivateKey, 'base64');
+    const configuredPrivateKey = envPrivateKey?.trim();
+    const hasUsablePrivateKey =
+      !!configuredPrivateKey &&
+      !configuredPrivateKey.includes('<') &&
+      !configuredPrivateKey.includes('YOUR_');
+
+    if (hasUsablePrivateKey) {
+      const privateKey = configuredPrivateKey;
+
+      if (privateKey.startsWith('suiprivkey')) {
+        const decoded = decodeSuiPrivateKey(privateKey);
+        this.keypair = Ed25519Keypair.fromSecretKey(decoded.secretKey);
+        return;
+      }
+
+      const secret = Buffer.from(privateKey, 'base64');
       this.keypair = Ed25519Keypair.fromSecretKey(new Uint8Array(secret));
       return;
     }
 
     if (config.keySource === 'generate') {
       this.keypair = new Ed25519Keypair();
-      await this.storeKeySecurely();
+      if (this.hasUsableToken(process.env.OPENCLAW_TOKEN)) {
+        await this.storeKeySecurely();
+      } else {
+        console.warn('OPENCLAW_TOKEN not set, generated wallet key is kept in-memory only for this session.');
+      }
       return;
     }
 
-    throw new Error('No wallet found. Set SUI_PRIVATE_KEY or use keySource="generate".');
+    throw new Error('No usable wallet key found. Set a valid SUI_PRIVATE_KEY (suiprivkey... or Base64) or use keySource="generate".');
   }
 
   getAddress(): string {
@@ -206,7 +234,7 @@ export class WalletManager {
   private async execViaOpenClaw(command: string): Promise<string> {
     const token = process.env.OPENCLAW_TOKEN;
 
-    if (!token) {
+    if (!this.hasUsableToken(token)) {
       throw new Error('OPENCLAW_TOKEN is required for secure key storage');
     }
 

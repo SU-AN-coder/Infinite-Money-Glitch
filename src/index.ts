@@ -1,9 +1,12 @@
+import './shared/loadEnv.js';
 import { WalletManager, type WalletConfig } from './wallet/WalletManager.js';
 import { Earner, type EarnerConfig } from './earn/Earner.js';
 import { Spender, type SpenderConfig } from './spend/Spender.js';
 import { Ledger } from './ledger/Ledger.js';
 import { Agent, type AgentConfig } from './agent/Agent.js';
 import { runDemo } from './agent/DemoRunner.js';
+import { EvidenceCollector } from './evidence/EvidenceCollector.js';
+import { getRevenueRoadmapSummary } from './earn/extensions/OpportunityExpansion.js';
 
 async function main(): Promise<void> {
   if (process.env.RUN_DEMO === 'true') {
@@ -21,6 +24,7 @@ async function main(): Promise<void> {
 
 async function runAgentMode(): Promise<void> {
   const config = getAgentConfig();
+  console.log(`📈 ${getRevenueRoadmapSummary()}`);
 
   const agent = new Agent(config);
   await agent.initialize();
@@ -42,6 +46,10 @@ async function runAgentMode(): Promise<void> {
       2
     )
   );
+
+  if (process.env.COLLECT_EVIDENCE === 'true') {
+    await persistCycleEvidence(config, result);
+  }
 }
 
 async function runDemoMode(): Promise<void> {
@@ -73,6 +81,113 @@ function getAgentConfig(): AgentConfig {
     openclawBaseUrl: process.env.OPENCLAW_BASE_URL || 'http://127.0.0.1:18789',
     cycleIntervalMinutes: Number(process.env.AGENT_CYCLE_MINUTES || '5')
   };
+}
+
+async function persistCycleEvidence(config: AgentConfig, result: Awaited<ReturnType<Agent['runCycle']>>): Promise<void> {
+  const agentAddress = await resolveAgentAddress(config);
+  const collector = new EvidenceCollector({
+    network: config.network,
+    agentAddress,
+    outputDir: process.env.EVIDENCE_OUTPUT_DIR || './evidence'
+  });
+
+  const packageId = process.env.BOUNTY_PACKAGE_ID?.trim();
+  const boardObjectId = process.env.BOUNTY_BOARD_ID?.trim();
+  if (packageId && packageId !== '0x' && boardObjectId && boardObjectId !== '0x') {
+    const deployTxDigest = process.env.BOUNTY_DEPLOY_TX_DIGEST?.trim() || 'unknown';
+    collector.recordDeployment({
+      packageId,
+      boardObjectId,
+      deployTxDigest,
+      network: config.network,
+      timestamp: new Date().toISOString(),
+      explorerUrl:
+        deployTxDigest !== 'unknown'
+          ? `https://suiscan.xyz/${config.network}/tx/${deployTxDigest}`
+          : `https://suiscan.xyz/${config.network}/object/${boardObjectId}`
+    });
+  }
+
+  if (result.phases.earn?.claims) {
+    for (const claim of result.phases.earn.claims) {
+      collector.recordTransaction({
+        type: 'claim',
+        txDigest: claim.txDigest || `missing-claim-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        network: config.network,
+        description: `Bounty #${claim.bountyId} claim`,
+        status: claim.success ? 'success' : 'failure'
+      });
+    }
+  }
+
+  if (result.phases.spend?.protections) {
+    for (const protection of result.phases.spend.protections) {
+      collector.recordTransaction({
+        type: 'spend',
+        txDigest: protection.upload?.txDigest || `missing-spend-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        network: config.network,
+        description: `Protect ${protection.label}`,
+        status: protection.success ? 'success' : 'failure'
+      });
+
+      if (protection.upload?.blobId) {
+        collector.recordWalrusBlob({
+          type: 'upload',
+          blobId: protection.upload.blobId,
+          timestamp: new Date().toISOString(),
+          dataType: protection.label,
+          sizeBytes: protection.upload.size,
+          encryptionUsed: true,
+          sealPolicyId: protection.encryption?.sealPolicyId
+        });
+      }
+    }
+  }
+
+  const totalEarned = result.phases.earn?.totalEarned || 0n;
+  const totalSpent = result.phases.spend?.totalGasSpent || 0n;
+  const tasksCompleted = result.phases.earn?.tasksCompleted || 0;
+  const protections = result.phases.spend?.protections || [];
+  const sealAttempts = protections.length;
+  const sealFailures = protections.filter((item) => !item.success).length;
+  const walrusAttempts = protections.length;
+  const walrusFailures = protections.filter((item) => !item.upload?.blobId).length;
+
+  const pkg = await collector.generatePackage({
+    totalEarned,
+    totalSpent,
+    tasksCompleted,
+    sealAttempts,
+    sealFailures,
+    walrusAttempts,
+    walrusFailures
+  });
+
+  const jsonPath = await collector.savePackage(pkg);
+  await collector.generateMarkdownReport(pkg);
+  console.log(`Evidence package generated: ${jsonPath}`);
+}
+
+async function resolveAgentAddress(config: AgentConfig): Promise<string> {
+  const configured = process.env.AGENT_ADDRESS?.trim();
+  if (configured && configured !== '0x') {
+    return configured;
+  }
+
+  try {
+    const wallet = new WalletManager();
+    await wallet.initialize({
+      keySource: config.keySource,
+      network: config.network,
+      bountyPackageId: config.bountyPackageId,
+      bountyBoardId: config.bountyBoardId
+    });
+    return wallet.getAddress();
+  } catch {
+    return '0x';
+  }
 }
 
 async function runModuleDemos(): Promise<void> {

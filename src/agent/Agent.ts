@@ -154,25 +154,35 @@ export class Agent {
       phases.healthCheck = await this.healthCheck();
       this.state.mode = phases.healthCheck.recommendedMode;
 
-      if (!phases.healthCheck.bountyBoardReachable) {
-        throw new Error('BountyBoard contract unreachable');
-      }
-
-      phases.earn = await this.earner.earn();
-      for (const claim of phases.earn.claims) {
-        if (claim.success) {
-          this.ledger.recordEarning(claim);
-          this.state.totalEarned += claim.rewardAmount;
-        }
-      }
-
-      if (this.state.mode !== 'STARVATION') {
-        phases.spend = await this.spender.spend();
-        for (const protection of phases.spend.protections) {
-          if (protection.success) {
-            this.ledger.recordSpending(protection);
-            this.state.totalSpent += protection.gasSpent;
+      // Earn phase: graceful degradation if board unreachable
+      if (phases.healthCheck.bountyBoardReachable) {
+        try {
+          phases.earn = await this.earner.earn();
+          for (const claim of phases.earn.claims) {
+            if (claim.success) {
+              this.ledger.recordEarning(claim);
+              this.state.totalEarned += claim.rewardAmount;
+            }
           }
+        } catch (earnErr) {
+          console.warn('⚠️ Earn phase failed:', earnErr instanceof Error ? earnErr.message : earnErr);
+        }
+      } else {
+        console.warn('⚠️ BountyBoard unreachable, skipping earn phase');
+      }
+
+      // Spend phase: graceful degradation
+      if (this.state.mode !== 'STARVATION') {
+        try {
+          phases.spend = await this.spender.spend();
+          for (const protection of phases.spend.protections) {
+            if (protection.success) {
+              this.ledger.recordSpending(protection);
+              this.state.totalSpent += protection.gasSpent;
+            }
+          }
+        } catch (spendErr) {
+          console.warn('⚠️ Spend phase failed:', spendErr instanceof Error ? spendErr.message : spendErr);
         }
       }
 

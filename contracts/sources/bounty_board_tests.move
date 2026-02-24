@@ -10,6 +10,8 @@ module bounty_board::bounty_board_tests {
     const OWNER: address = @0xCAFE;
     const AGENT: address = @0xBEEF;
     const REWARD_AMOUNT: u64 = 100_000_000; // 0.1 SUI
+    const E_NOT_OWNER: u64 = 0;
+    const E_BOUNTY_NOT_ACTIVE: u64 = 1;
 
     fun setup_test(): Scenario {
         ts::begin(OWNER)
@@ -188,7 +190,7 @@ module bounty_board::bounty_board_tests {
     }
 
     #[test]
-    #[expected_failure(abort_code = bounty_board::bounty_board::E_NOT_OWNER)]
+    #[expected_failure(abort_code = E_NOT_OWNER, location = bounty_board)]
     fun test_post_bounty_not_owner() {
         let mut scenario = setup_test();
 
@@ -224,7 +226,7 @@ module bounty_board::bounty_board_tests {
     }
 
     #[test]
-    #[expected_failure(abort_code = bounty_board::bounty_board::E_BOUNTY_NOT_ACTIVE)]
+    #[expected_failure(abort_code = E_BOUNTY_NOT_ACTIVE, location = bounty_board)]
     fun test_double_claim() {
         let mut scenario = setup_test();
 

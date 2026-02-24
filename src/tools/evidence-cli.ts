@@ -1,3 +1,4 @@
+import '../shared/loadEnv.js';
 /**
  * Evidence CLI - Generate and manage on-chain evidence
  * 
@@ -8,7 +9,8 @@
 
 import { EvidenceCollector, EvidencePackage } from '../evidence/EvidenceCollector.js';
 import { Ledger } from '../ledger/Ledger.js';
-import { writeFile, readFile, mkdir } from 'node:fs/promises';
+import { WalletManager } from '../wallet/WalletManager.js';
+import { readFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -19,7 +21,7 @@ import { join } from 'node:path';
 const isDemoMode = process.argv.includes('--demo');
 const network = (process.env.SUI_NETWORK as 'testnet' | 'devnet' | 'mainnet') || 'testnet';
 const outputDir = process.env.EVIDENCE_OUTPUT_DIR || './evidence';
-const agentAddress = process.env.AGENT_ADDRESS || '0x_demo_agent_address';
+const configuredAgentAddress = process.env.AGENT_ADDRESS || '';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // HELPERS
@@ -32,6 +34,63 @@ function log(emoji: string, message: string): void {
 async function ensureOutputDir(): Promise<void> {
   if (!existsSync(outputDir)) {
     await mkdir(outputDir, { recursive: true });
+  }
+}
+
+function safeBigInt(value: unknown): bigint {
+  if (typeof value === 'bigint') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return BigInt(Math.trunc(value));
+  }
+  if (typeof value === 'string') {
+    try {
+      return BigInt(value);
+    } catch {
+      return 0n;
+    }
+  }
+  return 0n;
+}
+
+async function findLatestEvidencePackage(): Promise<string | null> {
+  if (!existsSync(outputDir)) {
+    return null;
+  }
+
+  const files = await readdir(outputDir);
+  const candidates = files
+    .filter((name) => name.startsWith(`evidence-${network}-`) && name.endsWith('.json'))
+    .map((name) => ({
+      name,
+      path: join(outputDir, name)
+    }))
+    .sort((left, right) => right.name.localeCompare(left.name));
+
+  return candidates.length > 0 ? candidates[0].path : null;
+}
+
+async function resolveAgentAddress(): Promise<string> {
+  if (isDemoMode) {
+    return configuredAgentAddress || '0x_demo_agent_address';
+  }
+
+  if (configuredAgentAddress && configuredAgentAddress.trim() !== '0x') {
+    return configuredAgentAddress.trim();
+  }
+
+  try {
+    const wallet = new WalletManager();
+    await wallet.initialize({
+      keySource: (process.env.WALLET_KEY_SOURCE as 'env' | 'generate') || 'env',
+      network,
+      bountyPackageId: process.env.BOUNTY_PACKAGE_ID || '0x',
+      bountyBoardId: process.env.BOUNTY_BOARD_ID || '0x'
+    });
+    return wallet.getAddress();
+  } catch {
+    return '0x_unknown';
   }
 }
 
@@ -104,6 +163,8 @@ async function main(): Promise<void> {
 
   await ensureOutputDir();
 
+  const agentAddress = await resolveAgentAddress();
+
   const collector = new EvidenceCollector({
     network,
     agentAddress,
@@ -114,6 +175,10 @@ async function main(): Promise<void> {
     totalEarned: 0n,
     totalSpent: 0n,
     tasksCompleted: 0,
+    sealAttempts: 0,
+    sealFailures: 0,
+    walrusAttempts: 0,
+    walrusFailures: 0,
   };
 
   if (isDemoMode) {
@@ -123,6 +188,10 @@ async function main(): Promise<void> {
       totalEarned: 1500000000n, // 1.5 SUI
       totalSpent: 150000000n,   // 0.15 SUI
       tasksCompleted: 3,
+      sealAttempts: 2,
+      sealFailures: 0,
+      walrusAttempts: 2,
+      walrusFailures: 0,
     };
   } else {
     // Try to load from existing ledger file
@@ -151,7 +220,80 @@ async function main(): Promise<void> {
       }
       log('✅', `Loaded ${ledgerData.entries?.length || 0} entries`);
     } else {
-      log('⚠️', 'No ledger.json found. Run with --demo for sample data.');
+      const latestEvidencePath = await findLatestEvidencePackage();
+      if (latestEvidencePath) {
+        log('📂', `Loading latest evidence package: ${latestEvidencePath}`);
+        await collector.loadFromFile(latestEvidencePath);
+
+        const previous = JSON.parse(await readFile(latestEvidencePath, 'utf-8')) as EvidencePackage;
+        financials = {
+          totalEarned: safeBigInt(previous.summary.totalEarned),
+          totalSpent: safeBigInt(previous.summary.totalSpent),
+          tasksCompleted: previous.summary.tasksCompleted || 0,
+          sealAttempts: previous.summary.sealAttempts || 0,
+          sealFailures: previous.summary.sealFailures || 0,
+          walrusAttempts: previous.summary.walrusAttempts || 0,
+          walrusFailures: previous.summary.walrusFailures || 0,
+        };
+
+        if (previous.contract) {
+          collector.recordDeployment(previous.contract);
+        }
+      } else {
+        log('⚠️', 'No ledger.json or prior evidence package found. Run npm run start first, or use --demo.');
+      }
+    }
+
+    const deploymentPath = join(process.cwd(), 'deployment.json');
+    const existingContract = collector.getContract();
+    const shouldOverrideUnknown =
+      !!existingContract &&
+      (!existingContract.deployTxDigest || existingContract.deployTxDigest === 'unknown');
+
+    if (existsSync(deploymentPath) && (!existingContract || shouldOverrideUnknown)) {
+      try {
+        const deployment = JSON.parse(await readFile(deploymentPath, 'utf-8')) as {
+          success?: boolean;
+          network?: string;
+          packageId?: string;
+          boardObjectId?: string;
+          deployTxDigest?: string;
+          timestamp?: string;
+          explorerUrl?: string;
+        };
+
+        if (deployment.success && deployment.packageId && deployment.boardObjectId && deployment.deployTxDigest) {
+          collector.recordDeployment({
+            packageId: deployment.packageId,
+            boardObjectId: deployment.boardObjectId,
+            deployTxDigest: deployment.deployTxDigest,
+            network: (deployment.network as 'testnet' | 'mainnet' | 'devnet' | 'localnet') || (network as 'testnet' | 'mainnet' | 'devnet' | 'localnet'),
+            timestamp: deployment.timestamp || new Date().toISOString(),
+            explorerUrl: deployment.explorerUrl || `https://suiscan.xyz/${network}/tx/${deployment.deployTxDigest}`,
+          });
+        }
+      } catch {
+        // ignore malformed deployment metadata
+      }
+    }
+
+    if (!collector.getContract()) {
+      const packageId = process.env.BOUNTY_PACKAGE_ID?.trim();
+      const boardObjectId = process.env.BOUNTY_BOARD_ID?.trim();
+      if (packageId && packageId !== '0x' && boardObjectId && boardObjectId !== '0x') {
+        const deployTxDigest = process.env.BOUNTY_DEPLOY_TX_DIGEST?.trim() || 'unknown';
+        collector.recordDeployment({
+          packageId,
+          boardObjectId,
+          deployTxDigest,
+          network: network as 'testnet' | 'mainnet' | 'devnet' | 'localnet',
+          timestamp: new Date().toISOString(),
+          explorerUrl:
+            deployTxDigest !== 'unknown'
+              ? `https://suiscan.xyz/${network}/tx/${deployTxDigest}`
+              : `https://suiscan.xyz/${network}/object/${boardObjectId}`
+        });
+      }
     }
   }
 

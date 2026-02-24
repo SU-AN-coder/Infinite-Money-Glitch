@@ -70,6 +70,10 @@ export interface EvidencePackage {
     tasksCompleted: number;
     blobsUploaded: number;
     totalGasUsed: string;
+    sealAttempts: number;
+    sealFailures: number;
+    walrusAttempts: number;
+    walrusFailures: number;
   };
   
   // Cryptographic proof
@@ -141,13 +145,17 @@ export class EvidenceCollector {
     totalEarned: bigint;
     totalSpent: bigint;
     tasksCompleted: number;
+    sealAttempts?: number;
+    sealFailures?: number;
+    walrusAttempts?: number;
+    walrusFailures?: number;
   }): Promise<EvidencePackage> {
     const totalGasUsed = this.transactions
       .filter(t => t.gasUsed)
       .reduce((sum, t) => sum + BigInt(t.gasUsed || '0'), 0n);
 
     const pkg: EvidencePackage = {
-      projectName: 'Infinite Money Glitch',
+      projectName: process.env.PROJECT_NAME || 'Infinite Money Glitch',
       version: '1.0.0',
       generatedAt: new Date().toISOString(),
       agentAddress: this.agentAddress,
@@ -161,7 +169,11 @@ export class EvidenceCollector {
         netProfit: (financials.totalEarned - financials.totalSpent).toString(),
         tasksCompleted: financials.tasksCompleted,
         blobsUploaded: this.walrusBlobs.length,
-        totalGasUsed: totalGasUsed.toString()
+        totalGasUsed: totalGasUsed.toString(),
+        sealAttempts: financials.sealAttempts ?? 0,
+        sealFailures: financials.sealFailures ?? 0,
+        walrusAttempts: financials.walrusAttempts ?? this.walrusBlobs.length,
+        walrusFailures: financials.walrusFailures ?? 0
       },
       checksum: '' // Will be computed
     };
@@ -211,6 +223,10 @@ export class EvidenceCollector {
       `| Tasks Completed | ${pkg.summary.tasksCompleted} |`,
       `| Blobs Uploaded | ${pkg.summary.blobsUploaded} |`,
       `| Gas Used | ${this.formatSui(pkg.summary.totalGasUsed)} SUI |`,
+      `| Seal Attempts | ${pkg.summary.sealAttempts} |`,
+      `| Seal Failures | ${pkg.summary.sealFailures} |`,
+      `| Walrus Attempts | ${pkg.summary.walrusAttempts} |`,
+      `| Walrus Failures | ${pkg.summary.walrusFailures} |`,
       '',
     ];
 

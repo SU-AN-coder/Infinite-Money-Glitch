@@ -1,3 +1,4 @@
+import '../shared/loadEnv.js';
 /**
  * Deploy BountyBoard Contract to Sui Network
  * 
@@ -118,14 +119,21 @@ async function buildContract(): Promise<void> {
 
 async function deployContract(): Promise<{ packageId: string; digest: string }> {
   log('🚀', `Deploying to ${network}...`);
-  
-  const output = execSync(
-    `${suiCliPath} client publish --gas-budget ${gasBudget} --json`,
-    {
+
+  let output = '';
+  try {
+    output = execSync(`${suiCliPath} client publish --gas-budget ${gasBudget} --json`, {
       cwd: contractsDir,
       encoding: 'utf-8',
-    }
-  );
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+  } catch (error) {
+    const err = error as { stderr?: string; stdout?: string; message?: string };
+    const stderr = (err.stderr || '').trim();
+    const stdout = (err.stdout || '').trim();
+    const message = [stderr, stdout, err.message || 'publish failed'].filter(Boolean).join('\n');
+    throw new Error(`publish failed (gasBudget=${gasBudget}):\n${message}`);
+  }
 
   const result: PublishOutput = JSON.parse(output);
   
@@ -174,11 +182,12 @@ async function createBoard(packageId: string): Promise<string> {
 async function saveDeployment(result: DeploymentResult): Promise<void> {
   await writeFile(deploymentFile, JSON.stringify(result, null, 2), 'utf-8');
   log('💾', `Deployment info saved to: ${deploymentFile}`);
-  
-  // Also update .env hint
-  console.log('\n📝 Add these to your .env file:\n');
-  console.log(`BOUNTY_PACKAGE_ID=${result.packageId}`);
-  console.log(`BOUNTY_BOARD_ID=${result.boardObjectId}`);
+
+  if (result.success && result.packageId && result.boardObjectId) {
+    console.log('\n📝 Add these to your .env file:\n');
+    console.log(`BOUNTY_PACKAGE_ID=${result.packageId}`);
+    console.log(`BOUNTY_BOARD_ID=${result.boardObjectId}`);
+  }
 }
 
 function buildExplorerUrl(digest: string): string {

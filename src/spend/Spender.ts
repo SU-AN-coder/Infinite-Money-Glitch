@@ -169,12 +169,31 @@ export class Spender {
   async uploadToWalrus(ciphertext: Uint8Array): Promise<UploadResult> {
     const start = Date.now();
 
-    const result = await (this.walrusClient as any).writeBlob({
-      blob: ciphertext,
-      deletable: true,
-      epochs: this.walrusEpochs,
-      signer: this.wallet.getKeypair()
-    });
+    const maxRetries = Number(process.env.WALRUS_UPLOAD_RETRIES || '3');
+    let result: any;
+    let lastError: unknown;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        result = await (this.walrusClient as any).writeBlob({
+          blob: ciphertext,
+          deletable: true,
+          epochs: this.walrusEpochs,
+          signer: this.wallet.getKeypair()
+        });
+        lastError = undefined;
+        break;
+      } catch (err) {
+        lastError = err;
+        if (attempt < maxRetries - 1) {
+          const delay = 1500 * (attempt + 1);
+          console.warn(`⚠️ Walrus upload attempt ${attempt + 1}/${maxRetries} failed, retrying in ${delay}ms...`);
+          await new Promise((resolveWait) => setTimeout(resolveWait, delay));
+        }
+      }
+    }
+    if (lastError) {
+      throw lastError;
+    }
 
     const blobId = String(result?.blobId || '');
     let txDigest = String(result?.txDigest || '');

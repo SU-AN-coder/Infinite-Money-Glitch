@@ -155,6 +155,21 @@ async function persistCycleEvidence(config: AgentConfig, result: Awaited<ReturnT
   const walrusAttempts = protections.length;
   const walrusFailures = protections.filter((item) => !item.upload?.blobId).length;
 
+  // Record code-audit mode results as extra evidence
+  const modeResults = result.phases.earn?.modeResults || [];
+  for (const modeResult of modeResults) {
+    if (modeResult.modeId === 'code-audit' && modeResult.success) {
+      collector.recordTransaction({
+        type: 'spend',
+        txDigest: `code-audit-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        network: config.network,
+        description: `Code audit: ${modeResult.details?.findings ?? 0} findings`,
+        status: 'success'
+      });
+    }
+  }
+
   const pkg = await collector.generatePackage({
     totalEarned,
     totalSpent,

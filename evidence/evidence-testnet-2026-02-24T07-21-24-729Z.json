@@ -1,0 +1,54 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T07:21:24.729Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T07:21:24.727Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "Hm7Bg7gs3AU7EasKRgi5oCbnS27h6kewFW5qVCqxEyYr",
+      "timestamp": "2026-02-24T07:21:24.728Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/Hm7Bg7gs3AU7EasKRgi5oCbnS27h6kewFW5qVCqxEyYr"
+    },
+    {
+      "type": "spend",
+      "txDigest": "HST8CbpVL7siiE44c1YnN2HpYjmKQDmPfHedm8bz6esm",
+      "timestamp": "2026-02-24T07:21:24.728Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/HST8CbpVL7siiE44c1YnN2HpYjmKQDmPfHedm8bz6esm"
+    },
+    {
+      "type": "spend",
+      "txDigest": "GUvLCNpQwwpd6FZB1MyPQqFFhbHcBBkEKcXL8qFVrucB",
+      "timestamp": "2026-02-24T07:21:24.728Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/GUvLCNpQwwpd6FZB1MyPQqFFhbHcBBkEKcXL8qFVrucB"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "100000000",
+    "totalSpent": "2039520",
+    "netProfit": "97960480",
+    "tasksCompleted": 1,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "2346813d22fec6f5c7e0924501347dc4aef9642ee9025f90d59176f471485b06"
+}

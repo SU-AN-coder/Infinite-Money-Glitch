@@ -1,0 +1,49 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T08:03:31.727Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T08:03:31.725Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "HMCvzd3ACEw87fwVWU6MhsQ56wfS3uDGFGMe1JYtjhJY",
+      "timestamp": "2026-02-24T08:03:31.726Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/HMCvzd3ACEw87fwVWU6MhsQ56wfS3uDGFGMe1JYtjhJY"
+    },
+    {
+      "type": "spend",
+      "txDigest": "EGbYuSgqGSDeVB8ZtEDvTh3TMJjLX1xFRdjJ3QKfb7Wi",
+      "timestamp": "2026-02-24T08:03:31.726Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/EGbYuSgqGSDeVB8ZtEDvTh3TMJjLX1xFRdjJ3QKfb7Wi"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "2039520",
+    "netProfit": "-2039520",
+    "tasksCompleted": 0,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 2,
+    "walrusAttempts": 2,
+    "walrusFailures": 2
+  },
+  "checksum": "e853b95cd16b81f5f5cc6713b2435f796cb6e8b3e6233d9717a17a6a064e0882"
+}

@@ -10,6 +10,7 @@ export type TransactionSource =
   | 'walrus_storage'
   | 'gas_fee'
   | 'transfer'
+  | 'audit_report'
   | 'other';
 
 export interface LedgerEntry {

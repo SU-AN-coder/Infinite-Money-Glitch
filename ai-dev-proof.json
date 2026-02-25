@@ -1,0 +1,2390 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-25T02:08:28.857Z",
+  "aiAssisted": true,
+  "aiPlatform": "GitHub Copilot",
+  "aiModel": "GPT-5.3-Codex",
+  "sourceFiles": [
+    {
+      "path": "contracts/build/bounty_board/debug_info/bounty_board_tests.json",
+      "hash": "fe346706eb2b42d4810ea1cdc73b3c536068074796400f094fd89aceda6de376",
+      "sizeBytes": 52632,
+      "lastModified": "2026-02-24T10:46:01.995Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/bounty_board.json",
+      "hash": "053861f7ed80c5332497b86dd4ce1c85c1f1829c66894c5b87793b8d5180d918",
+      "sizeBytes": 33921,
+      "lastModified": "2026-02-24T10:46:01.990Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/address.json",
+      "hash": "02e940175b413a14fde166560f119c0fd2a266476527824eb218b436e5ecb9a3",
+      "sizeBytes": 1505,
+      "lastModified": "2026-02-24T10:46:02.005Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/ascii_tests.json",
+      "hash": "ca5387288e2f0977bb66a957ddf2e76fc15c4afdc410e93dbd19c716599a61fd",
+      "sizeBytes": 149280,
+      "lastModified": "2026-02-24T10:46:02.033Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/ascii.json",
+      "hash": "6a7b12bff7afd2f02fd15e5b8f06fb36eee01e0793e153e8c0d19e46f8f9d2c8",
+      "sizeBytes": 61574,
+      "lastModified": "2026-02-24T10:46:02.018Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/bcs_tests.json",
+      "hash": "8c607613ff8fbf76cd2fcd68e48b00bf20779f3467e61296901cd146ec5a2ae5",
+      "sizeBytes": 52053,
+      "lastModified": "2026-02-24T10:46:02.042Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/bcs.json",
+      "hash": "1ddc7c0dc902f6b24953a30c0f0ab3311c1e53d81e6b86b04ec629239c3a2569",
+      "sizeBytes": 1618,
+      "lastModified": "2026-02-24T10:46:02.037Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/bit_vector_tests.json",
+      "hash": "c659b0653e51775eac8d19b15ca9fda234395794c9c17dfcf8412cb1e7773aa6",
+      "sizeBytes": 57440,
+      "lastModified": "2026-02-24T10:46:02.050Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/bit_vector.json",
+      "hash": "ce585404a0a377c8b980dbb2eb3c6bd18be6c9e86465a2d49c4a2de4d80fe65c",
+      "sizeBytes": 27442,
+      "lastModified": "2026-02-24T10:46:02.046Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/bool.json",
+      "hash": "3ac244da6f4060efae31801c71224fb528c43525d381f49ef840883f51e266b4",
+      "sizeBytes": 942,
+      "lastModified": "2026-02-24T10:46:02.054Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/debug.json",
+      "hash": "f41adc9a29da9b3ec40d7f1932ffa2f225fe29fab6e2f6053a02d083b0909d27",
+      "sizeBytes": 1860,
+      "lastModified": "2026-02-24T10:46:02.028Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/fixed_point32_tests.json",
+      "hash": "69177705a0cf2de43199b8411ab69b2075a1d0f0da1c42dc2887c584383595ce",
+      "sizeBytes": 34127,
+      "lastModified": "2026-02-24T10:46:02.063Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/fixed_point32.json",
+      "hash": "a3afefebc1b10d02a193af84e1faf5cd3a60d87c3a8964c0da516ddefe802fc1",
+      "sizeBytes": 15205,
+      "lastModified": "2026-02-24T10:46:02.058Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/hash_tests.json",
+      "hash": "15454adfc6f362e95951a6fcde2913818d969b745333424e0a23d3d392b0cf0c",
+      "sizeBytes": 9246,
+      "lastModified": "2026-02-24T10:46:02.072Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/hash.json",
+      "hash": "9d3f7ee1413e9357a127e604aa9ae2c32b35014c8770e352e16a4bf13e9c2bc6",
+      "sizeBytes": 2072,
+      "lastModified": "2026-02-24T10:46:02.067Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/integer_tests.json",
+      "hash": "b14711f19e816b80d06c17bc9524767b976dcf80543357688f144c1ef9bc59d1",
+      "sizeBytes": 964,
+      "lastModified": "2026-02-24T10:46:02.076Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/internal.json",
+      "hash": "bcc5c928bba182c1a50b439628ea4fc8a5d5321dd0f84a3b6f86a041457cb9f0",
+      "sizeBytes": 2007,
+      "lastModified": "2026-02-24T10:46:02.080Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/macros.json",
+      "hash": "59e1a75a3fc411ec2de25f3149d82169b4cef58e05409848b6a459094ec99014",
+      "sizeBytes": 952,
+      "lastModified": "2026-02-24T10:46:02.084Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/option_tests.json",
+      "hash": "a14c98c3000ef53d26a91f978a6f84346ff24b5c42dd50fab5a6015bcf603c1b",
+      "sizeBytes": 231286,
+      "lastModified": "2026-02-24T10:46:02.091Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/option.json",
+      "hash": "053ea4452d00587e71f34392618672149f9da678a320289cb0c367cfbb6c3893",
+      "sizeBytes": 31459,
+      "lastModified": "2026-02-24T10:46:02.014Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/string_tests.json",
+      "hash": "98181cb86af2c00434a9f732b90ea287d6df73972e0a81cba580cf4f9bd6f6a7",
+      "sizeBytes": 44479,
+      "lastModified": "2026-02-24T10:46:02.096Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/string.json",
+      "hash": "f672c8195134a9497b4fc6f83b3e0663b2de1f917360ca05c1fc5f4b86f23196",
+      "sizeBytes": 27410,
+      "lastModified": "2026-02-24T10:46:02.024Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/type_name_tests.json",
+      "hash": "be5659cf38dd49c969df1a47cebd2e57e80060f7202fe8ec4a5e3a6daf818edb",
+      "sizeBytes": 78843,
+      "lastModified": "2026-02-24T10:46:02.986Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/type_name.json",
+      "hash": "7b1c45790d737a71860b8f9b1f55ddba7f12967e95df6ba2fa5d4e285c264fcb",
+      "sizeBytes": 42596,
+      "lastModified": "2026-02-24T10:46:02.100Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u128_tests.json",
+      "hash": "1ce9a304c8443645f22256eaaec4c2dd1ef3a043889b17aa6c394a6938058a6e",
+      "sizeBytes": 1299980,
+      "lastModified": "2026-02-24T10:46:02.132Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u128.json",
+      "hash": "e5a8c10675a7bc7cb66b041b1a0fdf348e53961f4b63ac37a9b9e2e1b3378b0a",
+      "sizeBytes": 78969,
+      "lastModified": "2026-02-24T10:46:02.104Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u16_tests.json",
+      "hash": "5fc195bc6fc9d23168760fb593b871f82a262ffd15cdffd819e0e08b16ba1b2e",
+      "sizeBytes": 1241791,
+      "lastModified": "2026-02-24T10:46:02.150Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u16.json",
+      "hash": "986431ccdc669619a30f37996763197a614dec38bf7cd80a1fae0fc0506af2f8",
+      "sizeBytes": 72310,
+      "lastModified": "2026-02-24T10:46:02.115Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u256_tests.json",
+      "hash": "dcf235a63189be3ddeba6c2db55fd1a513a169cd9b37d34f07b5188ea3d968b3",
+      "sizeBytes": 1141595,
+      "lastModified": "2026-02-24T10:46:02.171Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u256.json",
+      "hash": "0b2d7a57ae422f517d26cf3257c1c84818b2cc81601bd1a215d9eaf907a6f8f7",
+      "sizeBytes": 66418,
+      "lastModified": "2026-02-24T10:46:02.155Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u32_tests.json",
+      "hash": "977a1a7459a569bdee8d506b4341b71679f3ad931a21e10e50db37b4a61241f0",
+      "sizeBytes": 1261186,
+      "lastModified": "2026-02-24T10:46:02.196Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u32.json",
+      "hash": "ff338e2caac739e17d9ba432adc849070e913634801867e5fedf4597bf185bcc",
+      "sizeBytes": 74529,
+      "lastModified": "2026-02-24T10:46:02.178Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u64_tests.json",
+      "hash": "3f2f0422dba64d20d6aa338ee15d39347f8402d398ca420ff79f3d314e898cee",
+      "sizeBytes": 1280581,
+      "lastModified": "2026-02-24T10:46:02.214Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u64.json",
+      "hash": "e7f520aa50e8f2f88a76981578ab6656309aedcbfd99c65971a90229b3485fc5",
+      "sizeBytes": 76748,
+      "lastModified": "2026-02-24T10:46:02.201Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u8_tests.json",
+      "hash": "843d2330713b00f4791626d1624054adc65053076e68bc612475ec520e8f65d7",
+      "sizeBytes": 1297656,
+      "lastModified": "2026-02-24T10:46:02.234Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/u8.json",
+      "hash": "498b81de8c6ddaba6bc1b69e0ff688ade9c36d6e383a738f3affe8911867078c",
+      "sizeBytes": 70089,
+      "lastModified": "2026-02-24T10:46:02.108Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/unit_test.json",
+      "hash": "23e487c279c58d25422030d3f185caa7026c632d082295844a212d5b6a8da86e",
+      "sizeBytes": 1879,
+      "lastModified": "2026-02-24T10:46:01.999Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/uq32_32_tests.json",
+      "hash": "9319f0c335756b2b759739ab5d78dbe5db340a89f30fcfd1363e89c1aa85de38",
+      "sizeBytes": 136996,
+      "lastModified": "2026-02-24T10:46:02.248Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/uq32_32.json",
+      "hash": "277136c00bfe13d1f1a3ba48f9b3a85a2a928bd2ce029427ef6736946e40d558",
+      "sizeBytes": 29901,
+      "lastModified": "2026-02-24T10:46:02.240Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/uq64_64_tests.json",
+      "hash": "d3d859e17af94832fd919b0135bf2d9bc8c53ee0de8e7c8f8a5a1c296c6c75e8",
+      "sizeBytes": 118001,
+      "lastModified": "2026-02-24T10:46:02.260Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/uq64_64.json",
+      "hash": "d08636cb4dd926a75b81e95a328ed832fb8ebb06b58c5ca2d661c3428048fdbc",
+      "sizeBytes": 29901,
+      "lastModified": "2026-02-24T10:46:02.253Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/vector_tests.json",
+      "hash": "3e151894d69e1c22b63051a0d927c97e7ebab68895167e7a530021990b19b430",
+      "sizeBytes": 1390060,
+      "lastModified": "2026-02-24T10:46:02.277Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/MoveStdlib/vector.json",
+      "hash": "8c0051e9367cf1713b09c1275cf4374fe85b41acaf593c9e14e5747c326b3efb",
+      "sizeBytes": 55453,
+      "lastModified": "2026-02-24T10:46:02.009Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/accumulator_metadata.json",
+      "hash": "8c31531d882d9c0061e0ebf97bcb12a7941a9e3123cefb80015b2a62cdd8a10a",
+      "sizeBytes": 10921,
+      "lastModified": "2026-02-24T10:46:02.329Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/accumulator_settlement.json",
+      "hash": "c8e18daaa3b13d37d10f7b3c53de379de7dc9c57a061ff54d7bb3b76dabe4698",
+      "sizeBytes": 76653,
+      "lastModified": "2026-02-24T10:46:02.344Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/accumulator.json",
+      "hash": "f6297a193db0ae3f552f3463e48b9c7c0ad5edd697ee0be86d44174579cb19dc",
+      "sizeBytes": 23261,
+      "lastModified": "2026-02-24T10:46:02.321Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/address_alias.json",
+      "hash": "23671b22b63eeab08be161fc612627562759f837f543cb226fea41b6d18f2994",
+      "sizeBytes": 16859,
+      "lastModified": "2026-02-24T10:46:02.356Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/address_tests.json",
+      "hash": "0e5a9c3a116558cd34220e5bdc76f8f5713def997e37e3afb4e2245a621ae1b8",
+      "sizeBytes": 43630,
+      "lastModified": "2026-02-24T10:46:02.361Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/address.json",
+      "hash": "78c0eece2868f6fb34a27f948dc3e9593e7b618027d9fa78eb2ce3f42671abc1",
+      "sizeBytes": 17924,
+      "lastModified": "2026-02-24T10:46:02.302Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/authenticator_state_tests.json",
+      "hash": "01db770bbd16b68d66d88c76fd1537c034ae087ec53493de9b1a2dc780dfacb9",
+      "sizeBytes": 66348,
+      "lastModified": "2026-02-24T10:46:02.423Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/authenticator_state.json",
+      "hash": "571cc9e65f117a0c7883d0bdb7d1bf6678e49b45606c2d1183783f28756c7c5b",
+      "sizeBytes": 97079,
+      "lastModified": "2026-02-24T10:46:02.368Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bag_tests.json",
+      "hash": "1fe01f56aa6db5e53d587f7a8abd09c70689769cb17b49a0d6af79bac2c02f69",
+      "sizeBytes": 41982,
+      "lastModified": "2026-02-24T10:46:02.428Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bag.json",
+      "hash": "241ede6a332c4f0ade53130a4be282d60858bf251d6372f8fde23a547b377fad",
+      "sizeBytes": 16316,
+      "lastModified": "2026-02-24T10:46:02.325Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/balance_tests.json",
+      "hash": "dbb7ecc5caeb5c4fd5103caef1b7bc88f38616ab42215ac022a92bf267ed6bd2",
+      "sizeBytes": 17567,
+      "lastModified": "2026-02-24T10:46:02.465Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/balance.json",
+      "hash": "6bc0c41a88db68337d694acd13fe7de8ab8518e493a5aa6963837f6909c9b727",
+      "sizeBytes": 34885,
+      "lastModified": "2026-02-24T10:46:02.441Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bcs_tests.json",
+      "hash": "8e19a3a16e2a45f6be230fa6ff6f28b1a28a686473d7f2d6b133e6b33fffd408",
+      "sizeBytes": 450908,
+      "lastModified": "2026-02-24T10:46:02.475Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bcs.json",
+      "hash": "02442b63fdc12cb77561fc1606b7d345b1a5574e37ff5b171e2c2ab21302bb2a",
+      "sizeBytes": 111655,
+      "lastModified": "2026-02-24T10:46:02.339Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bls12381_tests.json",
+      "hash": "755c4d4dc6b98a9034e512876ffb000ad94bf9c45b2998fe25a3f4f9d30739d7",
+      "sizeBytes": 349389,
+      "lastModified": "2026-02-24T10:46:02.493Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/bls12381.json",
+      "hash": "8640f8c505d0dbdd1b6d01bc4e62fe5570e13e80476ddcf44e21edf6f5f699c3",
+      "sizeBytes": 48579,
+      "lastModified": "2026-02-24T10:46:02.485Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/borrow.json",
+      "hash": "668c36edce12e1c87d434a3424e60b024853242aa72a2f0663b263004d593ec9",
+      "sizeBytes": 31283,
+      "lastModified": "2026-02-24T10:46:02.497Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/clock_tests.json",
+      "hash": "043ca2f98cde2a0aaf18083ffec69a02042413e451305403f5cd6a7bd8ec3c68",
+      "sizeBytes": 4113,
+      "lastModified": "2026-02-24T10:46:02.503Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/clock.json",
+      "hash": "d72d662f8cb43bed4fa3ea1f4482e4d565c149d37979922396f24e01e5655fc4",
+      "sizeBytes": 11579,
+      "lastModified": "2026-02-24T10:46:02.412Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/coin_registry_tests.json",
+      "hash": "bedebd119b1e0657be45cab573f6706e8185d68f4ef0c2c8674f0818a7ad20c6",
+      "sizeBytes": 265339,
+      "lastModified": "2026-02-24T10:46:02.516Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/coin_registry.json",
+      "hash": "9371128e9b84736a32f7e9d913ae9dae5d954134bd262efd113cdae363dc2979",
+      "sizeBytes": 169670,
+      "lastModified": "2026-02-24T10:46:02.509Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/coin_tests.json",
+      "hash": "77d185c7d3728bf7dc9c3389865f4e4924ae7aeb1641e0125a91d5e4051e2e6b",
+      "sizeBytes": 186821,
+      "lastModified": "2026-02-24T10:46:02.525Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/coin.json",
+      "hash": "429118cc44824cb5326ed8fbe9d78647bdc32c5a3ff3249e642e45cd053f1a8f",
+      "sizeBytes": 108255,
+      "lastModified": "2026-02-24T10:46:02.453Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/config_tests.json",
+      "hash": "60e6c839730198430f281317b00a03b54db40cf800cf676b5591738e59042337",
+      "sizeBytes": 234670,
+      "lastModified": "2026-02-24T10:46:02.534Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/config.json",
+      "hash": "039df9528ddbb814af5f99fe65c9b112c0141272df7f52eb522f301699a12352",
+      "sizeBytes": 41415,
+      "lastModified": "2026-02-24T10:46:02.402Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/deny_list_tests.json",
+      "hash": "d9930026471a5f1b58c5523d06c09c1baf068ba5fb07605b31f424aac9380d8d",
+      "sizeBytes": 13898,
+      "lastModified": "2026-02-24T10:46:02.539Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/deny_list.json",
+      "hash": "d939ee018ed3c3494d06e85813c5f1f9938b107a2390ee6afff17864041a3b08",
+      "sizeBytes": 114374,
+      "lastModified": "2026-02-24T10:46:02.408Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/derived_object_tests.json",
+      "hash": "c32d01a80f79bc2968fc318d38ffca48d154c717154ec05e0f3af7f781e7270b",
+      "sizeBytes": 48336,
+      "lastModified": "2026-02-24T10:46:02.545Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/derived_object.json",
+      "hash": "2e3b815281b4f8649a2e95ee92491b39da07e4c9ff9fe9a1167bb332044832ae",
+      "sizeBytes": 8841,
+      "lastModified": "2026-02-24T10:46:02.352Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/display_tests.json",
+      "hash": "0b14df899fefc57f324b16581719a1fc1e48949aa4437c221580804630160520",
+      "sizeBytes": 7156,
+      "lastModified": "2026-02-24T10:46:02.562Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/display.json",
+      "hash": "a0feee68f9be934afcf983bbcde4ae55a74465a4b9acd0eb2b8bc952c5483479",
+      "sizeBytes": 35813,
+      "lastModified": "2026-02-24T10:46:02.556Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/dummy_policy.json",
+      "hash": "9d877bc01bf09ab6f2c813f3ddb1aa587f1b01dd2eb662c92f9a8d8bb34431f1",
+      "sizeBytes": 4401,
+      "lastModified": "2026-02-24T10:46:02.573Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/dynamic_field_tests.json",
+      "hash": "7698f817037f165c9a1bf855c52b0bb227af43ee09562ac43ac55a271c714fb5",
+      "sizeBytes": 40040,
+      "lastModified": "2026-02-24T10:46:02.578Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/dynamic_field.json",
+      "hash": "bfacaab15be1b6990d36f552463f4748e31ad8089874bf54e4722bbbc2a71127",
+      "sizeBytes": 31329,
+      "lastModified": "2026-02-24T10:46:02.315Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/dynamic_object_field_tests.json",
+      "hash": "a21ee4fa03970b6e2a3cc308c301cef0c53ffb1e42c494d203731f49a0ce135d",
+      "sizeBytes": 63337,
+      "lastModified": "2026-02-24T10:46:02.584Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/dynamic_object_field.json",
+      "hash": "0f68fbde1d6a5cc06a69d781892b5214f6607a82e90e96323ce0937dec1c44d7",
+      "sizeBytes": 37481,
+      "lastModified": "2026-02-24T10:46:02.398Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecdsa_k1_tests.json",
+      "hash": "3e3395a4c360df7c5b34c2cc342099bb65ef04c2eb20b0cdc5d61ba10eeceede",
+      "sizeBytes": 52664,
+      "lastModified": "2026-02-24T10:46:02.594Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecdsa_k1.json",
+      "hash": "01f50654adf4215d156ff4eb388c5ae23841eb8e5c9f22e5954236bc73b7b569",
+      "sizeBytes": 6904,
+      "lastModified": "2026-02-24T10:46:02.590Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecdsa_r1_tests.json",
+      "hash": "f63dbf9409bf3060921585dcdcffb52ccbbd02fa2fab18f8291ba549ce9499ab",
+      "sizeBytes": 15298,
+      "lastModified": "2026-02-24T10:46:02.605Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecdsa_r1.json",
+      "hash": "f01887e02a13331fcd93e1b1904c9d7efad428d28d592085c27b31a5a56598e9",
+      "sizeBytes": 2779,
+      "lastModified": "2026-02-24T10:46:02.600Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecvrf_tests.json",
+      "hash": "d1a847e222636e87bd9ba7a5a36fa4ca668dae0b11263d5cba588b4c717fe45d",
+      "sizeBytes": 13081,
+      "lastModified": "2026-02-24T10:46:02.614Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ecvrf.json",
+      "hash": "81d4ef9e7175b1d843481fc9d75990611f4d86e36b3ca75d6e023ccd6e837755",
+      "sizeBytes": 1955,
+      "lastModified": "2026-02-24T10:46:02.609Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ed25519_tests.json",
+      "hash": "71ff7c19ba093201dcda8927ecf8743b76ba6c72ffe1bdad4a9777a470bee97a",
+      "sizeBytes": 9286,
+      "lastModified": "2026-02-24T10:46:02.622Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ed25519.json",
+      "hash": "0d0883e2b52fcd286ef974cd53eba6f12f27f5b5155c31f9cf454c7d6b8f202c",
+      "sizeBytes": 1760,
+      "lastModified": "2026-02-24T10:46:02.618Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/event_tests.json",
+      "hash": "e64211c0f68f6656432bd5b3311848807c29f5e0cd9d209953c708d1f2410183",
+      "sizeBytes": 62867,
+      "lastModified": "2026-02-24T10:46:02.626Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/event.json",
+      "hash": "405a0ee067b6fe62d8dba3d886851cde5b322e57f36ee67df4708dcb1aa3bbe3",
+      "sizeBytes": 5074,
+      "lastModified": "2026-02-24T10:46:02.393Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/fixed_commission.json",
+      "hash": "02b13a85052eba53f01fbc10e7e4736779926ca36f14c40d3e11f232dec09640",
+      "sizeBytes": 7599,
+      "lastModified": "2026-02-24T10:46:02.631Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/funds_accumulator_tests.json",
+      "hash": "3b0945244ecb491a164c024dc21735936e1b2fd4b445bba6d5087c955a2ab9e3",
+      "sizeBytes": 109611,
+      "lastModified": "2026-02-24T10:46:02.636Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/funds_accumulator.json",
+      "hash": "29fdf15ace10685cf61795eed7ccafabd8f322beb2c00d8ffdbe7cbe9d0ad33a",
+      "sizeBytes": 17884,
+      "lastModified": "2026-02-24T10:46:02.436Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/groth16_tests.json",
+      "hash": "435407acbc0e2cb0911aa7ab98079416070cb303b1a36d863bd37c1bdb98471e",
+      "sizeBytes": 29888,
+      "lastModified": "2026-02-24T10:46:02.646Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/groth16.json",
+      "hash": "68260bfeeaf02e3d248dc858ecd1d77c38a2c376c97187583f8fc354d4ba3d23",
+      "sizeBytes": 15841,
+      "lastModified": "2026-02-24T10:46:02.641Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/group_ops.json",
+      "hash": "f4ecaef8f82f9ede34643ee82241ced64c2fdee3edf5c5c7df4f9cc8669d339c",
+      "sizeBytes": 45911,
+      "lastModified": "2026-02-24T10:46:02.480Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hash_tests.json",
+      "hash": "25b8f0e4928de0cb61102132c53aeb3886160621c665f8d7fd09d22e60db4aa7",
+      "sizeBytes": 6297,
+      "lastModified": "2026-02-24T10:46:02.651Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hash.json",
+      "hash": "c5c1d3df00fa70748388ebc83aa344c4929268f9d62d126c81c8b6f13f9d9e31",
+      "sizeBytes": 2082,
+      "lastModified": "2026-02-24T10:46:02.335Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hex_tests.json",
+      "hash": "dad552109d8e4a889ea30aaa746d4c3a1ca56db9e4e5d3eb27d4d1bb6f530294",
+      "sizeBytes": 12265,
+      "lastModified": "2026-02-24T10:46:02.656Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hex.json",
+      "hash": "4f38b19bc7019784763bd48bfbb132472862877aeda46027e45ebcca1c477acf",
+      "sizeBytes": 16837,
+      "lastModified": "2026-02-24T10:46:02.296Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hmac_tests.json",
+      "hash": "f0f05bd20a3962226df6c817d873dbe822d39b3cb219bb16f0a2dc186cc7bff8",
+      "sizeBytes": 4683,
+      "lastModified": "2026-02-24T10:46:02.661Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/hmac.json",
+      "hash": "ac9f7d1aeedb1ac9a3ad39dc04829f2bb3bdb42dedee78066e5709ba6c4b3c6f",
+      "sizeBytes": 1626,
+      "lastModified": "2026-02-24T10:46:02.379Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/id_tests.json",
+      "hash": "3786ab0cc5634eca8716de298d2c307e6087e1317e02f49f1da24bf5a550c0cc",
+      "sizeBytes": 4406,
+      "lastModified": "2026-02-24T10:46:02.666Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/item_locked_policy.json",
+      "hash": "0289b83cad0657f464399f98f34e64c328f61cf600e1d625c380725d5d76975a",
+      "sizeBytes": 5239,
+      "lastModified": "2026-02-24T10:46:02.677Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_borrow_tests.json",
+      "hash": "1a9c3ce865c791953c581f0d52ff1671d644a8af230674584862d069522b2506",
+      "sizeBytes": 59359,
+      "lastModified": "2026-02-24T10:46:02.690Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_extension.json",
+      "hash": "89bb4457b36a0fae2ac77681e3f4ce31edcd06d6b337e97e0328628de49ff3fc",
+      "sizeBytes": 30119,
+      "lastModified": "2026-02-24T10:46:02.696Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_extensions_tests.json",
+      "hash": "d8f83e4019b7395b8d43f0cc64f973ace0279122eebef2a8729c0d8a408ad18b",
+      "sizeBytes": 44487,
+      "lastModified": "2026-02-24T10:46:02.700Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_locked_test.json",
+      "hash": "110b67258f25b81cf6b596ea2751e6012b554fa4a27e2e676de02d6c52ff707c",
+      "sizeBytes": 10829,
+      "lastModified": "2026-02-24T10:46:02.706Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_marketplace_ext.json",
+      "hash": "99fcb2f2a20127b359217b29aa40f1e62188dae2f16fe176999a826c8355f632",
+      "sizeBytes": 23876,
+      "lastModified": "2026-02-24T10:46:02.710Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_test_utils.json",
+      "hash": "bd96516acef2dd3bc7a4b880b0747b20bf6a42374e512e854f7945cbe3f418ca",
+      "sizeBytes": 15554,
+      "lastModified": "2026-02-24T10:46:02.684Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk_tests.json",
+      "hash": "69cfc6dd94eecac57cfe1f88948516f26585efb4d514e8ee69c0a62fabaa785d",
+      "sizeBytes": 101719,
+      "lastModified": "2026-02-24T10:46:02.716Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/kiosk.json",
+      "hash": "17a9c3798f593b16587857d12fec75372f61c7ef2ad3dc14e499c789846ca9c5",
+      "sizeBytes": 111534,
+      "lastModified": "2026-02-24T10:46:02.672Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/linked_table_tests.json",
+      "hash": "e0b4ebf982bac654820f01751e2647a159409b1623cc4a7a98d9e9390a1833ee",
+      "sizeBytes": 98896,
+      "lastModified": "2026-02-24T10:46:02.728Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/linked_table.json",
+      "hash": "ee3047b43e7a52d3f3ce6e661ec65b6bb8e87d75d91f2584761e93a8308479bd",
+      "sizeBytes": 47020,
+      "lastModified": "2026-02-24T10:46:02.722Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/malicious_policy.json",
+      "hash": "fb3f016e16f06665704cd1ff7f4587883c4e2b2f207ae99f7ee761aa76c16ee5",
+      "sizeBytes": 2241,
+      "lastModified": "2026-02-24T10:46:02.732Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/math_tests.json",
+      "hash": "84d7a8435ee21729b257a55611b5462f12644a30dcf3b34c985bac40f3f126b0",
+      "sizeBytes": 18916,
+      "lastModified": "2026-02-24T10:46:02.740Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/math.json",
+      "hash": "e32d036f2c715bb542fe30ec523e753db3f2be52cf3967d7c103be862bb114b7",
+      "sizeBytes": 7503,
+      "lastModified": "2026-02-24T10:46:02.736Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/nitro_attestation_tests.json",
+      "hash": "7c5bdc4c110e708ea15a51380b0f4bf29afa48f34213337fb03586dce3ca8a83",
+      "sizeBytes": 27981,
+      "lastModified": "2026-02-24T10:46:02.749Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/nitro_attestation.json",
+      "hash": "a349bebe614f772529be8fb58cd3141335f58b282de92154d7fd82bf533869f4",
+      "sizeBytes": 11334,
+      "lastModified": "2026-02-24T10:46:02.745Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object_bag_tests.json",
+      "hash": "ffc512f90dec7fa207eac2c5506228d7b33e72899e6e896cdaa2ad7936d5f703",
+      "sizeBytes": 58483,
+      "lastModified": "2026-02-24T10:46:02.758Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object_bag.json",
+      "hash": "092a17ddd5a47d988b7770662cdfae06264abe78d805bbff78f12ba35f8d99c3",
+      "sizeBytes": 17537,
+      "lastModified": "2026-02-24T10:46:02.753Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object_table_tests.json",
+      "hash": "4009c5a4f9827ab7ebc228ce9dfeeb50ee3ff6d9129dbfe0304705a6a1df6c25",
+      "sizeBytes": 49982,
+      "lastModified": "2026-02-24T10:46:02.766Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object_table.json",
+      "hash": "671aaec0ae01ceb7bf98db89e3b0655c06f6629ff2d89781b13254f58cf17ba5",
+      "sizeBytes": 17537,
+      "lastModified": "2026-02-24T10:46:02.761Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object_tests.json",
+      "hash": "07f3801fadc942f1560591fc88e7f874a12a92eae38c201c9c4b9ab4ca2e6baf",
+      "sizeBytes": 7677,
+      "lastModified": "2026-02-24T10:46:02.769Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/object.json",
+      "hash": "60ea44e51b940b8e52d8ddda8ab3f941762480aa6fa5519e67b90cbb1125e60b",
+      "sizeBytes": 27285,
+      "lastModified": "2026-02-24T10:46:02.307Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/package_tests.json",
+      "hash": "48a3c8bf1446e6f65681ca95feaa4b0ca37b6aeebf0797c6a5ca50a6d8f90328",
+      "sizeBytes": 79565,
+      "lastModified": "2026-02-24T10:46:02.773Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/package.json",
+      "hash": "9eb40f476f2c64cae6e7b161843439de59955629c08aa82ab306495320bccc49",
+      "sizeBytes": 41665,
+      "lastModified": "2026-02-24T10:46:02.549Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/party.json",
+      "hash": "1c7afcbefc1ba24fa0092693092be29b7e5afc973bf25403bca4678609650d90",
+      "sizeBytes": 17827,
+      "lastModified": "2026-02-24T10:46:02.293Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/pay_tests.json",
+      "hash": "a19da8a5b4f178bd95f6321e514889ace30b260daff63772b63c71b5e7253ea3",
+      "sizeBytes": 86257,
+      "lastModified": "2026-02-24T10:46:02.778Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/pay.json",
+      "hash": "c0e8ea889815200c4cb4016f5008ca11a230a2dfb904969567f6c5e9a47fd006",
+      "sizeBytes": 23086,
+      "lastModified": "2026-02-24T10:46:02.460Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/poseidon_tests.json",
+      "hash": "d8da9514f4bfbcc62bde2276c5a87d13f809399c9ad889cab43c4fa5e5cb60db",
+      "sizeBytes": 16723,
+      "lastModified": "2026-02-24T10:46:02.786Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/poseidon.json",
+      "hash": "c532c0e3ac96bbbf4a7617abc213b7a998dc0ff55f2f7619eaaa21adee63aef3",
+      "sizeBytes": 10836,
+      "lastModified": "2026-02-24T10:46:02.781Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/priority_queue.json",
+      "hash": "51947ec612ce9b9379ff804dcba144a3a453e707484a3d5390a71a7eb8801ac9",
+      "sizeBytes": 56521,
+      "lastModified": "2026-02-24T10:46:02.789Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/protocol_config_tests.json",
+      "hash": "279ba3cb5f843ceda8dc9c2d4f9483058582935e2b3ca1ff0a1be1163048c66c",
+      "sizeBytes": 3059,
+      "lastModified": "2026-02-24T10:46:02.794Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/protocol_config.json",
+      "hash": "2a15089f69650eac6668cb902241ad51d16b528f9a3c51868053565cecc3f29b",
+      "sizeBytes": 1555,
+      "lastModified": "2026-02-24T10:46:02.432Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/prover_tests.json",
+      "hash": "c4867a2f87a905f626bab89b11d308d6b300def1efe3e7fd7d49f76684d62624",
+      "sizeBytes": 8260,
+      "lastModified": "2026-02-24T10:46:02.802Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/prover.json",
+      "hash": "22e2200cd07dfe9ec8a96137a1489f5713129ef4a7b76ea238bc6c8194f6c956",
+      "sizeBytes": 940,
+      "lastModified": "2026-02-24T10:46:02.796Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/random_tests.json",
+      "hash": "db0b516e4afec3e710069eba2f3c76a97d214184be88918d658b0d2b7fa5ab06",
+      "sizeBytes": 217523,
+      "lastModified": "2026-02-24T10:46:02.809Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/random.json",
+      "hash": "e0f443711b907a635d84cf706d8b31b05911799d5ee36031d7d2167b9944347e",
+      "sizeBytes": 157418,
+      "lastModified": "2026-02-24T10:46:02.384Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ristretto255_tests.json",
+      "hash": "64bcb0cb5795767a1dfb1560c94d67331a2b157b8817f5a2b75122f2e7de2bd9",
+      "sizeBytes": 113703,
+      "lastModified": "2026-02-24T10:46:02.822Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/ristretto255.json",
+      "hash": "cc8707fb58b569b855b493cbaac3fc6ec805a0109083cdca432efaa0d8129fbe",
+      "sizeBytes": 21883,
+      "lastModified": "2026-02-24T10:46:02.814Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/royalty_policy_tests.json",
+      "hash": "d12dae2da3680fc94b1d4455eae65aaecdadedf89f7986d53f5f1084a6a841e8",
+      "sizeBytes": 15153,
+      "lastModified": "2026-02-24T10:46:02.840Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/royalty_policy.json",
+      "hash": "51d3f45688886995d462036467f217e58291c699368d2d72c3dd89bda191053b",
+      "sizeBytes": 8732,
+      "lastModified": "2026-02-24T10:46:02.828Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/sui.json",
+      "hash": "6076fefc919c07ac8b6ebf2b2e874c476c39f7ea9a8c20bcec075951c7d4996e",
+      "sizeBytes": 7238,
+      "lastModified": "2026-02-24T10:46:02.458Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/table_tests.json",
+      "hash": "8f5121797b16d9bb6eced3eefb51b86565c5eff2a3b1d3fa6032cce38a46eba3",
+      "sizeBytes": 34431,
+      "lastModified": "2026-02-24T10:46:02.844Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/table_vec_tests.json",
+      "hash": "17dcbf02650e419d6650af89141147a7a3e40c3dc432492bb155df3f29433787",
+      "sizeBytes": 23913,
+      "lastModified": "2026-02-24T10:46:02.852Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/table_vec.json",
+      "hash": "ac5e84eef9101bb086296f2b3452d3a207266f9b2e2b65c289e0bce4539c0206",
+      "sizeBytes": 32877,
+      "lastModified": "2026-02-24T10:46:02.848Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/table.json",
+      "hash": "6dc701868ac55dd2ca24712855d1db622709e9efc0be8d5602469f9108f44abb",
+      "sizeBytes": 17332,
+      "lastModified": "2026-02-24T10:46:02.388Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/test_random_tests.json",
+      "hash": "e0f03ef2ce8c39e0f2790d21f8d84b39b65ab8c68ac2aa5bf875e00ddda6893a",
+      "sizeBytes": 78665,
+      "lastModified": "2026-02-24T10:46:02.860Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/test_random.json",
+      "hash": "c653b5be99b4d2b8ae15a1fdea75b235daf8b70e377e141688d9b13f0953ca35",
+      "sizeBytes": 31284,
+      "lastModified": "2026-02-24T10:46:02.856Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/test_scenario_tests.json",
+      "hash": "82b2087d25d984327498f69e15f2aef6ef076a889a7683b44347c09aebef5b77",
+      "sizeBytes": 545682,
+      "lastModified": "2026-02-24T10:46:02.872Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/test_scenario.json",
+      "hash": "4e2f1340c89948b2efd5bc0f46accfa1536a96c1d4141070d4b18deea1a3b590",
+      "sizeBytes": 99213,
+      "lastModified": "2026-02-24T10:46:02.419Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/test_utils.json",
+      "hash": "84916ca835b21fc684352faa113254acb187a64d6c8fd31ba6c5bd9b0c1c4493",
+      "sizeBytes": 6703,
+      "lastModified": "2026-02-24T10:46:02.878Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_actions_tests.json",
+      "hash": "78defec1edb17f46c0d247622868a0a4aef01a79a92b0b2bf5456aa85b57cbcc",
+      "sizeBytes": 34654,
+      "lastModified": "2026-02-24T10:46:02.896Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_config_tests.json",
+      "hash": "b47d9c620eb77a36551bf99293519179f4ee5c9dbb326ca392f9956236164c56",
+      "sizeBytes": 25233,
+      "lastModified": "2026-02-24T10:46:02.902Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_public_actions_tests.json",
+      "hash": "7367b2915e902bcf14f2aa30f831fe7cf008048ece5f7a2d83e2ce89683f59ab",
+      "sizeBytes": 9144,
+      "lastModified": "2026-02-24T10:46:02.906Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_request_tests.json",
+      "hash": "8b1693ac66ca024be3140ff605e5ae5ff711adaaaed8289af67075aa83fbad77",
+      "sizeBytes": 32648,
+      "lastModified": "2026-02-24T10:46:02.910Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_test_utils.json",
+      "hash": "bb0098630837700fa3358b87312f889ba0361f0289830d09ee1e040134b7488f",
+      "sizeBytes": 7423,
+      "lastModified": "2026-02-24T10:46:02.891Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token_treasury_cap_tests.json",
+      "hash": "43d81b0e373feaf2b4e4b286e9a08b20fa4e108ffa9b1e5052881da776f27cc3",
+      "sizeBytes": 11954,
+      "lastModified": "2026-02-24T10:46:02.916Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/token.json",
+      "hash": "21ba59dc4d9529c028779b921ebc19a6100cf548f39feeb2f40e8654e3712d10",
+      "sizeBytes": 112763,
+      "lastModified": "2026-02-24T10:46:02.886Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/transfer_policy_tests.json",
+      "hash": "92f803236a6525227893a3f88297ca0ad1154bbfabe3ec745c8fad1c0a39d6b9",
+      "sizeBytes": 35423,
+      "lastModified": "2026-02-24T10:46:02.835Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/transfer_policy.json",
+      "hash": "ea0272d53059891219eaf3065c0c729c22951e5035b4f759eefede584f023006",
+      "sizeBytes": 50292,
+      "lastModified": "2026-02-24T10:46:02.567Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/transfer.json",
+      "hash": "2af8f18b00d8b32bb698c1342df2bcb452400085cd14dd1ad7780aedb872a66f",
+      "sizeBytes": 23021,
+      "lastModified": "2026-02-24T10:46:02.311Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/tx_context_tests.json",
+      "hash": "737f4637c7b7cdca88ea820a5b180329fef67a6a2410dd81bb7c292926db55a9",
+      "sizeBytes": 4563,
+      "lastModified": "2026-02-24T10:46:02.921Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/tx_context.json",
+      "hash": "e3e368b0e53338df4baf914cd28b65848e29bae01f659e40ee6420315ac2871c",
+      "sizeBytes": 36249,
+      "lastModified": "2026-02-24T10:46:02.283Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/types.json",
+      "hash": "e7a7708f959d70b5415cc8c75484a9af1e0fe733067cdf74e53474f34b1e6a8f",
+      "sizeBytes": 1616,
+      "lastModified": "2026-02-24T10:46:02.449Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/url_tests.json",
+      "hash": "5bb5b9bfd3448d8d1ec1c75091fd4801995e2ef633dbcdd15d9c46da4ee88ab7",
+      "sizeBytes": 3053,
+      "lastModified": "2026-02-24T10:46:02.925Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/url.json",
+      "hash": "13dac675a45f386b89654e5e6f943005b3188ba406bb02915a1dfcba9fb8b368",
+      "sizeBytes": 4764,
+      "lastModified": "2026-02-24T10:46:02.445Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vdf_tests.json",
+      "hash": "c1c8fea27768cd9ca6bedb294fc6f0137d6d2fad45602a19185390e56843a43f",
+      "sizeBytes": 18662,
+      "lastModified": "2026-02-24T10:46:02.934Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vdf.json",
+      "hash": "8a333789dff36a0e17d39e01180b497e0919b5fa5f715d0b973a037300d380ec",
+      "sizeBytes": 4734,
+      "lastModified": "2026-02-24T10:46:02.929Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vec_map_tests.json",
+      "hash": "ffa927fb2a88219662b354df11ba286e562cfa791ef96b4b1d0a804017dfe2c6",
+      "sizeBytes": 109011,
+      "lastModified": "2026-02-24T10:46:02.940Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vec_map.json",
+      "hash": "ebd621814feba5a0b64ecb5419681fca9bd1a5a31953efcb44a7e2ad89631140",
+      "sizeBytes": 67852,
+      "lastModified": "2026-02-24T10:46:02.290Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vec_set_tests.json",
+      "hash": "1b23374acee334c82d752d9fef31aaf8e1f8b45135b26e94f86d85478ef60bda",
+      "sizeBytes": 41234,
+      "lastModified": "2026-02-24T10:46:02.944Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/vec_set.json",
+      "hash": "2b880469253e6cd05b8e44966dd9293002f89e5aba94d393fbec6685bf411f1f",
+      "sizeBytes": 27640,
+      "lastModified": "2026-02-24T10:46:02.348Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/verifier_tests.json",
+      "hash": "a2c7da970de3a6d88d554efeccd9dbfa527cd4eb92069bd182a500c2e20f82d8",
+      "sizeBytes": 5326,
+      "lastModified": "2026-02-24T10:46:02.948Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/versioned_tests.json",
+      "hash": "1901836cb856226dc74b995bf9bd6af065e4411a08047fb75aae30ffbbd440ed",
+      "sizeBytes": 7274,
+      "lastModified": "2026-02-24T10:46:02.953Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/versioned.json",
+      "hash": "faded56fe3417700c5ad90a103da0451a7af6386a0721718ac11c5c70b7b6b26",
+      "sizeBytes": 15244,
+      "lastModified": "2026-02-24T10:46:02.374Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/witness_policy_tests.json",
+      "hash": "b4ab426920c3f878ebcf689afd5bd553880e0e6c9ebc7a5b2fb12ed2db5e5d1a",
+      "sizeBytes": 13457,
+      "lastModified": "2026-02-24T10:46:02.963Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/witness_policy.json",
+      "hash": "f2bbba0dc22dd3a2b9e68e450d569a5a1ee5dc45fb4a9ec7506a30600fbfb5d2",
+      "sizeBytes": 4654,
+      "lastModified": "2026-02-24T10:46:02.958Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/zklogin_verified_id_tests.json",
+      "hash": "1a0e9a51bf0876f9480b8fad04074ad18ce5b4edaf3c72ad9f9a9daa5fc537ec",
+      "sizeBytes": 7755,
+      "lastModified": "2026-02-24T10:46:02.971Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/zklogin_verified_id.json",
+      "hash": "4d41f299b4897fc9ccc77de1ded0d01dd4508f4899577a83925e6a328dd76c6c",
+      "sizeBytes": 11147,
+      "lastModified": "2026-02-24T10:46:02.967Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/zklogin_verified_issuer_tests.json",
+      "hash": "d7dc18b88eec55adcb5f38105c200dfa26e8b148549fb32cc823d378aea002eb",
+      "sizeBytes": 12410,
+      "lastModified": "2026-02-24T10:46:02.981Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/debug_info/dependencies/Sui/zklogin_verified_issuer.json",
+      "hash": "eccd95266facbd6571015a8168be7aadd059e8fc14fd979b5bb02b8977a0c9fa",
+      "sizeBytes": 9109,
+      "lastModified": "2026-02-24T10:46:02.976Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/bounty_board_tests.move",
+      "hash": "99d02f00a0c78a6d6838548f5baabfb4463927b0d2009b4064248123406d5396",
+      "sizeBytes": 9818,
+      "lastModified": "2026-02-24T10:46:01.996Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/bounty_board.move",
+      "hash": "0dc4ad58ec6bbf2cdec75d74cff1155059db3d356d81395b10beb65846cfe604",
+      "sizeBytes": 10824,
+      "lastModified": "2026-02-24T10:46:01.991Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/address.move",
+      "hash": "aeeb34b5faf42368cc244b716c609af6961a81178e98a32c21a4417b2846b712",
+      "sizeBytes": 325,
+      "lastModified": "2026-02-24T10:46:02.006Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/ascii_tests.move",
+      "hash": "3c9d05b8a5e10d4990fc5b98273bda029a48e2855718d078f5b6b7ea312eadfa",
+      "sizeBytes": 5621,
+      "lastModified": "2026-02-24T10:46:02.035Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/ascii.move",
+      "hash": "cc167aa3279095ecc4b3eb176acb963aa8507efea572c4592472ac6ca03d890d",
+      "sizeBytes": 5604,
+      "lastModified": "2026-02-24T10:46:02.020Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/bcs_tests.move",
+      "hash": "7d108d942167363d62fe4d7a6a2c32ff986ff09cbd43eb60aec660f07819a23a",
+      "sizeBytes": 2717,
+      "lastModified": "2026-02-24T10:46:02.043Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/bcs.move",
+      "hash": "191ead512ba2b74bae890ae20ccdf43a5a4cee87a2b64c111cca6694ab94c05d",
+      "sizeBytes": 569,
+      "lastModified": "2026-02-24T10:46:02.038Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/bit_vector_tests.move",
+      "hash": "c7651d452fdefd53ae43eda486374210ff9ddcfd0e4ef7a50811cb436cc1093a",
+      "sizeBytes": 5764,
+      "lastModified": "2026-02-24T10:46:02.051Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/bit_vector.move",
+      "hash": "fb6a436e149b46d7c369e96c682eccb137c50a2351245670641b8e0898567925",
+      "sizeBytes": 3402,
+      "lastModified": "2026-02-24T10:46:02.047Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/bool.move",
+      "hash": "a234679564ba83ed5fb4199100e21d7543d86a5f335958422ce737e86d8339f8",
+      "sizeBytes": 125,
+      "lastModified": "2026-02-24T10:46:02.055Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/debug.move",
+      "hash": "4dbfd8ec364ffba9e94fbc9444cb3a7d61cfc7c3a597cd8a28238036f811ec37",
+      "sizeBytes": 221,
+      "lastModified": "2026-02-24T10:46:02.029Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/fixed_point32_tests.move",
+      "hash": "db7c8e36378952eff58b6857c3ca04ffb23eac7f4d247fa9d02826d6fe4746fb",
+      "sizeBytes": 3915,
+      "lastModified": "2026-02-24T10:46:02.064Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/fixed_point32.move",
+      "hash": "822359b41d1e0ef0c79eed3d39fac435747b1015177bb17a4f1c4fe43cd0d6c2",
+      "sizeBytes": 5256,
+      "lastModified": "2026-02-24T10:46:02.060Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/hash_tests.move",
+      "hash": "c051f13b687edb1f4c873d043d192b456f6d0891bfa97c254e0bc26709b4fcf3",
+      "sizeBytes": 706,
+      "lastModified": "2026-02-24T10:46:02.072Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/hash.move",
+      "hash": "e545b56b07c86a6404a3224314711f2dd22fdf7e54c9153b982f832a1c38a334",
+      "sizeBytes": 396,
+      "lastModified": "2026-02-24T10:46:02.068Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/integer_tests.move",
+      "hash": "46899e8b315a943454410ffe550c0e2948b397ac84108fe0cc2811240fc6703d",
+      "sizeBytes": 25245,
+      "lastModified": "2026-02-24T10:46:02.078Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/internal.move",
+      "hash": "ae2362b6294e424cdfc6d5a4549b32dee7548772f4826eb612e0f36a1b6fdbe2",
+      "sizeBytes": 1229,
+      "lastModified": "2026-02-24T10:46:02.082Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/macros.move",
+      "hash": "9ac5f78be244d363e4bf0381d7be346d10f8affa1f17bcead32cdef5e2bd29e7",
+      "sizeBytes": 10197,
+      "lastModified": "2026-02-24T10:46:02.086Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/option_tests.move",
+      "hash": "d592e9c035664935c0ec30b9ba9c7dc4a462512213e65e55137a56edc3cfe1c6",
+      "sizeBytes": 7492,
+      "lastModified": "2026-02-24T10:46:02.093Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/option.move",
+      "hash": "77ef4ba9976fb6fe43f73aa42c68307d1a6ca76ffa7fb4baa245bc889a035c99",
+      "sizeBytes": 8858,
+      "lastModified": "2026-02-24T10:46:02.015Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/string_tests.move",
+      "hash": "d5cf886b3c83894b0b3d07d7338b28ebd3c6eceeac4a46916586cdc57e0ee522",
+      "sizeBytes": 2000,
+      "lastModified": "2026-02-24T10:46:02.097Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/string.move",
+      "hash": "3891bea88e9673faae0ec24b20cd7ab76e4df3f060f36e898f90712ebd170a34",
+      "sizeBytes": 3955,
+      "lastModified": "2026-02-24T10:46:02.025Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/type_name_tests.move",
+      "hash": "4227f30be1d6e20ec9a732ad955ac1236b422a8ed78d62c636dc1d0ffe785227",
+      "sizeBytes": 11506,
+      "lastModified": "2026-02-24T10:46:02.988Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/type_name.move",
+      "hash": "37a934ac86c68e4ef8c8080e1c8b3c042c6424d76f1c39e27af0a06dcb363581",
+      "sizeBytes": 6812,
+      "lastModified": "2026-02-24T10:46:02.101Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u128_tests.move",
+      "hash": "c1e66c5eba88ab693cd9a62323e46a3c45f506e42824a13bc3b2456e065a8621",
+      "sizeBytes": 3739,
+      "lastModified": "2026-02-24T10:46:02.134Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u128.move",
+      "hash": "b9f2656365b1c85e556c8493171e69995a083f1d38204478a24bc1d11578955f",
+      "sizeBytes": 6346,
+      "lastModified": "2026-02-24T10:46:02.105Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u16_tests.move",
+      "hash": "7efe6af09aec0cf593c6d9547441a26591a9d4d6827f5a454da2f128326328b0",
+      "sizeBytes": 3293,
+      "lastModified": "2026-02-24T10:46:02.151Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u16.move",
+      "hash": "ffff54d96869bd8bddc22dac78e82e2bd2106b5747323baa64e84a41ab8977f0",
+      "sizeBytes": 5729,
+      "lastModified": "2026-02-24T10:46:02.116Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u256_tests.move",
+      "hash": "15d92f1448e47e82e794dfca89ffec0e68fe48e573c589760fc8a1b1878a272d",
+      "sizeBytes": 4333,
+      "lastModified": "2026-02-24T10:46:02.173Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u256.move",
+      "hash": "a609ac638af32b7c38e5895840dcb26e4270637cec7072897498e72c894f9068",
+      "sizeBytes": 5073,
+      "lastModified": "2026-02-24T10:46:02.157Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u32_tests.move",
+      "hash": "2a741461a93d7d060c878d2155814997fe910d6069f6ad796d4e20b33ddcbbd3",
+      "sizeBytes": 3405,
+      "lastModified": "2026-02-24T10:46:02.197Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u32.move",
+      "hash": "21939583b6c454a211904765bf2637a7802878e7b4a5049e7a87e18135bf86cb",
+      "sizeBytes": 5900,
+      "lastModified": "2026-02-24T10:46:02.179Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u64_tests.move",
+      "hash": "c78a6f1d85f88db6d9ebc45f8c97743e70f982d70126130e0bbc57bea8ccc8a2",
+      "sizeBytes": 3540,
+      "lastModified": "2026-02-24T10:46:02.216Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u64.move",
+      "hash": "df0b3ee3f485bd98206fdb95b69ec2640b0cda8a4e8ebc64271c5a896a0ccf41",
+      "sizeBytes": 6077,
+      "lastModified": "2026-02-24T10:46:02.202Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u8_tests.move",
+      "hash": "256d57873941be8711c32f68f9620461b69b9d3fa41abd57395b60cd233af4c6",
+      "sizeBytes": 5418,
+      "lastModified": "2026-02-24T10:46:02.236Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/u8.move",
+      "hash": "f38ffdb3c2dea5058c8a5ca6ef722fb160d294e88f24952248fb418dfe1395ab",
+      "sizeBytes": 5490,
+      "lastModified": "2026-02-24T10:46:02.110Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/unit_test.move",
+      "hash": "7bae196c97cfc117505bbc9f4e4be01913182b126328570a52ac01918d6543eb",
+      "sizeBytes": 1194,
+      "lastModified": "2026-02-24T10:46:02.002Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/uq32_32_tests.move",
+      "hash": "8f21a0b71610a3865441c88d539bf7ee70a2d48f581b6f353bc8102b1ad3b2f2",
+      "sizeBytes": 6435,
+      "lastModified": "2026-02-24T10:46:02.250Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/uq32_32.move",
+      "hash": "ee2826fbea6ce20047ddaebb520e465955597f80332cbfd315484b50fcde2aea",
+      "sizeBytes": 5747,
+      "lastModified": "2026-02-24T10:46:02.241Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/uq64_64_tests.move",
+      "hash": "9852a2c7abfd2a3c6f7b160450aa3e3ef132ac8dee914d79125518423a6d5d18",
+      "sizeBytes": 6497,
+      "lastModified": "2026-02-24T10:46:02.261Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/uq64_64.move",
+      "hash": "64c8d01f898dd2722a696ba2e860c29ddc7c9a057f3af5494f07c0b261a4c523",
+      "sizeBytes": 5771,
+      "lastModified": "2026-02-24T10:46:02.254Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/vector_tests.move",
+      "hash": "26543218a46d122fbf0f487a524165c6aa7375278070752bbdb167836e0c4a62",
+      "sizeBytes": 27230,
+      "lastModified": "2026-02-24T10:46:02.278Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/MoveStdlib/vector.move",
+      "hash": "e16add2cba193b58e2236c54483e49787971df3da1ba75a9a4afdbc5a955c9aa",
+      "sizeBytes": 18950,
+      "lastModified": "2026-02-24T10:46:02.010Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/accumulator_metadata.move",
+      "hash": "ec2168540f16738fbe70c0eeecbdea3ebb3c3dfa4c42bd110993e05a7983ca7b",
+      "sizeBytes": 2802,
+      "lastModified": "2026-02-24T10:46:02.330Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/accumulator_settlement.move",
+      "hash": "7f9b052a68dc5e7cb99863819ee745fd9cbc59f20f0b89444fe5003b72f37078",
+      "sizeBytes": 7262,
+      "lastModified": "2026-02-24T10:46:02.345Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/accumulator.move",
+      "hash": "4ba50f43e10a23d652d852e9d352f135043e5f4bf89049c31d930e10f2e8901a",
+      "sizeBytes": 4723,
+      "lastModified": "2026-02-24T10:46:02.322Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/address_alias.move",
+      "hash": "b12a1f296457ca59c04921e4cd8421a44ced6d97c2ca5bd8de5ef39aa5b2dc03",
+      "sizeBytes": 3956,
+      "lastModified": "2026-02-24T10:46:02.357Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/address_tests.move",
+      "hash": "63c738da180b6aa754dee925011a6abef0bb4e6ce4f5d4e19b6f1a0816d3b736",
+      "sizeBytes": 8609,
+      "lastModified": "2026-02-24T10:46:02.363Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/address.move",
+      "hash": "c3f7a049b8363048b09d34d2b6292e583db98b158f89d15e9f6b016e2e84ae2b",
+      "sizeBytes": 2829,
+      "lastModified": "2026-02-24T10:46:02.303Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/authenticator_state_tests.move",
+      "hash": "8b2b04152b21587843b4534078ad6e64387434dc03913ef1425d33c655edbd1f",
+      "sizeBytes": 8094,
+      "lastModified": "2026-02-24T10:46:02.424Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/authenticator_state.move",
+      "hash": "ca4b5a1b416c7e7f90613cd7937375103a83bda01d8e881b1ba10208ebda6cab",
+      "sizeBytes": 12132,
+      "lastModified": "2026-02-24T10:46:02.369Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bag_tests.move",
+      "hash": "4f8f494c423cf1fd4022cd2b440c89e62299351f0606bf0729648dbbf24160da",
+      "sizeBytes": 4792,
+      "lastModified": "2026-02-24T10:46:02.429Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bag.move",
+      "hash": "9b380a19988e1486ed3658a93aa245cb7066b71d1773afe6778081a1b2a3cbd4",
+      "sizeBytes": 4359,
+      "lastModified": "2026-02-24T10:46:02.326Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/balance_tests.move",
+      "hash": "848cc23195c336cbb927847a974672a15c6772c14ce1009a13afebf3519c299e",
+      "sizeBytes": 2164,
+      "lastModified": "2026-02-24T10:46:02.466Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/balance.move",
+      "hash": "eb1a9b3d7365d25c0a9b0e9046c30efcba36776f0fbeb977bf898f7d6181ac4e",
+      "sizeBytes": 6368,
+      "lastModified": "2026-02-24T10:46:02.442Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bcs_tests.move",
+      "hash": "67ffa79584aabd6a4fc5c7575bbd710936a4e9ac29e32993baf9c8b1e9331171",
+      "sizeBytes": 8588,
+      "lastModified": "2026-02-24T10:46:02.476Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bcs.move",
+      "hash": "c53c5df01e1b63aa7f051a3c9d648b609f4a6b4be3de5f539304424ff80868bb",
+      "sizeBytes": 8634,
+      "lastModified": "2026-02-24T10:46:02.340Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bls12381_tests.move",
+      "hash": "1c9b7b260638146762fbdad919d71c02807c6cbf8e6ed5ccd4083653b3846e17",
+      "sizeBytes": 41167,
+      "lastModified": "2026-02-24T10:46:02.494Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/bls12381.move",
+      "hash": "8abad1bb973dad5daa190c1b7800a155dd391b497c7abcf3a1484eaf7d14b8dd",
+      "sizeBytes": 12222,
+      "lastModified": "2026-02-24T10:46:02.485Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/borrow.move",
+      "hash": "576e41d62ce997b5df0bff679f41e20b6337df060b2a4cbf6875495b40cd1d57",
+      "sizeBytes": 4034,
+      "lastModified": "2026-02-24T10:46:02.499Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/clock_tests.move",
+      "hash": "3cd3cd099ee3d1c6acd92ef54ce0d75ea24854eebf19d2a62d632338149a3929",
+      "sizeBytes": 489,
+      "lastModified": "2026-02-24T10:46:02.504Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/clock.move",
+      "hash": "9e1fb3b7ac26979a0eaa1fe1cd525d2cc43dbb705c05488c596c8ef1755d01f1",
+      "sizeBytes": 2903,
+      "lastModified": "2026-02-24T10:46:02.413Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/coin_registry_tests.move",
+      "hash": "4f6dd63b06af784ef76503ecd2fb1c5a4f388db23ab1fc550baf00335f4f7b95",
+      "sizeBytes": 21391,
+      "lastModified": "2026-02-24T10:46:02.518Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/coin_registry.move",
+      "hash": "42c9d7eba6454ba879ff3009f660e294790f56ef9475f067c9b6615d7267d4d2",
+      "sizeBytes": 29563,
+      "lastModified": "2026-02-24T10:46:02.510Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/coin_tests.move",
+      "hash": "92ef7814918bea9add4a4232d65e0a3df80bfbc2c6e85667a73801da04371562",
+      "sizeBytes": 27507,
+      "lastModified": "2026-02-24T10:46:02.528Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/coin.move",
+      "hash": "732102037474adf1109abb6ef5225d5170682e014a0d8094d8b5bda760be33b6",
+      "sizeBytes": 24504,
+      "lastModified": "2026-02-24T10:46:02.454Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/config_tests.move",
+      "hash": "a00288ab007426c9c2689a484c1cb64d04d09a57e057fab0c28cc52572b7da15",
+      "sizeBytes": 20127,
+      "lastModified": "2026-02-24T10:46:02.535Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/config.move",
+      "hash": "14ec31740b639c5dbba46890adc99f370507d179321477a01815f30ceb998909",
+      "sizeBytes": 9063,
+      "lastModified": "2026-02-24T10:46:02.403Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/deny_list_tests.move",
+      "hash": "4dfe8cd9e855cc8be535a303333409ed223de251b4d1080d51e8301a77c26351",
+      "sizeBytes": 1577,
+      "lastModified": "2026-02-24T10:46:02.540Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/deny_list.move",
+      "hash": "f083cf43c3403f9016c6a1c51a49d741eb1e55539fea5fefc74eb4a3404e43e9",
+      "sizeBytes": 14657,
+      "lastModified": "2026-02-24T10:46:02.409Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/derived_object_tests.move",
+      "hash": "6f82b88765cdd98d0fdaa489f35e235c57ffc63f24f971801c5a96246de08dbb",
+      "sizeBytes": 5096,
+      "lastModified": "2026-02-24T10:46:02.546Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/derived_object.move",
+      "hash": "262858de57b5ddecb51f39b260393ef120daf6f6590456fd715106642f7b00ef",
+      "sizeBytes": 2606,
+      "lastModified": "2026-02-24T10:46:02.353Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/display_tests.move",
+      "hash": "c40c0e5dc5c1ebf252bf48cbf0f140e5f84eebe18b86d26aa505ac463738eea0",
+      "sizeBytes": 1089,
+      "lastModified": "2026-02-24T10:46:02.563Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/display.move",
+      "hash": "a82f06cc562c20f6a2583164b6c72f396c5f3140f189badb84a36435e2b06dd1",
+      "sizeBytes": 6206,
+      "lastModified": "2026-02-24T10:46:02.559Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/dummy_policy.move",
+      "hash": "7bb175e3d3fc739a11cd60a1ffa2835fa418dee62fd0fd4da33eab234a51dc00",
+      "sizeBytes": 760,
+      "lastModified": "2026-02-24T10:46:02.574Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/dynamic_field_tests.move",
+      "hash": "8fa610b13074a51bc4406533046ce01ae7d96ab70c86a3a479c410d19fd5df52",
+      "sizeBytes": 4821,
+      "lastModified": "2026-02-24T10:46:02.579Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/dynamic_field.move",
+      "hash": "c6db2a9c26309789565d0c6a27079e7e6aa8bd7e0ab4dfc1495e6088a34ab4bd",
+      "sizeBytes": 7334,
+      "lastModified": "2026-02-24T10:46:02.317Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/dynamic_object_field_tests.move",
+      "hash": "c1810197656f5a1695f340e817b2d9c73bf922cb842201659a28d28d5307e6da",
+      "sizeBytes": 7094,
+      "lastModified": "2026-02-24T10:46:02.586Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/dynamic_object_field.move",
+      "hash": "404498a35f315ec29f87a0f2193ca5d3d6f545207e71d50f4a83c32130c0213a",
+      "sizeBytes": 6785,
+      "lastModified": "2026-02-24T10:46:02.398Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecdsa_k1_tests.move",
+      "hash": "a6c047b79e18c89cbfc245968261ee873eebe03c30abb00d06b2c3722b4bfcf1",
+      "sizeBytes": 9187,
+      "lastModified": "2026-02-24T10:46:02.597Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecdsa_k1.move",
+      "hash": "ec4d23bcecf783ca81654a10accc42644f209b35aa098a0220a47f5fb7fffec5",
+      "sizeBytes": 4351,
+      "lastModified": "2026-02-24T10:46:02.591Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecdsa_r1_tests.move",
+      "hash": "8ac66a0426752555a9fb5608a87e2e48fa609eb27fa4d6ec822a480b875c6fea",
+      "sizeBytes": 3414,
+      "lastModified": "2026-02-24T10:46:02.606Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecdsa_r1.move",
+      "hash": "4954c54806207c3cb7bacc0f658014a7c0bfdd39bcbd4e35a92430e70d8c681f",
+      "sizeBytes": 2315,
+      "lastModified": "2026-02-24T10:46:02.602Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecvrf_tests.move",
+      "hash": "511216f02537cd1fdab300476afb29c440d10b9c7e04b391d02a38ee4c13597b",
+      "sizeBytes": 2984,
+      "lastModified": "2026-02-24T10:46:02.616Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ecvrf.move",
+      "hash": "77af238b91b78a84ec8831b873694cf52e9dfdf8e1f031106e9732bd97d1ccbe",
+      "sizeBytes": 953,
+      "lastModified": "2026-02-24T10:46:02.610Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ed25519_tests.move",
+      "hash": "b8b9662ced8b07b1fa23add5acd2e5e9459513a873563ff13dd2bf60b1aa54d2",
+      "sizeBytes": 2071,
+      "lastModified": "2026-02-24T10:46:02.623Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ed25519.move",
+      "hash": "3f046c132c025c93af2c4d33293b6811b795f72c959bf0b371488fcc1d962e71",
+      "sizeBytes": 601,
+      "lastModified": "2026-02-24T10:46:02.618Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/event_tests.move",
+      "hash": "c36e8f5ecc15a3633fc581d6a843b3dcd31685cbc3b81c056434ac6ca0309242",
+      "sizeBytes": 1523,
+      "lastModified": "2026-02-24T10:46:02.627Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/event.move",
+      "hash": "2df9ef18af0283f2d755a665344f28d35492490e6b5c4a0b7b8857e0a4221939",
+      "sizeBytes": 2309,
+      "lastModified": "2026-02-24T10:46:02.394Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/fixed_commission.move",
+      "hash": "7dd1cb754d01c0e550f0681e7ac627162e4392e00e989cd6cf229adee8ec4289",
+      "sizeBytes": 1765,
+      "lastModified": "2026-02-24T10:46:02.632Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/funds_accumulator_tests.move",
+      "hash": "ebdb50d1b9a063bbbe3d5321091e6dab36c8ad674a8b4c92d5d2acf436a1bcf3",
+      "sizeBytes": 4150,
+      "lastModified": "2026-02-24T10:46:02.637Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/funds_accumulator.move",
+      "hash": "da453681b83638393c1bdc75c5973156d69aa76411fb3d71341627619527ab72",
+      "sizeBytes": 5753,
+      "lastModified": "2026-02-24T10:46:02.437Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/groth16_tests.move",
+      "hash": "490824c8f9dd600e46f0eb7e77a98fe3bd056a3a3b8eb91ce41a175c9660729d",
+      "sizeBytes": 13878,
+      "lastModified": "2026-02-24T10:46:02.648Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/groth16.move",
+      "hash": "e36d33e759bbb03a5daced2bf9e6abecea6adccf44dbf18aa5b17af84a34263a",
+      "sizeBytes": 5696,
+      "lastModified": "2026-02-24T10:46:02.642Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/group_ops.move",
+      "hash": "84d83f045e36d224b2ed1945522fcb54a0eb5b0b60111d6892266d90a0d1f401",
+      "sizeBytes": 5454,
+      "lastModified": "2026-02-24T10:46:02.480Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hash_tests.move",
+      "hash": "9b0f84b57c7b219d7eb35f0397830c78d240efce68dc7cef61b2f60ebac88ce5",
+      "sizeBytes": 1979,
+      "lastModified": "2026-02-24T10:46:02.653Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hash.move",
+      "hash": "4e6328287d8f0d9536be9f765bf9314dbb72b6df28b8ace27e34f62c3474a7c7",
+      "sizeBytes": 590,
+      "lastModified": "2026-02-24T10:46:02.336Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hex_tests.move",
+      "hash": "8352ef72e83b5358130c1db918001ce78dddb7bc5ded40c88d58ee6eeba1476a",
+      "sizeBytes": 1602,
+      "lastModified": "2026-02-24T10:46:02.657Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hex.move",
+      "hash": "ba1cd211fe757a1c0ffeed5a8995d8c8d50064036699161e82149dce3b829b9c",
+      "sizeBytes": 3547,
+      "lastModified": "2026-02-24T10:46:02.298Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hmac_tests.move",
+      "hash": "0bc3167c2a92c8a23198799cb39029ff62c18c54a8a33f1de7924fa6a4474240",
+      "sizeBytes": 804,
+      "lastModified": "2026-02-24T10:46:02.663Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/hmac.move",
+      "hash": "39b92c2d5f867e559ff95299cc2a83f89f1030d58f833ab49a6e279c1baf62d2",
+      "sizeBytes": 337,
+      "lastModified": "2026-02-24T10:46:02.380Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/id_tests.move",
+      "hash": "f87b13dbfd9e353e873c0366f2ab68ae4e67d05dd7ca0a8454981fcecc9e06f3",
+      "sizeBytes": 493,
+      "lastModified": "2026-02-24T10:46:02.667Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/item_locked_policy.move",
+      "hash": "9a7135d4df75cf7306d4a60ae0ac78d826284d797e6e8e0c1e5d5517400f941c",
+      "sizeBytes": 906,
+      "lastModified": "2026-02-24T10:46:02.679Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_borrow_tests.move",
+      "hash": "335af2dc2ad7b9db54867a5562162db0e067d732806226d84a64144239ba85e6",
+      "sizeBytes": 5743,
+      "lastModified": "2026-02-24T10:46:02.691Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_extension.move",
+      "hash": "f04ef314ad414291ca28094d5d0996be28894915ebb3f2eb8b4324b651b782fa",
+      "sizeBytes": 10227,
+      "lastModified": "2026-02-24T10:46:02.697Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_extensions_tests.move",
+      "hash": "8547d445739ec4e5b92f1fa5f20e6a8242bf14ddf97ef69ef56d9636ee866802",
+      "sizeBytes": 10951,
+      "lastModified": "2026-02-24T10:46:02.702Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_locked_test.move",
+      "hash": "1a15b21525b8eb6475171a42cde50806a7049eaaa9a1103ea94467e2f61f9dc6",
+      "sizeBytes": 1749,
+      "lastModified": "2026-02-24T10:46:02.708Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_marketplace_ext.move",
+      "hash": "8547d445739ec4e5b92f1fa5f20e6a8242bf14ddf97ef69ef56d9636ee866802",
+      "sizeBytes": 10951,
+      "lastModified": "2026-02-24T10:46:02.712Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_test_utils.move",
+      "hash": "0ba04038fd9410d657c63341f1e134a0001205c64c071ac0dd05ad6757ecc616",
+      "sizeBytes": 2276,
+      "lastModified": "2026-02-24T10:46:02.686Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk_tests.move",
+      "hash": "d78104413e42d164923baf1f4fff984e88d8868a30ec8e0456b134c457659330",
+      "sizeBytes": 10333,
+      "lastModified": "2026-02-24T10:46:02.718Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/kiosk.move",
+      "hash": "369ccf438f157210f731c622cd02be500677dc49f717e5b5ce826de04760316a",
+      "sizeBytes": 24606,
+      "lastModified": "2026-02-24T10:46:02.673Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/linked_table_tests.move",
+      "hash": "5763ff8648450200abbdcef6016694f231f413dcb6fdf5ac8003bca616aeca11",
+      "sizeBytes": 10480,
+      "lastModified": "2026-02-24T10:46:02.728Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/linked_table.move",
+      "hash": "422bd853a1a7a34aab71b2023d19d077d81b9b4724aa32f3de2feaa37017f8f2",
+      "sizeBytes": 7993,
+      "lastModified": "2026-02-24T10:46:02.724Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/malicious_policy.move",
+      "hash": "627857ffe82a3ef3c78185750917a0fa2f5d533e4b1916406ee766b3d033c52a",
+      "sizeBytes": 5171,
+      "lastModified": "2026-02-24T10:46:02.732Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/math_tests.move",
+      "hash": "0e865be45ff7418200d19212c26fb4526bf8ddc0256131965a810f6c34fe211f",
+      "sizeBytes": 1558,
+      "lastModified": "2026-02-24T10:46:02.741Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/math.move",
+      "hash": "f933c1a3a97e37c070c429bb806f151a3dcce695f5be9a3628a33179eb34afc2",
+      "sizeBytes": 1069,
+      "lastModified": "2026-02-24T10:46:02.737Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/nitro_attestation_tests.move",
+      "hash": "7a6e251825b8072e02afe34903b17e585981d53ae607920b1e1c9720b9ff39bd",
+      "sizeBytes": 21079,
+      "lastModified": "2026-02-24T10:46:02.750Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/nitro_attestation.move",
+      "hash": "f3bbb50f1aa9be2163267b8edc2866ed47829bb3eb686fa0698103f9fc63cb50",
+      "sizeBytes": 3411,
+      "lastModified": "2026-02-24T10:46:02.745Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object_bag_tests.move",
+      "hash": "a8cba1e31d3950efe395875a5c891185570f0be4539cf5b73047dfa5780d6ccb",
+      "sizeBytes": 6180,
+      "lastModified": "2026-02-24T10:46:02.759Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object_bag.move",
+      "hash": "d233267ec2f6808ee9ac6f01e1cea0faab5697060fee454dd69fb20414d1bde3",
+      "sizeBytes": 4032,
+      "lastModified": "2026-02-24T10:46:02.754Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object_table_tests.move",
+      "hash": "d3bae486a51bb25877afca86cd337edec2a83a0d879c43c64157e382c18ca16a",
+      "sizeBytes": 5286,
+      "lastModified": "2026-02-24T10:46:02.767Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object_table.move",
+      "hash": "388e92126e21cbfd4982651806752a645fb149e3a0513faa207c106a17b50212",
+      "sizeBytes": 3788,
+      "lastModified": "2026-02-24T10:46:02.762Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object_tests.move",
+      "hash": "19181cad8c05f75a83a9f58306912e9d7fa6617d737855cf026bd76210ddbecd",
+      "sizeBytes": 856,
+      "lastModified": "2026-02-24T10:46:02.770Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/object.move",
+      "hash": "0ed562dfe201868ad6b6d7b1867b1bef367afc764faf5d37a312b4ce1730dc9b",
+      "sizeBytes": 8746,
+      "lastModified": "2026-02-24T10:46:02.308Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/package_tests.move",
+      "hash": "fbd583e20194f19c8d9263f2732d4c9f85b0e12ac15d400359c6912a3e7f1357",
+      "sizeBytes": 5717,
+      "lastModified": "2026-02-24T10:46:02.774Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/package.move",
+      "hash": "b82876e7a307092ce0bb3e239d148bbbc6800f1efd8521cc5130dda01e37ed20",
+      "sizeBytes": 12585,
+      "lastModified": "2026-02-24T10:46:02.551Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/party.move",
+      "hash": "3076e256691e731418fb9080524af27cdd66b2fc6f569bdc65102a0450ed1baa",
+      "sizeBytes": 3505,
+      "lastModified": "2026-02-24T10:46:02.294Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/pay_tests.move",
+      "hash": "aee0bbb32ba16f0ea7134fa42c49743f8d24ab8bda228f483467a1c305fcc8f8",
+      "sizeBytes": 4401,
+      "lastModified": "2026-02-24T10:46:02.779Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/pay.move",
+      "hash": "86805889482df74c44d567ff088e2d43e776ec83b967b91d7a267211647df6c4",
+      "sizeBytes": 2676,
+      "lastModified": "2026-02-24T10:46:02.462Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/poseidon_tests.move",
+      "hash": "c7449b0a5192abf9d0060e187a0d83be0de7764e175451e3622f3c977ae36f5f",
+      "sizeBytes": 3868,
+      "lastModified": "2026-02-24T10:46:02.787Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/poseidon.move",
+      "hash": "7b07ed706742c4220b6fb4c4fb693af328720d3ef5138a80e85cab1b7a9b6bf4",
+      "sizeBytes": 2206,
+      "lastModified": "2026-02-24T10:46:02.782Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/priority_queue.move",
+      "hash": "d2310739bfd4ae95ee73dea479aebfcbeb81f498cf62a08487b860fde4806cff",
+      "sizeBytes": 6727,
+      "lastModified": "2026-02-24T10:46:02.790Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/protocol_config_tests.move",
+      "hash": "6e9e1dd729110ef8810d503e21b77fe5d152a08ba2912865b2c512aac06c8c43",
+      "sizeBytes": 543,
+      "lastModified": "2026-02-24T10:46:02.795Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/protocol_config.move",
+      "hash": "1529e251d4c304ee6a552190233bdd62146d1e01fd985e332a5190dcdb5b3c6d",
+      "sizeBytes": 1266,
+      "lastModified": "2026-02-24T10:46:02.433Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/prover_tests.move",
+      "hash": "50fdfb143db7d5fa2abfa277af70abfd6b419d3e16c80951bfc489e620872628",
+      "sizeBytes": 1232,
+      "lastModified": "2026-02-24T10:46:02.803Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/prover.move",
+      "hash": "faf521cd8bc3b855b2595f4cb95f51ee6a76ceebdffd4748f67591eb09b7092b",
+      "sizeBytes": 99,
+      "lastModified": "2026-02-24T10:46:02.798Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/random_tests.move",
+      "hash": "3751ddda57765f6574633ce908399b89f2418a4d35a0afafc586198d42a4f9cc",
+      "sizeBytes": 21942,
+      "lastModified": "2026-02-24T10:46:02.810Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/random.move",
+      "hash": "a2a16f7b91d78b5b840aa3efd9db266219369f1c7776a4c8f360d81428a3672c",
+      "sizeBytes": 10776,
+      "lastModified": "2026-02-24T10:46:02.386Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ristretto255_tests.move",
+      "hash": "9346153bbe6702ae1cc48063cfacc2b7b6faccf7cef746f616001fe0edf06853",
+      "sizeBytes": 11502,
+      "lastModified": "2026-02-24T10:46:02.824Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/ristretto255.move",
+      "hash": "234b822b7e1fc624835eb43acb64d2df1654281fc1beabc4fc18a40bccf1d335",
+      "sizeBytes": 3503,
+      "lastModified": "2026-02-24T10:46:02.816Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/royalty_policy_tests.move",
+      "hash": "f0da69a1ba66975cf35194f995ae17b36f73d7e5b22e8e699ea0679b914a7e9e",
+      "sizeBytes": 3896,
+      "lastModified": "2026-02-24T10:46:02.841Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/royalty_policy.move",
+      "hash": "f0da69a1ba66975cf35194f995ae17b36f73d7e5b22e8e699ea0679b914a7e9e",
+      "sizeBytes": 3896,
+      "lastModified": "2026-02-24T10:46:02.831Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/sui.move",
+      "hash": "ad85c8b2cdcf34de718d0ca9b808dcc3e50606b14b7b7f02d12bbafee029d852",
+      "sizeBytes": 1794,
+      "lastModified": "2026-02-24T10:46:02.459Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/table_tests.move",
+      "hash": "62fefa2d2d8665f0b77ec062356e3e967114c9d20981ad0874a1c6e20e23b89c",
+      "sizeBytes": 3722,
+      "lastModified": "2026-02-24T10:46:02.845Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/table_vec_tests.move",
+      "hash": "eac20756a266f3f63ac33e6edd3e86f30aa3379cb853eafb67bbef2fd935bda8",
+      "sizeBytes": 3090,
+      "lastModified": "2026-02-24T10:46:02.853Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/table_vec.move",
+      "hash": "49da2e44c51514325fe02791c6cd67c397504719e2582d465f62bb1cd86fbe44",
+      "sizeBytes": 4059,
+      "lastModified": "2026-02-24T10:46:02.849Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/table.move",
+      "hash": "41f5c6fec861c966b0ea39c8722a3edae1b1c8e6c6fb64eb757e4487f18dea9d",
+      "sizeBytes": 4008,
+      "lastModified": "2026-02-24T10:46:02.389Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/test_random_tests.move",
+      "hash": "8e11b40432ddd6d1732a9fb090843441453d55d1e8cc44919cbdf615d0d347f8",
+      "sizeBytes": 8044,
+      "lastModified": "2026-02-24T10:46:02.862Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/test_random.move",
+      "hash": "5a7148056d92dc3e3b1abb6290c782d2415571dd40a8109faf3609182eadc9b8",
+      "sizeBytes": 5431,
+      "lastModified": "2026-02-24T10:46:02.857Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/test_scenario_tests.move",
+      "hash": "e34131905e9689524e51007a1a2d58d6be1b19a9816b9e2b79fc3e220628b6e7",
+      "sizeBytes": 46047,
+      "lastModified": "2026-02-24T10:46:02.874Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/test_scenario.move",
+      "hash": "a44896b09fe1f8866bc967daff27c7c50231060c0ec09bf0794ea55e79b8d1b8",
+      "sizeBytes": 25476,
+      "lastModified": "2026-02-24T10:46:02.420Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/test_utils.move",
+      "hash": "f5478fb0d8d45f9e4d4a28aad6b8c670240b2be85f0aa31ce852516e3bf03e7b",
+      "sizeBytes": 950,
+      "lastModified": "2026-02-24T10:46:02.879Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_actions_tests.move",
+      "hash": "a237b2b3619e966552d103d0c46a636030b6e232c21b5edc81ab6752133a74e0",
+      "sizeBytes": 3925,
+      "lastModified": "2026-02-24T10:46:02.897Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_config_tests.move",
+      "hash": "1a7f63f12d820ef8e04fc4999a82eab222f31da17d109a0ede254063c32ab4bc",
+      "sizeBytes": 4023,
+      "lastModified": "2026-02-24T10:46:02.903Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_public_actions_tests.move",
+      "hash": "d31b90761328c506039f36c0885b1f40600b540b16265d211bb7787eacbaf1f5",
+      "sizeBytes": 1271,
+      "lastModified": "2026-02-24T10:46:02.908Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_request_tests.move",
+      "hash": "6ea70d81edee55c18e637a218964380169a5a343005423826b4201a6affe15d8",
+      "sizeBytes": 4251,
+      "lastModified": "2026-02-24T10:46:02.911Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_test_utils.move",
+      "hash": "2bcc464bb4c4c7c3f8c396ab191f52cd24891ec8f1f4508441c325a532360035",
+      "sizeBytes": 1499,
+      "lastModified": "2026-02-24T10:46:02.892Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token_treasury_cap_tests.move",
+      "hash": "f285c3483520617c026dcd23517aeb7c4ba0aec57ade238b7debc293e4c22b75",
+      "sizeBytes": 1793,
+      "lastModified": "2026-02-24T10:46:02.917Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/token.move",
+      "hash": "565f02969d920bbb5b0a4d5972563adafb9b55f17f53d5af9986b8d529d9823e",
+      "sizeBytes": 25344,
+      "lastModified": "2026-02-24T10:46:02.887Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/transfer_policy_tests.move",
+      "hash": "627857ffe82a3ef3c78185750917a0fa2f5d533e4b1916406ee766b3d033c52a",
+      "sizeBytes": 5171,
+      "lastModified": "2026-02-24T10:46:02.836Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/transfer_policy.move",
+      "hash": "45969ad65ec3c2c38d9bce7edad13e273dc1cfbc7aee5d81981efdbcc1fcf4c7",
+      "sizeBytes": 11928,
+      "lastModified": "2026-02-24T10:46:02.570Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/transfer.move",
+      "hash": "c0dc213dcdf6f2acb322bedfe3e2bccdba8e7bcddc6768cdc7c8f7600a03a772",
+      "sizeBytes": 9094,
+      "lastModified": "2026-02-24T10:46:02.312Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/tx_context_tests.move",
+      "hash": "7433d1c1633faa979a523838a5239e7de0915ce295b1c96b7554fe3fa0ef987d",
+      "sizeBytes": 483,
+      "lastModified": "2026-02-24T10:46:02.922Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/tx_context.move",
+      "hash": "885d2d1ed4abb97f61d53c7c8c9763fe1b240a526cb42c21c8014c80177989a5",
+      "sizeBytes": 7194,
+      "lastModified": "2026-02-24T10:46:02.284Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/types.move",
+      "hash": "07684ea0d2b12e2381700a6a7c4f8dee42ec9bd38f8c7257734a5b03c46900d4",
+      "sizeBytes": 362,
+      "lastModified": "2026-02-24T10:46:02.451Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/url_tests.move",
+      "hash": "a0f8f758da20e55eb62b69d30f8b395b42d6d572e111eacc3d74feb3c35dccad",
+      "sizeBytes": 421,
+      "lastModified": "2026-02-24T10:46:02.926Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/url.move",
+      "hash": "c8e4c1f38de4985cf64b3a7fe807f192bd07b0f47e0a65520ccaac71cbd4311b",
+      "sizeBytes": 845,
+      "lastModified": "2026-02-24T10:46:02.446Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vdf_tests.move",
+      "hash": "f64ac6d67fe4bb52fbd1133d2634afddbff8f1f1680f4ef01609d897936ed838",
+      "sizeBytes": 19234,
+      "lastModified": "2026-02-24T10:46:02.935Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vdf.move",
+      "hash": "c026daa7a9237c93edf66429c4b9487acce2b65bfa4f04d6452c1d30eb5ec677",
+      "sizeBytes": 1885,
+      "lastModified": "2026-02-24T10:46:02.930Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vec_map_tests.move",
+      "hash": "2d7e1481a137a8dc9597248cf9d73993c04ae0444e41f3a006c46edb9f9edb1f",
+      "sizeBytes": 4536,
+      "lastModified": "2026-02-24T10:46:02.941Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vec_map.move",
+      "hash": "1d06e12f78947354231e866112cc21080e279de7aa303b9470bba44e585b48ec",
+      "sizeBytes": 7534,
+      "lastModified": "2026-02-24T10:46:02.291Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vec_set_tests.move",
+      "hash": "9d7c6af2889cc1e8a3fed76fab9dac0fb4bbecd1fe8671bf3e0913498feafc19",
+      "sizeBytes": 1777,
+      "lastModified": "2026-02-24T10:46:02.945Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/vec_set.move",
+      "hash": "6cfd356bec86733830889c2d20155d685e9b7e83ad24a704b5dbfd1e1497fc33",
+      "sizeBytes": 3045,
+      "lastModified": "2026-02-24T10:46:02.349Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/verifier_tests.move",
+      "hash": "1916e1082f9ad7534ff368a174f084fb4527a1e2b57ec5be599e2cce324bf3e2",
+      "sizeBytes": 865,
+      "lastModified": "2026-02-24T10:46:02.949Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/versioned_tests.move",
+      "hash": "794e8f2b44b2a432eeca1c89f2ef8989bab3f3ff875b212b934303343e8083df",
+      "sizeBytes": 738,
+      "lastModified": "2026-02-24T10:46:02.954Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/versioned.move",
+      "hash": "25a3c3060c209fe4ba7e45ae7f6f35a6ea74844741e45d963d9d16a9de7d5748",
+      "sizeBytes": 3244,
+      "lastModified": "2026-02-24T10:46:02.375Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/witness_policy_tests.move",
+      "hash": "04827504c1b5234b88459f3f1bb64d504756466a35ae2d8fd2396fdd46148b06",
+      "sizeBytes": 3639,
+      "lastModified": "2026-02-24T10:46:02.964Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/witness_policy.move",
+      "hash": "04827504c1b5234b88459f3f1bb64d504756466a35ae2d8fd2396fdd46148b06",
+      "sizeBytes": 3639,
+      "lastModified": "2026-02-24T10:46:02.959Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/zklogin_verified_id_tests.move",
+      "hash": "7f7aeed71c05d4931d39781aaeffacceb39d99f9302547f5dc2d0a9cacda8a07",
+      "sizeBytes": 1649,
+      "lastModified": "2026-02-24T10:46:02.973Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/zklogin_verified_id.move",
+      "hash": "ef887794255ee6a54d19e17fae5f11b6fac55a22ed3a2014cd559ef66da6d512",
+      "sizeBytes": 2944,
+      "lastModified": "2026-02-24T10:46:02.968Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/zklogin_verified_issuer_tests.move",
+      "hash": "026b386ac8ea951aec5fae1b84a92516056ddd7a77a4b787bb27177ef87e1d98",
+      "sizeBytes": 2375,
+      "lastModified": "2026-02-24T10:46:02.982Z"
+    },
+    {
+      "path": "contracts/build/bounty_board/sources/dependencies/Sui/zklogin_verified_issuer.move",
+      "hash": "284d371c63fea38c433544ae4d820cdf4cf079e6dd36c82f9f13ae04163a6fb6",
+      "sizeBytes": 2499,
+      "lastModified": "2026-02-24T10:46:02.977Z"
+    },
+    {
+      "path": "contracts/sources/bounty_board_tests.move",
+      "hash": "99d02f00a0c78a6d6838548f5baabfb4463927b0d2009b4064248123406d5396",
+      "sizeBytes": 9818,
+      "lastModified": "2026-02-22T04:07:26.580Z"
+    },
+    {
+      "path": "contracts/sources/bounty_board.move",
+      "hash": "0dc4ad58ec6bbf2cdec75d74cff1155059db3d356d81395b10beb65846cfe604",
+      "sizeBytes": 10824,
+      "lastModified": "2026-02-20T02:12:14.881Z"
+    },
+    {
+      "path": "package.json",
+      "hash": "93052ac0e86c6d6c84fc5dc4af689503eaa25836477f4b23f43d0e248cf328ea",
+      "sizeBytes": 1386,
+      "lastModified": "2026-02-24T10:11:26.587Z"
+    },
+    {
+      "path": "README.md",
+      "hash": "6371189fd2ddf2b70508559b83295a2808230094920bda49935a89b08b4c9a12",
+      "sizeBytes": 12356,
+      "lastModified": "2026-02-24T10:50:42.984Z"
+    },
+    {
+      "path": "SKILL.md",
+      "hash": "b39645e4567ea67e3a9fe1f0e04dadd5f877533626750da1aeaae8293fcb6d79",
+      "sizeBytes": 690,
+      "lastModified": "2026-02-20T01:49:10.419Z"
+    },
+    {
+      "path": "src/agent/Agent.ts",
+      "hash": "bda9ce13e049e14fd29eaeb5ffacc18150eb7761dcc2b426a53332ef12684fac",
+      "sizeBytes": 11073,
+      "lastModified": "2026-02-24T09:55:55.733Z"
+    },
+    {
+      "path": "src/agent/DemoRunner.ts",
+      "hash": "426f797c8578f63de789b6b67590eac259f45843e4c91c138354a9076d456315",
+      "sizeBytes": 1210,
+      "lastModified": "2026-02-20T01:49:53.701Z"
+    },
+    {
+      "path": "src/earn/Earner.ts",
+      "hash": "be78b7c7ae7805ece8b53ef2e3400901085c18ecb083f1c1ba190d6c82caee12",
+      "sizeBytes": 22351,
+      "lastModified": "2026-02-24T10:33:03.120Z"
+    },
+    {
+      "path": "src/earn/extensions/OpportunityExpansion.ts",
+      "hash": "2c16cc9eadaed7587178c2ae5b4df02c994f550fddfa0fdfe59d4289f67d7c91",
+      "sizeBytes": 1706,
+      "lastModified": "2026-02-24T10:50:42.987Z"
+    },
+    {
+      "path": "src/earn/modes/AirdropMode.ts",
+      "hash": "61de361e419d97473d182e3cf0cd732e0658c86efce21497eec03649af0e169f",
+      "sizeBytes": 1217,
+      "lastModified": "2026-02-24T10:50:42.987Z"
+    },
+    {
+      "path": "src/earn/modes/ArbitrageMode.ts",
+      "hash": "385118c71e227fefe2454d3766648af081f9a804a629ba2bfbf538f98d8d0a86",
+      "sizeBytes": 1208,
+      "lastModified": "2026-02-24T10:50:42.988Z"
+    },
+    {
+      "path": "src/earn/modes/EarnMode.ts",
+      "hash": "bbe0383c8a0fddd592d19bcf3cb08a46bd0901e7b3a00335b84c518b49d3fb14",
+      "sizeBytes": 1185,
+      "lastModified": "2026-02-24T10:50:42.987Z"
+    },
+    {
+      "path": "src/earn/modes/index.ts",
+      "hash": "603f45ba231973857baadab2e5a314abb3f9a074c151b64810f42db87295ae04",
+      "sizeBytes": 104,
+      "lastModified": "2026-02-24T10:50:42.988Z"
+    },
+    {
+      "path": "src/evidence/EvidenceCollector.ts",
+      "hash": "9b21448e77451bb79166e9e1ef7e4432cb816ff667a8aabe4ef8243e4fed60fc",
+      "sizeBytes": 14370,
+      "lastModified": "2026-02-24T08:42:21.577Z"
+    },
+    {
+      "path": "src/index.ts",
+      "hash": "3f24d533eddde37b02b6c737a28e1e94cac3e03c4b9df28d4af2ff7d73db9e00",
+      "sizeBytes": 9547,
+      "lastModified": "2026-02-24T09:55:55.734Z"
+    },
+    {
+      "path": "src/ledger/Ledger.ts",
+      "hash": "e4d49af9a79acabb32e8925ebadec3276d502b5f99a3c309c1b6b37ccf75e404",
+      "sizeBytes": 7553,
+      "lastModified": "2026-02-20T01:49:53.700Z"
+    },
+    {
+      "path": "src/shared/loadEnv.ts",
+      "hash": "32e65501305bf11540c33bc5a7b7696ec2de47c795e6bc564949d237f5749269",
+      "sizeBytes": 1140,
+      "lastModified": "2026-02-22T04:07:26.576Z"
+    },
+    {
+      "path": "src/spend/Spender.ts",
+      "hash": "45b08a79e9efd5b14ede6fb567a4191bd9a1b3c6c368fbb685c788cd66dc67f3",
+      "sizeBytes": 11879,
+      "lastModified": "2026-02-24T10:11:26.586Z"
+    },
+    {
+      "path": "src/test/e2e.ts",
+      "hash": "5d296f17cf69df83fb26a8397006d84dae2da13f2c808e1b8a17987d15fa0a30",
+      "sizeBytes": 20394,
+      "lastModified": "2026-02-24T10:11:26.571Z"
+    },
+    {
+      "path": "src/tools/ai-dev-proof.ts",
+      "hash": "666011f11ee5850ad6a67f6c66275329d626fcb663fcf8d3a9127f766d35e9b8",
+      "sizeBytes": 12905,
+      "lastModified": "2026-02-24T09:55:55.736Z"
+    },
+    {
+      "path": "src/tools/deploy-contract.ts",
+      "hash": "ae0677e8754bcd93db7d2ddb6f13a30b183ed56877049be22abe81f4d4104687",
+      "sizeBytes": 9135,
+      "lastModified": "2026-02-24T06:29:29.307Z"
+    },
+    {
+      "path": "src/tools/evidence-cli.ts",
+      "hash": "9cf888aa20d3a03d76d2c572bee7ac20a3967cdcdde2ffcaf2b6c288bb08c616",
+      "sizeBytes": 13243,
+      "lastModified": "2026-02-24T10:11:26.586Z"
+    },
+    {
+      "path": "src/tools/preflight.ts",
+      "hash": "daa3ca3e1a48112150efa105c9c038a9da5f0e8af4e2cd10416919f9342a9365",
+      "sizeBytes": 7209,
+      "lastModified": "2026-02-24T09:55:55.733Z"
+    },
+    {
+      "path": "src/tools/sync-deployment.ts",
+      "hash": "9a1be12233322355d8b1e3a2856ce7dcbb3ac2b0dd5ae5c718767637cb9da638",
+      "sizeBytes": 2761,
+      "lastModified": "2026-02-24T10:11:26.587Z"
+    },
+    {
+      "path": "src/wallet/WalletManager.ts",
+      "hash": "1a8ca2c580b82c71f532b2cb2c0f5f0c99d8105fa0663e21705c487e829ee796",
+      "sizeBytes": 8120,
+      "lastModified": "2026-02-22T04:07:26.576Z"
+    },
+    {
+      "path": "tsconfig.json",
+      "hash": "578ddcebf8bdf2a62ae7190b111b6da072096428d83c8434ef838b2d051f0c71",
+      "sizeBytes": 388,
+      "lastModified": "2026-02-20T01:35:56.375Z"
+    }
+  ],
+  "totalSourceFiles": 390,
+  "totalSourceBytes": 18681240,
+  "gitCommits": [
+    {
+      "hash": "0cceb0f5811b8a4aa92af40053d733b88ab1a646",
+      "author": "SU_AN",
+      "date": "2026-02-24T18:59:37+08:00",
+      "message": "chore: update project and cleanup artifacts"
+    },
+    {
+      "hash": "1aedd5db65fe18466d2611ed972fdaabc7ef0299",
+      "author": "SU_AN",
+      "date": "2026-02-20T10:39:20+08:00",
+      "message": "项目初步构建，未验证"
+    },
+    {
+      "hash": "b47e850bdbd8aff700072bbcd7106708b9705e4d",
+      "author": "SU_AN",
+      "date": "2026-02-19T20:55:44+08:00",
+      "message": "嵌入open claw"
+    },
+    {
+      "hash": "e26bed7925f1487591b96619a3d688727aff5da9",
+      "author": "SU_AN",
+      "date": "2026-02-19T16:27:16+08:00",
+      "message": "完整架构"
+    }
+  ],
+  "timeline": {
+    "firstCommit": "2026-02-19T16:27:16+08:00",
+    "lastCommit": "2026-02-24T18:59:37+08:00",
+    "totalCommits": 4,
+    "activeeDays": 3
+  },
+  "hackathon": {
+    "name": "OpenClaw x Sui Hackathon",
+    "track": "Track 2: Local God Mode - Infinite Money Glitch",
+    "submissionDeadline": "2026-03-03T23:59:59Z"
+  },
+  "checksum": "5570978eb509d06a5a7ffb5bbf574e0a1d554514b1f61f8144eb6813508b1a5b"
+}

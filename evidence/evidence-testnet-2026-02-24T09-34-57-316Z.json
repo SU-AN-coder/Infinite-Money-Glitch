@@ -1,0 +1,59 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T09:34:57.313Z",
+  "agentAddress": "0x_demo_agent_address",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T09:34:55.008Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "EmYSgtiQgNGBFRhvhtCYDCLvBdbcaYyXwvYcaPKmCDxo",
+      "timestamp": "2026-02-24T09:34:55.009Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/EmYSgtiQgNGBFRhvhtCYDCLvBdbcaYyXwvYcaPKmCDxo"
+    },
+    {
+      "type": "spend",
+      "txDigest": "AF4v3TRDjnQcpCSn3LoNCeJLzysjzg75TGRLWZp3zjYA",
+      "timestamp": "2026-02-24T09:34:55.010Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/AF4v3TRDjnQcpCSn3LoNCeJLzysjzg75TGRLWZp3zjYA"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "kdCcHeYTVAsHGWRJ7AxCto4tESeIGBhKpaIxyqa-SNo",
+      "timestamp": "2026-02-24T09:34:55.010Z",
+      "dataType": "ssh-public-key",
+      "sizeBytes": 459,
+      "encryptionUsed": true,
+      "sealPolicyId": "0xa7ead183d25e4c3966f94855ce602c19e27571fdea60dbd526ff944c339e6c4c"
+    }
+  ],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "14953608",
+    "netProfit": "-14953608",
+    "tasksCompleted": 0,
+    "blobsUploaded": 1,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 1,
+    "walrusAttempts": 2,
+    "walrusFailures": 1
+  },
+  "checksum": "3fd2a3e3be407879e5820295d159337f6efa6b2f377020c8fcf843232bdef0e1"
+}

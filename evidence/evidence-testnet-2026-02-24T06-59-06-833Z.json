@@ -1,0 +1,64 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T06:59:06.832Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "missing-claim-1771916346830",
+      "timestamp": "2026-02-24T06:59:06.830Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-claim-1771916346830"
+    },
+    {
+      "type": "claim",
+      "txDigest": "missing-claim-1771916346831",
+      "timestamp": "2026-02-24T06:59:06.831Z",
+      "network": "testnet",
+      "description": "Bounty #2 claim",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-claim-1771916346831"
+    },
+    {
+      "type": "claim",
+      "txDigest": "missing-claim-1771916346831",
+      "timestamp": "2026-02-24T06:59:06.831Z",
+      "network": "testnet",
+      "description": "Bounty #3 claim",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-claim-1771916346831"
+    },
+    {
+      "type": "spend",
+      "txDigest": "5maZT4bUA28ULTwDX9LhR2yGoMnMPHVBmoprPNRtHzng",
+      "timestamp": "2026-02-24T06:59:06.831Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/5maZT4bUA28ULTwDX9LhR2yGoMnMPHVBmoprPNRtHzng"
+    },
+    {
+      "type": "spend",
+      "txDigest": "7jUgssspAQLmqcWoWf3MXWyUurisM5ruH4Vgd68ZJkcm",
+      "timestamp": "2026-02-24T06:59:06.831Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/7jUgssspAQLmqcWoWf3MXWyUurisM5ruH4Vgd68ZJkcm"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "2039520",
+    "netProfit": "-2039520",
+    "tasksCompleted": 0,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "23434a0e43bf71a2c9dd69f8b4971c29c60cc4bf7c001af432d0b9e1aa55cc47"
+}

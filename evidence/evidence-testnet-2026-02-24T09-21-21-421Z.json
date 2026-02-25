@@ -1,0 +1,59 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T09:21:21.420Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T09:21:21.418Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "B5JF88QF47YT9yWbGCrVXhZPYSD4n1pfiSBQ5RioWqVH",
+      "timestamp": "2026-02-24T09:21:21.419Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/B5JF88QF47YT9yWbGCrVXhZPYSD4n1pfiSBQ5RioWqVH"
+    },
+    {
+      "type": "spend",
+      "txDigest": "missing-spend-1771924881419",
+      "timestamp": "2026-02-24T09:21:21.419Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-spend-1771924881419"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "1Y4gi4mys2NHV3R6O4qNVaj9sdUOeJW6Bg6RG-2pB8U",
+      "timestamp": "2026-02-24T09:21:21.419Z",
+      "dataType": "git-config",
+      "sizeBytes": 485,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x15e2fbf7861eee5ae67ec327ab45797b1c71f146a05b1941f966c55106636c66"
+    }
+  ],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "13985488",
+    "netProfit": "-13985488",
+    "tasksCompleted": 0,
+    "blobsUploaded": 1,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 1,
+    "walrusAttempts": 2,
+    "walrusFailures": 1
+  },
+  "checksum": "66bb92a3e74d521ebab3c1082530e598764ad74be779ec47be15645ebe16d07b"
+}

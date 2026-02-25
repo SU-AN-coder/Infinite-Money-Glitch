@@ -2,6 +2,8 @@ import { Earner, type EarnResult } from '../earn/Earner.js';
 import { Ledger, type AuditPackage } from '../ledger/Ledger.js';
 import { Spender, type SpendResult } from '../spend/Spender.js';
 import { WalletManager, type WalletConfig, type WalletNetwork } from '../wallet/WalletManager.js';
+import type { EarnModeRunResult } from '../earn/modes/EarnMode.js';
+import type { CodeAuditReport } from '../earn/modes/CodeAuditMode.js';
 
 export type AgentMode = 'NORMAL' | 'STARVATION' | 'ERROR';
 
@@ -171,6 +173,11 @@ export class Agent {
         console.warn('⚠️ BountyBoard unreachable, skipping earn phase');
       }
 
+      // Upload CodeAudit report to Walrus (if any)
+      if (phases.earn?.modeResults) {
+        await this.uploadAuditReports(phases.earn.modeResults);
+      }
+
       // Spend phase: graceful degradation
       if (this.state.mode !== 'STARVATION') {
         try {
@@ -326,6 +333,38 @@ export class Agent {
     }
 
     return [...new Set(digests)];
+  }
+
+  private async uploadAuditReports(modeResults: EarnModeRunResult[]): Promise<void> {
+    for (const result of modeResults) {
+      if (result.modeId !== 'code-audit' || !result.success) continue;
+      const report = result.details?.report as CodeAuditReport | undefined;
+      if (!report) continue;
+
+      try {
+        const reportJson = JSON.stringify(report, null, 2);
+        const data = new TextEncoder().encode(reportJson);
+        const protection = await this.spender.protectUserData('code-audit-report', data);
+        if (protection.success) {
+          this.ledger.record({
+            direction: 'expense',
+            source: 'audit_report',
+            amount: protection.gasSpent,
+            description: `Code audit report uploaded (${report.summary.totalFindings} findings)`,
+            blobId: protection.upload?.blobId,
+            sealPolicyId: protection.encryption?.sealPolicyId,
+            txDigest: protection.upload?.txDigest,
+            explorerUrl: protection.upload?.explorerUrl,
+          });
+          this.state.totalSpent += protection.gasSpent;
+          console.log(`📋 Audit report uploaded → blob=${protection.upload?.blobId?.slice(0, 16)}...`);
+        } else {
+          console.warn('⚠️ Audit report upload failed:', protection.error);
+        }
+      } catch (err) {
+        console.warn('⚠️ Audit report upload error:', err instanceof Error ? err.message : err);
+      }
+    }
   }
 
   private generateReport(): ReportResult {

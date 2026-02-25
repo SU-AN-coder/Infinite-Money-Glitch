@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "network": "testnet",
+  "timestamp": "2026-02-24T10:32:08.459Z",
+  "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+  "boardObjectId": "0x44a7d147dcfcc05be029b654f65a79a1b7ba8714230d9e8e9a4bfaf3144a33ae",
+  "deployTxDigest": "HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy",
+  "explorerUrl": "https://suiscan.xyz/testnet/tx/HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy"
+}

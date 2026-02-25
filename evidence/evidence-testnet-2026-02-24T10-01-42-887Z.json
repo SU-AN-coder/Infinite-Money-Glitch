@@ -1,0 +1,68 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T10:01:42.886Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:01:42.884Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "Gd7n4NXwsoUgYYSkdvpEBHtwfsKjcH4pwWJ2JGDJtesE",
+      "timestamp": "2026-02-24T10:01:42.885Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/Gd7n4NXwsoUgYYSkdvpEBHtwfsKjcH4pwWJ2JGDJtesE"
+    },
+    {
+      "type": "spend",
+      "txDigest": "6HC88MK7yQipyfe8ENECxQEt9J9LT9yc2tBWFjBXmgTH",
+      "timestamp": "2026-02-24T10:01:42.885Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/6HC88MK7yQipyfe8ENECxQEt9J9LT9yc2tBWFjBXmgTH"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "70DrPng6J8ncUAVGN-TBYERas2hwCwvpoeKp4SJ_xZc",
+      "timestamp": "2026-02-24T10:01:42.885Z",
+      "dataType": "ssh-public-key",
+      "sizeBytes": 459,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x9ebae0b1fdfb718e6826f7e4180be04bf35f66b95fe74ce3ec027dd1736444a8"
+    },
+    {
+      "type": "upload",
+      "blobId": "foLhEQE4EH1OgsE8M2pzEVUweNqRA7Ojapeswtw7OuE",
+      "timestamp": "2026-02-24T10:01:42.886Z",
+      "dataType": "git-config",
+      "sizeBytes": 485,
+      "encryptionUsed": true,
+      "sealPolicyId": "0xba59731ac1afcf84b5bf56c57b1dec17566222f03f2134456bc1aadc64f3889a"
+    }
+  ],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "14255768",
+    "netProfit": "-14255768",
+    "tasksCompleted": 0,
+    "blobsUploaded": 2,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 0,
+    "walrusAttempts": 2,
+    "walrusFailures": 0
+  },
+  "checksum": "a910bb1d81e6436a19756d71491e222172c311da980104969fb69f5b5200534a"
+}

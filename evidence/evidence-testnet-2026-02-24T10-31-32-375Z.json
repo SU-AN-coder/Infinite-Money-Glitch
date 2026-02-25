@@ -1,0 +1,49 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T10:31:32.375Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:31:32.373Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "4Ujd4zbGVTZLBb2v1bT7ZQPHcEfg5PunWvZdAcNq8y9F",
+      "timestamp": "2026-02-24T10:31:32.374Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/4Ujd4zbGVTZLBb2v1bT7ZQPHcEfg5PunWvZdAcNq8y9F"
+    },
+    {
+      "type": "spend",
+      "txDigest": "2KFxumSBFFr9sdsKMNJ5MKmZkTsXGi5x5PRDbTXu8NGg",
+      "timestamp": "2026-02-24T10:31:32.374Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/2KFxumSBFFr9sdsKMNJ5MKmZkTsXGi5x5PRDbTXu8NGg"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "50000000",
+    "totalSpent": "6857604",
+    "netProfit": "43142396",
+    "tasksCompleted": 1,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0",
+    "sealAttempts": 1,
+    "sealFailures": 1,
+    "walrusAttempts": 1,
+    "walrusFailures": 1
+  },
+  "checksum": "0086e66f515536fc29d50fd8c68732287f6247829cfff93b28b658f3d5d842b7"
+}

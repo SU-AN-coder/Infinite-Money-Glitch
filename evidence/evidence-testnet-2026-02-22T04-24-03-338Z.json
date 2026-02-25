@@ -1,0 +1,96 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-22T04:24:03.337Z",
+  "agentAddress": "0x_demo_agent_address",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x_demo_package_mlx8tngk",
+    "boardObjectId": "0x_demo_board_mlx8tngk",
+    "deployTxDigest": "0x_demo_deploy_tx_mlx8tngk",
+    "network": "testnet",
+    "timestamp": "2026-02-22T04:24:03.332Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_deploy_tx_mlx8tngk"
+  },
+  "transactions": [
+    {
+      "type": "earn",
+      "txDigest": "0x_demo_earn_0_mlx8tngk",
+      "timestamp": "2026-02-22T04:24:03.332Z",
+      "network": "testnet",
+      "description": "Completed bounty task 1: tmp_scan",
+      "status": "success",
+      "gasUsed": "1000000",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_earn_0_mlx8tngk"
+    },
+    {
+      "type": "earn",
+      "txDigest": "0x_demo_earn_1_mlx8tngk",
+      "timestamp": "2026-02-22T04:23:03.332Z",
+      "network": "testnet",
+      "description": "Completed bounty task 2: tmp_scan",
+      "status": "success",
+      "gasUsed": "1100000",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_earn_1_mlx8tngk"
+    },
+    {
+      "type": "earn",
+      "txDigest": "0x_demo_earn_2_mlx8tngk",
+      "timestamp": "2026-02-22T04:22:03.332Z",
+      "network": "testnet",
+      "description": "Completed bounty task 3: tmp_scan",
+      "status": "success",
+      "gasUsed": "1200000",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_earn_2_mlx8tngk"
+    },
+    {
+      "type": "spend",
+      "txDigest": "0x_demo_spend_0_mlx8tngk",
+      "timestamp": "2026-02-22T04:21:03.332Z",
+      "network": "testnet",
+      "description": "Uploaded audit data to Walrus 1",
+      "status": "success",
+      "gasUsed": "500000",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_spend_0_mlx8tngk"
+    },
+    {
+      "type": "spend",
+      "txDigest": "0x_demo_spend_1_mlx8tngk",
+      "timestamp": "2026-02-22T04:20:03.332Z",
+      "network": "testnet",
+      "description": "Uploaded audit data to Walrus 2",
+      "status": "success",
+      "gasUsed": "550000",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/0x_demo_spend_1_mlx8tngk"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "demo_blob_0_mlx8tngk",
+      "timestamp": "2026-02-22T04:19:03.332Z",
+      "dataType": "audit_package",
+      "sizeBytes": 1024,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x_demo_policy_0"
+    },
+    {
+      "type": "upload",
+      "blobId": "demo_blob_1_mlx8tngk",
+      "timestamp": "2026-02-22T04:18:03.332Z",
+      "dataType": "pnl_report",
+      "sizeBytes": 1536,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x_demo_policy_1"
+    }
+  ],
+  "summary": {
+    "totalEarned": "1500000000",
+    "totalSpent": "150000000",
+    "netProfit": "1350000000",
+    "tasksCompleted": 3,
+    "blobsUploaded": 2,
+    "totalGasUsed": "4350000"
+  },
+  "checksum": "50888e19c65df90e22c94b8ec1cd2dab1f009cc1b738cb8ce75ea732bfdff73d"
+}

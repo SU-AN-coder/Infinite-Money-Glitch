@@ -6,12 +6,8 @@ dist/
 .env
 .env.local
 .env.*.local
-deployment.json
 
 # Evidence & proof
-evidence/
-ai-dev-proof.json
-ai-dev-proof.md
 audit-log.json
 ledger.json
 

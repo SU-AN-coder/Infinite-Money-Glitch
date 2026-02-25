@@ -1,0 +1,46 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T06:57:40.548Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "missing-claim-1771916260547",
+      "timestamp": "2026-02-24T06:57:40.547Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-claim-1771916260547"
+    },
+    {
+      "type": "spend",
+      "txDigest": "8vtjpyfQiVRqCJALepnxFqL7zKdW25mjhrqAatJDj99M",
+      "timestamp": "2026-02-24T06:57:40.547Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/8vtjpyfQiVRqCJALepnxFqL7zKdW25mjhrqAatJDj99M"
+    },
+    {
+      "type": "spend",
+      "txDigest": "J1tgthbdvtcWq6x9UTU8EgFoGd8SxuqA37i1FmhiL4PN",
+      "timestamp": "2026-02-24T06:57:40.547Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/J1tgthbdvtcWq6x9UTU8EgFoGd8SxuqA37i1FmhiL4PN"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "2039520",
+    "netProfit": "-2039520",
+    "tasksCompleted": 0,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "6a756043c9bd949aa9e4ec9a5f16be669d5511615f863c9c74dcfe076d6de0b7"
+}

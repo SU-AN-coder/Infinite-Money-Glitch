@@ -1,0 +1,18 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T06:25:04.431Z",
+  "agentAddress": "0x_demo_agent_address",
+  "network": "testnet",
+  "transactions": [],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "0",
+    "netProfit": "0",
+    "tasksCompleted": 0,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "125d81824c629138d1b1385d7123d64da87a81733d2eb69fc38ff7913da160da"
+}

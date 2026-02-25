@@ -1,0 +1,50 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T10:09:36.867Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:03:45.585Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/tx/HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "9ibaWarruWMRKC45Q7PgrHoCgeqNZYbrpC4j8ciRyLPe",
+      "timestamp": "2026-02-24T10:07:08.622Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/9ibaWarruWMRKC45Q7PgrHoCgeqNZYbrpC4j8ciRyLPe"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "_mBKz_-lqeI607DtaH-rMj0PxzhylUHPmyf5YX5orJE",
+      "timestamp": "2026-02-24T10:07:08.622Z",
+      "dataType": "git-config",
+      "sizeBytes": 485,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x8b2049e021740bce511f0d4f4cfe60629a838055ab08e1e85a782efdcfb04815"
+    }
+  ],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "7127884",
+    "netProfit": "-7127884",
+    "tasksCompleted": 0,
+    "blobsUploaded": 1,
+    "totalGasUsed": "0",
+    "sealAttempts": 1,
+    "sealFailures": 0,
+    "walrusAttempts": 1,
+    "walrusFailures": 0
+  },
+  "checksum": "ba212a5a400ec33a6bfa11cd941c29e30ab08d6d68e998aae407a5afb95359b3"
+}

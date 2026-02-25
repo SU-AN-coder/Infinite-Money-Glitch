@@ -1,0 +1,37 @@
+{
+  "projectName": "Infinite Money Glitch",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T06:41:39.971Z",
+  "agentAddress": "0x",
+  "network": "testnet",
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "missing-spend-1771915299970",
+      "timestamp": "2026-02-24T06:41:39.970Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-spend-1771915299970"
+    },
+    {
+      "type": "spend",
+      "txDigest": "missing-spend-1771915299971",
+      "timestamp": "2026-02-24T06:41:39.971Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-spend-1771915299971"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "0",
+    "netProfit": "0",
+    "tasksCompleted": 0,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "1e82618b73cd8f3d13fba16602a1eb3dc9360bf6d69d80756a2ce9b52636cd43"
+}

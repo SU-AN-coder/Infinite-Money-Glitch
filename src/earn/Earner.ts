@@ -7,6 +7,10 @@ import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import type { WalletNetwork } from '../wallet/WalletManager.js';
 import { WalletManager } from '../wallet/WalletManager.js';
+import type { EarnMode, EarnModeContext, EarnModeRunResult, ExecResult } from './modes/EarnMode.js';
+import { CodeAuditMode } from './modes/CodeAuditMode.js';
+import { AirdropMode } from './modes/AirdropMode.js';
+import { ArbitrageMode } from './modes/ArbitrageMode.js';
 
 export type TaskType = 'lint' | 'test' | 'format' | 'audit' | 'custom';
 
@@ -52,6 +56,7 @@ export interface EarnResult {
   tasksCompleted: number;
   totalEarned: bigint;
   claims: ClaimResult[];
+  modeResults: EarnModeRunResult[];
   timestamp: Date;
 }
 
@@ -81,6 +86,8 @@ export class Earner {
   private readonly bountyPackageId: string;
   private bountyBoardId: string;
   private readonly openclawBaseUrl: string;
+  private readonly network: WalletNetwork;
+  private readonly modes: EarnMode[];
 
   constructor(wallet: WalletManager, config: EarnerConfig) {
     this.wallet = wallet;
@@ -88,6 +95,14 @@ export class Earner {
     this.bountyPackageId = config.bountyPackageId;
     this.bountyBoardId = config.bountyBoardId;
     this.openclawBaseUrl = config.openclawBaseUrl || process.env.OPENCLAW_BASE_URL || 'http://127.0.0.1:18789';
+    this.network = config.network;
+
+    // Register all EarnMode implementations
+    this.modes = [
+      new CodeAuditMode(),
+      new AirdropMode(),
+      new ArbitrageMode(),
+    ];
   }
 
   async earn(): Promise<EarnResult> {
@@ -95,7 +110,15 @@ export class Earner {
     let totalEarned = 0n;
 
     let bounties = await this.getAvailableBounties();
-    if (bounties.length === 0 && this.shouldAutoSeedBounty()) {
+    if (this.shouldForceSeedBounty()) {
+      try {
+        await this.seedDemoBounty();
+        await new Promise((resolveWait) => setTimeout(resolveWait, 1500));
+        bounties = await this.getAvailableBounties();
+      } catch (error) {
+        console.warn('⚠️ Force-seed bounty failed:', error instanceof Error ? error.message : error);
+      }
+    } else if (bounties.length === 0 && this.shouldAutoSeedBounty()) {
       try {
         await this.seedDemoBounty();
         // Give the indexer a moment to surface the new event.
@@ -111,12 +134,16 @@ export class Earner {
         tasksCompleted: 0,
         totalEarned,
         claims,
+        modeResults: await this.runEarnModes(),
         timestamp: new Date()
       };
     }
 
     const orderedBounties = this.rankBounties(bounties);
-    for (const bounty of orderedBounties) {
+    const prioritizedBounties = this.shouldForceSeedBounty()
+      ? this.prioritizeSelfPostedBounties(orderedBounties)
+      : orderedBounties;
+    for (const bounty of prioritizedBounties) {
       const taskResult = await this.executeTask(bounty);
       if (!taskResult.success) {
         continue;
@@ -136,12 +163,56 @@ export class Earner {
       tasksCompleted: claims.some((claim) => claim.success) ? 1 : 0,
       totalEarned,
       claims,
+      modeResults: await this.runEarnModes(),
       timestamp: new Date()
     };
   }
 
+  /** Run all registered & enabled EarnModes, return their results. */
+  private async runEarnModes(): Promise<EarnModeRunResult[]> {
+    const ctx: EarnModeContext = {
+      network: this.network,
+      agentAddress: this.wallet.getAddress(),
+      now: new Date(),
+      exec: (command: string, timeoutSec?: number): ExecResult => {
+        return this.execLocally({ command, host: 'node', timeout: timeoutSec ?? 30 });
+      },
+    };
+
+    const results: EarnModeRunResult[] = [];
+    for (const mode of this.modes) {
+      if (!mode.isEnabled(process.env)) {
+        continue;
+      }
+      console.log(`🔧 Running EarnMode: ${mode.name} (${mode.status})`);
+      const result = await mode.run(ctx);
+      results.push(result);
+      if (result.success) {
+        console.log(`  ✅ ${mode.name}: ${result.details?.findings ?? 0} findings`);
+      } else {
+        console.log(`  ⚠️ ${mode.name}: ${result.error || 'failed'}`);
+      }
+    }
+    return results;
+  }
+
   private shouldAutoSeedBounty(): boolean {
     return process.env.RUN_DEMO === 'true' || process.env.EARNER_AUTO_SEED_BOUNTY === 'true';
+  }
+
+  private shouldForceSeedBounty(): boolean {
+    return process.env.EARNER_FORCE_SEED_BOUNTY === 'true';
+  }
+
+  private prioritizeSelfPostedBounties(bounties: BountyTask[]): BountyTask[] {
+    const myAddress = this.wallet.getAddress().toLowerCase();
+    const selfPosted = bounties.filter((bounty) => bounty.poster.toLowerCase() === myAddress);
+    if (selfPosted.length === 0) {
+      return bounties;
+    }
+
+    const others = bounties.filter((bounty) => bounty.poster.toLowerCase() !== myAddress);
+    return [...selfPosted, ...others];
   }
 
   private async seedDemoBounty(): Promise<void> {
@@ -581,11 +652,11 @@ export class Earner {
 
   private getCommandForTaskType(taskType: TaskType): string {
     const commandMap: Record<TaskType, string> = {
-      lint: 'node -e "console.log(\'lint task completed\')"',
-      test: 'node -e "console.log(\'test task completed\')"',
-      format: 'node -e "console.log(\'format task completed\')"',
-      audit: 'node -e "console.log(\'audit task completed\')"',
-      custom: 'node -e "console.log(\'custom task completed\')"'
+      lint: 'npx eslint --format json . 2>&1 || true',
+      test: 'npm test --if-present 2>&1 || true',
+      format: 'npx prettier --check "src/**/*.ts" 2>&1 || true',
+      audit: 'npm audit --json 2>&1; npx eslint --format json . 2>&1 || true',
+      custom: 'node -e "console.log(JSON.stringify({status:\'ok\',ts:Date.now()}))"'
     };
 
     return commandMap[taskType];

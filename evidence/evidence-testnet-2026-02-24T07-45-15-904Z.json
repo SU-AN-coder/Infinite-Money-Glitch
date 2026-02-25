@@ -1,0 +1,54 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T07:45:15.904Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T07:45:15.902Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "3EtvTbg4LSKwoCUab8vpoVmFo6whhqfPzUthvXTLL7z9",
+      "timestamp": "2026-02-24T07:45:15.902Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/3EtvTbg4LSKwoCUab8vpoVmFo6whhqfPzUthvXTLL7z9"
+    },
+    {
+      "type": "spend",
+      "txDigest": "FTkuz5qy2EA5iMbwBFCMMgoj9sarbwm2T3mNFXqfR9Ve",
+      "timestamp": "2026-02-24T07:45:15.903Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/FTkuz5qy2EA5iMbwBFCMMgoj9sarbwm2T3mNFXqfR9Ve"
+    },
+    {
+      "type": "spend",
+      "txDigest": "7UFCxsCTKXNjxprgnMk8TzDw3WSteHaJK18Dd5quZhq7",
+      "timestamp": "2026-02-24T07:45:15.903Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/7UFCxsCTKXNjxprgnMk8TzDw3WSteHaJK18Dd5quZhq7"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "100000000",
+    "totalSpent": "2039520",
+    "netProfit": "97960480",
+    "tasksCompleted": 1,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0"
+  },
+  "checksum": "b41be9d411c27fa0bccf3a77e07e528174911d6a36da851318a9e19de7bcdf93"
+}

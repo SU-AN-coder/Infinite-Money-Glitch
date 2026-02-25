@@ -1,0 +1,68 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-25T02:52:02.335Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0x44a7d147dcfcc05be029b654f65a79a1b7ba8714230d9e8e9a4bfaf3144a33ae",
+    "deployTxDigest": "HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:32:08.459Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/tx/HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "9gadXe6w773Q558mWVgQVt2ZiUSZgsRcAEu2QtwgyNQR",
+      "timestamp": "2026-02-25T02:51:59.972Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/9gadXe6w773Q558mWVgQVt2ZiUSZgsRcAEu2QtwgyNQR"
+    },
+    {
+      "type": "spend",
+      "txDigest": "C1gjQNVJ51GT1MECaLqTj7mcjizABGGyGZGttHgiEoN3",
+      "timestamp": "2026-02-25T02:51:59.972Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/C1gjQNVJ51GT1MECaLqTj7mcjizABGGyGZGttHgiEoN3"
+    },
+    {
+      "type": "spend",
+      "txDigest": "9wS76nc33da6v3o777Fj1bsoYeMJCuEqaK2yKFi8dNMc",
+      "timestamp": "2026-02-25T02:51:59.973Z",
+      "network": "testnet",
+      "description": "Protect audit-log",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/9wS76nc33da6v3o777Fj1bsoYeMJCuEqaK2yKFi8dNMc"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "RgSV6iLKhhXSCJ4c1XMFNz9BL3jUUc3ma6k7arkQcxY",
+      "timestamp": "2026-02-25T02:51:59.973Z",
+      "dataType": "audit-log",
+      "sizeBytes": 631,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x01d8c162e6d7e9136afb50ebd830633ad2a655425113fd3f1db33461b904cbec"
+    }
+  ],
+  "summary": {
+    "totalEarned": "80000000",
+    "totalSpent": "12997368",
+    "netProfit": "67002632",
+    "tasksCompleted": 1,
+    "blobsUploaded": 1,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 1,
+    "walrusAttempts": 2,
+    "walrusFailures": 1
+  },
+  "checksum": "42c4d7cc9b47677826123e994a31db653b999f31cb94a3a11083e3c88c041b37"
+}

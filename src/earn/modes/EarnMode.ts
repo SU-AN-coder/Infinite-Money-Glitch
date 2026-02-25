@@ -2,10 +2,18 @@ import type { WalletNetwork } from '../../wallet/WalletManager.js';
 
 export type EarnModeStatus = 'planned' | 'prototype' | 'live';
 
+export interface ExecResult {
+  output: string;
+  exitCode: number;
+  duration: number;
+}
+
 export interface EarnModeContext {
   network: WalletNetwork;
   agentAddress: string;
   now: Date;
+  /** Execute a shell command locally (with optional timeout in seconds). */
+  exec: (command: string, timeoutSec?: number) => ExecResult;
 }
 
 export interface EarnModeRunResult {

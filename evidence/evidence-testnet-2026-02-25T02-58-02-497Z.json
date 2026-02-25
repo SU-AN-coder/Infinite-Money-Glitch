@@ -1,0 +1,77 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-25T02:58:02.494Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0x44a7d147dcfcc05be029b654f65a79a1b7ba8714230d9e8e9a4bfaf3144a33ae",
+    "deployTxDigest": "HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:32:08.459Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/tx/HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "CqdoCGRkSUTyZCxWKHQuLy3q6c3ZAafJsGRAho1KpFQB",
+      "timestamp": "2026-02-25T02:58:00.073Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/CqdoCGRkSUTyZCxWKHQuLy3q6c3ZAafJsGRAho1KpFQB"
+    },
+    {
+      "type": "spend",
+      "txDigest": "DXFZV1aKZQ295AnJJAAVEYXbCwG9r198p2sU35FVgVs",
+      "timestamp": "2026-02-25T02:58:00.073Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/DXFZV1aKZQ295AnJJAAVEYXbCwG9r198p2sU35FVgVs"
+    },
+    {
+      "type": "spend",
+      "txDigest": "6vkLGDJfJamMzm8xrds92ScusJhE8aLqtrWYRTexuHyG",
+      "timestamp": "2026-02-25T02:58:00.074Z",
+      "network": "testnet",
+      "description": "Protect audit-log",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/6vkLGDJfJamMzm8xrds92ScusJhE8aLqtrWYRTexuHyG"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "pTl1Ga1v9TTGmnRjeL2z78rElbtXviz1pCbojhidZ2A",
+      "timestamp": "2026-02-25T02:58:00.074Z",
+      "dataType": "git-config",
+      "sizeBytes": 485,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x05fc26d8e79942350f6e1ffb90d00658b0ba3107d0c87b9e3fa149cbf18e7bc4"
+    },
+    {
+      "type": "upload",
+      "blobId": "wEnuH6uAz84kBC4xu4E5U7k88lwGpHKzE-5PrYYw-yk",
+      "timestamp": "2026-02-25T02:58:00.074Z",
+      "dataType": "audit-log",
+      "sizeBytes": 631,
+      "encryptionUsed": true,
+      "sealPolicyId": "0xe525d9d54b25886e2eebdb7b04195ce9e6aed76313b33b3a8dab959816a4ee08"
+    }
+  ],
+  "summary": {
+    "totalEarned": "80000000",
+    "totalSpent": "13267648",
+    "netProfit": "66732352",
+    "tasksCompleted": 1,
+    "blobsUploaded": 2,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 0,
+    "walrusAttempts": 2,
+    "walrusFailures": 0
+  },
+  "checksum": "496ed66bcfb24a4b4c0a8068d0fc719227c6171f4a4a6035cf81147f99bee170"
+}

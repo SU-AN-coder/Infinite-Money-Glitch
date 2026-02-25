@@ -1,0 +1,59 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-02-24T09:24:05.608Z",
+  "agentAddress": "0x_demo_agent_address",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e",
+    "deployTxDigest": "unknown",
+    "network": "testnet",
+    "timestamp": "2026-02-24T09:23:45.553Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/object/0xd5862e4a0411efa45104d730da0ca23360a28969438fb999d01b84e003fb941e"
+  },
+  "transactions": [
+    {
+      "type": "spend",
+      "txDigest": "9MejtDnbcQ3mH3RQrZrwjDDjxXnea4Ya4pnNAnwXboKA",
+      "timestamp": "2026-02-24T09:23:45.554Z",
+      "network": "testnet",
+      "description": "Protect ssh-public-key",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/9MejtDnbcQ3mH3RQrZrwjDDjxXnea4Ya4pnNAnwXboKA"
+    },
+    {
+      "type": "spend",
+      "txDigest": "missing-spend-1771925025554",
+      "timestamp": "2026-02-24T09:23:45.554Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/missing-spend-1771925025554"
+    }
+  ],
+  "walrusBlobs": [
+    {
+      "type": "upload",
+      "blobId": "HKAjE4MoL8ANxYM6NTVYQ-MFmJXZpq7LVsKiyTgSiNg",
+      "timestamp": "2026-02-24T09:23:45.554Z",
+      "dataType": "git-config",
+      "sizeBytes": 485,
+      "encryptionUsed": true,
+      "sealPolicyId": "0x846106914e448a3cdc32edc2911f6aaf37b300dbcc8e3cd30c4949e779148ad1"
+    }
+  ],
+  "summary": {
+    "totalEarned": "0",
+    "totalSpent": "13985488",
+    "netProfit": "-13985488",
+    "tasksCompleted": 0,
+    "blobsUploaded": 1,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 1,
+    "walrusAttempts": 2,
+    "walrusFailures": 1
+  },
+  "checksum": "b4badfa66c933e3fa8d802d386f6fc837ee5e30a0591068213cd642e296787fa"
+}

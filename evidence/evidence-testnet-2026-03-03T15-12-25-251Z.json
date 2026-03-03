@@ -1,0 +1,67 @@
+{
+  "projectName": "Autonomous Yield Operator",
+  "version": "1.0.0",
+  "generatedAt": "2026-03-03T15:12:25.249Z",
+  "agentAddress": "0x68b387c5719f8964015f2e16681e888325eb66c60e730a96bbd21b2e388b8d63",
+  "network": "testnet",
+  "contract": {
+    "packageId": "0x880e7f79180fa71b542afc4c76f9e37f08495f1b7ad2d9baee3902706030dc0b",
+    "boardObjectId": "0x44a7d147dcfcc05be029b654f65a79a1b7ba8714230d9e8e9a4bfaf3144a33ae",
+    "deployTxDigest": "HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy",
+    "network": "testnet",
+    "timestamp": "2026-02-24T10:32:08.459Z",
+    "explorerUrl": "https://suiscan.xyz/testnet/tx/HbW6gmKyxrFZwAJ1RB1S9QfZRBwTxpTNsvkkaNEW3hXy"
+  },
+  "transactions": [
+    {
+      "type": "claim",
+      "txDigest": "2xXD3WdCDiS41NsA5gv6cKUJQ7PbqAA5UkSiZqvDELJd",
+      "timestamp": "2026-03-03T15:12:23.285Z",
+      "network": "testnet",
+      "description": "Bounty #1 claim",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/2xXD3WdCDiS41NsA5gv6cKUJQ7PbqAA5UkSiZqvDELJd"
+    },
+    {
+      "type": "spend",
+      "txDigest": "BfRB9soZ4eq53QaSdVCMZzEZNu9oggnuuU2xKBafqDXB",
+      "timestamp": "2026-03-03T15:12:23.285Z",
+      "network": "testnet",
+      "description": "Protect git-config",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/BfRB9soZ4eq53QaSdVCMZzEZNu9oggnuuU2xKBafqDXB"
+    },
+    {
+      "type": "spend",
+      "txDigest": "5CviNY7hoDAwsAjrKpYyMXKDgCWD6BsR7pqTKHhcB2Np",
+      "timestamp": "2026-03-03T15:12:23.285Z",
+      "network": "testnet",
+      "description": "Protect audit-log",
+      "status": "failure",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/5CviNY7hoDAwsAjrKpYyMXKDgCWD6BsR7pqTKHhcB2Np"
+    },
+    {
+      "type": "spend",
+      "txDigest": "code-audit-1772550743286",
+      "timestamp": "2026-03-03T15:12:23.286Z",
+      "network": "testnet",
+      "description": "Code audit: 1 findings",
+      "status": "success",
+      "explorerUrl": "https://suiscan.xyz/testnet/tx/code-audit-1772550743286"
+    }
+  ],
+  "walrusBlobs": [],
+  "summary": {
+    "totalEarned": "80000000",
+    "totalSpent": "37066584",
+    "netProfit": "42933416",
+    "tasksCompleted": 1,
+    "blobsUploaded": 0,
+    "totalGasUsed": "0",
+    "sealAttempts": 2,
+    "sealFailures": 2,
+    "walrusAttempts": 2,
+    "walrusFailures": 2
+  },
+  "checksum": "8396ca878c32e97409f4657f221c6c27bc46c8f317776068da03046019c06f6d"
+}

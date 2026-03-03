@@ -1,203 +1,155 @@
 # Infinite Money Glitch
 
-> 🏆 OpenClaw x Sui Hackathon - Track 2: Local God Mode
+Autonomous local agent that **earns, secures, and proves** on Sui.
 
-**The First Self-Sustaining "Digital Bodyguard" on Sui.**
+It combines:
+- **OpenClaw** (local terminal/browser control),
+- **Sui Move** (on-chain bounty logic),
+- **Seal** (real encryption),
+- **Walrus** (evidence/data persistence),
 
-一个真正实现“经济自理”的本地 God Mode Agent：它通过在本地执行代码审计任务赚取 SUI（**Earn**），然后自主决定将赚来的资金用于购买 Seal 加密和 Walrus 去中心化存储，以此来保护主人的核心物理/数字资产（如 SSH 密钥、Git 配置）（**Spend**），并全程留下不可篡改的密码学审计追踪（**Proof**）。
+to run a verifiable cycle:
 
----
-
-## 🌟 核心亮点 (Why it wins)
-
-- **🔥 真实的经济闭环 (ROI 4900%)**：告别 Mock 数据。单次任务平均净利润 0.03+ SUI，完全覆盖 Gas 与存储成本。
-- **🛡️ 跨赛道降维打击 (Track 1 Appeal)**：不仅是 Track 2 的自动化管家，更具备 Track 1 级别的安全特性（OS 级密钥库、Seal 隐私加密、Walrus 永久存证）。
-- **🤖 100% AI 主导开发**：独创 `ai-dev-proof` 机制，提供带有文件指纹和 SHA-256 校验的密码学证明，硬核回应参赛要求。
-- **💼 企业级 Agent 薪酬协议**：打破“左脚踩右脚”的资金幻觉，定义了“雇主预存预算 -> Agent 提交工作量证明 (PoW) -> 自动结算工资 -> 支付基础设施费”的全新范式。
+`health -> earn -> spend -> audit -> verify -> report`
 
 ---
 
-## 1. 项目目标与定位
+## 1. Why this project
 
-传统 Agent 经济模型：
-- 人类付费 -> Agent 执行
+Traditional model:
+- Human pays -> Agent executes.
 
-Infinite Money Glitch 经济模型：
-- Agent 自主决策 -> Agent 自主赚取奖励 -> Agent 支付运行与安全成本
+Infinite Money Glitch model:
+- Agent detects survival pressure -> earns rewards -> pays for security/storage -> outputs verifiable evidence.
 
-核心叙事：
-- **Earn**：通过本地可执行任务完成 bounty 并 claim reward
-- **Spend**：为用户关键数据执行加密与存证
-- **Proof**：每轮输出机器可读 + 人类可读证据，支持评审复验
+This is designed for hackathon review where **working demo + verifiable proof** matters.
 
 ---
 
-## 2. 最新战绩（Production-Ready）
+## 2. Core capabilities
 
-### 🛡️ 核心能力：数字保镖模式 (Digital Bodyguard)
-- **主动防御**：Agent 自动扫描本地环境（`CodeAuditMode`）。
-- **自我造血**：向链上 `BountyBoard` 提交审计报告哈希，赚取 SUI。
-- **资产保护**：主动读取本地敏感文件（如 `~/.ssh/id_rsa.pub`），使用 `@mysten/seal` 加密，并花费赚取的代币将其备份至 Walrus。
-- **可复验闭环**：health -> earn -> spend -> audit -> verify -> report。
+- **Autonomous cycle orchestration**  
+  Implemented by `Agent.runCycle()`.
 
-### 📊 收益表现 (The Glitch is Real)
-- 最近 5 轮实跑：**5/5 Clean Positive** (100% 成功率，无任何报错)
-- 经济模型验证：
-  - 平均单次 Earned：0.0400 SUI
-  - 平均单次 Spent：0.0062 SUI (Gas + Walrus)
-  - **平均净利润 (Net Profit)**：0.0338 SUI
+- **Real earning path (not faucet-only narrative)**  
+  Bounty-driven earning + extensible earning modes.
+
+- **Real security workload**  
+  Static/security audit mode via ESLint / npm audit / TypeScript checks.
+
+- **Real spend path**  
+  Encrypt with Seal and persist to Walrus.
+
+- **End-to-end evidence**  
+  JSON + Markdown evidence packages for human and machine verification.
 
 ---
 
-## 3. 仓库结构（按职责）
+## 3. Architecture
+
+### 3.1 Runtime flow
+
+1. Wallet init and health check  
+2. Earn (bounty / mode execution)  
+3. Spend (protection actions)  
+4. Audit package generation  
+5. On-chain/browser verification  
+6. Profit/loss report
+
+### 3.2 Execution model
+
+- **Single-cycle execution** (cron-friendly, no infinite while loop)
+- OpenClaw-first execution strategy
+- Graceful degradation when dependencies are temporarily unavailable
+
+---
+
+## 4. Repository structure
 
 ```text
-Infinite Money Glitch/
-├── contracts/                         # Move 合约与测试
-│   ├── Move.toml
-│   ├── Published.toml
-│   └── sources/
-│       ├── bounty_board.move
-│       └── bounty_board_tests.move
-├── docs/                              # 设计与提交文档
-│   ├── 00-redesign-proposal.md
-│   ├── 01-wallet-module.md
-│   ├── 02-earner-module.md
-│   ├── 03-spender-module.md
-│   ├── 04-ledger-module.md
-│   ├── 05-agent-module.md
-│   ├── 06-demo-plan.md
-│   └── 07-hackathon-readiness-report.md
-├── scripts/
-│   ├── debug-board-owner.ts           # 调试 board owner 与 wallet 是否一致
-│   └── debug-board-owner.mjs
+.
+├── contracts/                 # Move package (bounty board)
+├── docs/                      # Design + demo + readiness docs
+├── evidence/                  # Generated evidence outputs
+├── scripts/                   # Utility/debug scripts
 ├── src/
-│   ├── agent/                         # 主循环与 demo
-│   ├── earn/                          # 赚钱模块
-│   │   ├── Earner.ts
-│   │   ├── extensions/
-│   │   │   └── OpportunityExpansion.ts
-│   │   └── modes/                     # 预留模式接口与占位
-│   │       ├── EarnMode.ts
-│   │       ├── AirdropMode.ts
-│   │       └── ArbitrageMode.ts
-│   ├── spend/                         # 支出与数据保护
-│   ├── ledger/                        # 收支账本与审计包
-│   ├── evidence/                      # 证据采集与落盘
-│   ├── tools/                         # CLI 工具（deploy/evidence/ai-proof 等）
-│   ├── test/
-│   │   └── e2e.ts
-│   └── index.ts
-├── evidence/                          # 运行产物（json + md）
-├── ai-dev-proof.json
-├── ai-dev-proof.md
+│   ├── agent/                 # Agent orchestration
+│   ├── earn/                  # Earning engine + modes/extensions
+│   ├── spend/                 # Seal/Walrus protection flow
+│   ├── ledger/                # P&L and audit records
+│   ├── evidence/              # Evidence collector
+│   ├── tools/                 # preflight/deploy/evidence/ai-proof CLI
+│   └── index.ts               # Main entry
 ├── deployment.json
-├── package.json
-└── README.md
+├── ai-dev-proof.json
+└── ai-dev-proof.md
 ```
 
 ---
 
-## 4. 核心架构
+## 5. Prerequisites
 
-### 4.1 执行链路
-1. `WalletManager` 初始化钱包与网络
-2. `Agent` 执行周期
-3. `Earner` 查询 bounty / 执行任务 / claim
-4. `Spender` 采集数据 -> Seal 加密 -> Walrus 上传
-5. `Ledger` 记录收支与净利润
-6. `EvidenceCollector` 生成可复验包
-
-### 4.2 弹性执行（Resilient Pipeline）
-- 优先通过 OpenClaw Gateway 执行
-- Gateway 不可用时自动降级到本地执行
-- 保证闭环不因单点依赖中断
-
-### 4.3 可复验证据设计
-每个 evidence 包可包含：
-- Contract deployment 元数据
-- Claim / spend 交易 digest
-- Walrus blob 上传记录
-- 收益汇总（earned/spent/net）
-- 完整校验 checksum
+- Node.js >= 22
+- npm
+- Sui CLI (for contract deployment and chain operations)
+- Testnet SUI balance
+- OpenClaw gateway
+- Valid `.env` configuration
 
 ---
 
-## 5. 环境准备
-
-## 5.1 依赖要求
-- Node.js >= 22
-- npm
-- Sui CLI（部署合约时需要）
-- 可用的 testnet SUI 余额
-
-### 5.2 安装
+## 6. Setup
 
 ```bash
 npm install
 ```
 
-### 5.3 环境变量
-先复制模板：
+Create and fill env:
 
 ```bash
 cp .env.example .env
 ```
 
-关键变量说明：
-
-| 变量 | 必需 | 说明 |
-|------|------|------|
-| `WALLET_KEY_SOURCE` | 是 | `env` 或 `generate` |
-| `SUI_NETWORK` | 是 | `testnet/devnet/mainnet` |
-| `SUI_PRIVATE_KEY` | 推荐 | 私钥（`env` 模式） |
-| `BOUNTY_PACKAGE_ID` | 是 | bounty 合约包 ID |
-| `BOUNTY_BOARD_ID` | 是 | bounty board 对象 ID |
-| `SEAL_PACKAGE_ID` | 是 | Seal 包 ID |
-| `OPENCLAW_BASE_URL` | 推荐 | OpenClaw 网关地址 |
-| `OPENCLAW_TOKEN` | 推荐 | OpenClaw token |
-| `COLLECT_EVIDENCE` | 推荐 | 是否自动产证据 |
-| `EARNER_AUTO_SEED_BOUNTY` | 推荐 | 无 bounty 时自动种子 |
-| `EARNER_FORCE_SEED_BOUNTY` | 推荐 | 每轮强制种子以稳定收益 |
-| `WALRUS_EPOCHS` | 可选 | Walrus 存储 epochs |
+Then set real values for:
+- wallet key
+- OpenClaw endpoint/token
+- deployed contract IDs
+- Seal/Walrus related fields
 
 ---
 
-## 6. npm Scripts（完整）
+## 7. NPM scripts
 
-| 命令 | 用途 |
-|------|------|
-| `npm run start` | 入口运行（由 env 控制模式） |
-| `npm run typecheck` | TypeScript 检查 |
-| `npm run test` | 聚合检查（typecheck + contract:test + e2e） |
-| `npm run test:e2e` | Mock E2E |
-| `npm run test:e2e:real` | 真实 E2E（链上/Seal/Walrus） |
-| `npm run preflight` | 环境预检 |
-| `npm run evidence:generate` | 生成证据包 |
-| `npm run ai-proof` | 生成 AI 开发证明 |
-| `npm run deployment:sync` | 同步 deployment 元数据 |
-| `npm run contract:build` | 构建 Move 合约 |
-| `npm run contract:test` | Move 测试 |
-| `npm run contract:deploy` | 部署合约 |
+- `npm run start` — run entry flow (controlled by env mode flags)
+- `npm run preflight` — environment checks (recommended before live run)
+- `npm run typecheck` — TypeScript check
+- `npm run test` — aggregated tests
+- `npm run test:e2e` — mock e2e
+- `npm run test:e2e:real` — real-path e2e
+- `npm run contract:build` — build Move contract
+- `npm run contract:test` — test Move contract
+- `npm run contract:deploy` — deploy contract
+- `npm run evidence:generate` — generate evidence package/report
+- `npm run ai-proof` — generate AI development proof
 
 ---
 
-## 7. 运行模式
+## 8. Running modes
 
-### 7.1 Demo 模式（演示）
+### 8.1 Demo mode
 
 ```bash
 RUN_DEMO=true npm run start
 ```
 
-### 7.2 Agent 单轮闭环（推荐评审复验）
+### 8.2 Agent cycle mode (recommended for review)
 
 ```bash
 RUN_AGENT=true COLLECT_EVIDENCE=true npm run start
 npm run evidence:generate
 ```
 
-### 7.3 稳定收益模式（冲榜用）
+### 8.3 Stability mode (earning reliability tuning)
 
 ```bash
 RUN_AGENT=true \
@@ -207,149 +159,96 @@ EARNER_FORCE_SEED_BOUNTY=true \
 npm run start
 ```
 
-说明：
-- `AUTO_SEED`：仅在无 bounty 时补种
-- `FORCE_SEED`：每轮先种一笔，提升 claim 命中率
-
 ---
 
-## 8. 一次完整可复验流程（REAL）
+## 9. Real verifiable flow (recommended sequence)
 
 ```bash
-# 1) 依赖与环境
 npm install
 npm run preflight
 
-# 2) 合约
 npm run contract:build
 npm run contract:test
 npm run contract:deploy
 
-# 3) 可选：真实 E2E
 npm run test:e2e:real
 
-# 4) 产出一轮真实闭环证据
 RUN_AGENT=true COLLECT_EVIDENCE=true EARNER_AUTO_SEED_BOUNTY=true EARNER_FORCE_SEED_BOUNTY=true npm run start
 npm run evidence:generate
 
-# 5) 生成 AI 开发证明
 npm run ai-proof
 ```
 
----
-
-## 9. 主展示集（Clean Positive）
-
-以下样本均为 clean positive（无 `missing-*` digest）：
-
-- `evidence/evidence-testnet-2026-02-25T02-52-02-337Z.json`
-- `evidence/evidence-testnet-2026-02-25T02-54-02-994Z.json`
-- `evidence/evidence-testnet-2026-02-25T02-56-01-129Z.json`
-- `evidence/evidence-testnet-2026-02-25T02-58-02-497Z.json`
-- `evidence/evidence-testnet-2026-02-25T03-00-01-392Z.json`
-
-对应可读报告：
-
-- `evidence/evidence-report-2026-02-25T02-52-02-341Z.md`
-- `evidence/evidence-report-2026-02-25T02-54-02-999Z.md`
-- `evidence/evidence-report-2026-02-25T02-56-01-133Z.md`
-- `evidence/evidence-report-2026-02-25T02-58-02-499Z.md`
-- `evidence/evidence-report-2026-02-25T03-00-01-394Z.md`
+Expected outputs:
+- chain transaction digests
+- Walrus blob records
+- evidence JSON/Markdown
+- AI proof JSON/Markdown
 
 ---
 
-## 10. 最近 N 轮统计与稳定性说明
+## 10. Evidence and audit artifacts
 
-统计口径：`evidence/evidence-testnet-*.json` 最近 20 轮。
+- `evidence/evidence-*.json`
+- `evidence/evidence-report-*.md`
+- `deployment.json`
+- `ai-dev-proof.json`
+- `ai-dev-proof.md`
 
-| 指标 | 数值 |
-|------|------|
-| N | 20 |
-| 正收益轮次 | 10 |
-| 命中率 | 50.00% |
-| Clean Positive | 10 |
-| 平均 Earned | 0.0400 SUI |
-| 平均 Spent | 0.0062 SUI |
-| 平均 Net | 0.0338 SUI |
-
-失败原因归类（最近 20 轮）：
-
-| 类型 | 轮次 | 说明 |
-|------|------|------|
-| `earned=0`（未命中 claim） | 10 | 无可领 bounty 或未触发种子 |
-| `earned>0` 且 `net<=0` | 0 | 当前窗口未出现 |
-| `missing-*` digest 导致证据缺口 | 0 | 当前窗口未出现 |
-
-不稳定解释：
-- 主要波动来自收益触发条件，而不是交易执行能力。
-
-已实施改进：
-- 加入 `EARNER_FORCE_SEED_BOUNTY`，每轮强制种子；
-- 强制 seed 时优先处理自己发布 bounty；
-- 主展示集仅采用 clean positive 样本。
+These artifacts are used for reviewer replay and audit.
 
 ---
 
-## 11. 可扩展模式（Earn Modes）
+## 11. Extensible earning modes
 
-为了支持“空投/套利/多策略组合”，已预留模式接口：
+Reserved for future monetization strategies:
+- Airdrop / points farming
+- DEX arbitrage
+- Multi-board routing
+- Additional on-chain/off-chain opportunities
+
+Current interfaces and placeholders:
 - `src/earn/modes/EarnMode.ts`
 - `src/earn/modes/AirdropMode.ts`
 - `src/earn/modes/ArbitrageMode.ts`
+- `src/earn/modes/CodeAuditMode.ts`
+- `src/earn/extensions/OpportunityExpansion.ts`
 
-当前默认主路径仍是 `bounty_board`，模式文件用于后续扩展，不会在未开启时触发资金动作。
-
----
-
-## 12. 常见问题（FAQ）
-
-### Q1: 为什么会出现 `earned=0`？
-- 没有可领 bounty，或任务未命中。可开启：
-  - `EARNER_AUTO_SEED_BOUNTY=true`
-  - `EARNER_FORCE_SEED_BOUNTY=true`
-
-### Q2: 如何确认 board owner 与 wallet 一致？
-
-```bash
-npx tsx scripts/debug-board-owner.ts
-```
-
-### Q3: 证据里出现 `missing-*` digest 怎么办？
-- 使用最新 clean positive 样本做主展示。
-- 检查 OpenClaw/Walrus 可用性，并重跑 `start + evidence:generate`。
-
-### Q4: `deployment.json` 显示 unknown？
-
-```bash
-npm run deployment:sync
-```
+Design goal: add new mode with minimal impact on core cycle.
 
 ---
 
-## 13. 文档索引
+## 12. Security notes
 
-| 文档 | 内容 |
-|------|------|
-| `docs/00-redesign-proposal.md` | 方案重构背景 |
-| `docs/01-wallet-module.md` | 钱包模块 |
-| `docs/02-earner-module.md` | 收益模块 |
-| `docs/03-spender-module.md` | 支出模块 |
-| `docs/04-ledger-module.md` | 账本与损益 |
-| `docs/05-agent-module.md` | Agent 主循环 |
-| `docs/06-demo-plan.md` | 90 秒 Demo 方案 |
-| `docs/07-hackathon-readiness-report.md` | 提交 readiness 评估 |
+- Use testnet/temporary keys for demo.
+- Never commit `.env`.
+- Rotate exposed secrets immediately.
+- Keep least-privilege runtime settings where possible.
 
 ---
 
-## 14. 提交清单（Hackathon）
+## 13. Documentation index
 
-- [ ] GitHub 代码仓库
-- [ ] 90 秒演示视频
-- [ ] 合约部署元数据：`deployment.json`
-- [ ] 主展示证据（clean positive JSON + Markdown）
-- [ ] AI 开发证明：`ai-dev-proof.json`、`ai-dev-proof.md`
-- [ ] README（本文件）
-- [ ] Readiness 报告：`docs/07-hackathon-readiness-report.md`
+- `docs/00-redesign-proposal.md`
+- `docs/01-wallet-module.md`
+- `docs/02-earner-module.md`
+- `docs/03-spender-module.md`
+- `docs/04-ledger-module.md`
+- `docs/05-agent-module.md`
+- `docs/06-demo-plan.md`
+- `docs/07-hackathon-readiness-report.md`
+
+---
+
+## 14. Hackathon submission checklist
+
+- [ ] Public repository
+- [ ] 90-second demo video
+- [ ] `deployment.json`
+- [ ] clean-positive evidence set
+- [ ] `ai-dev-proof.json` + `ai-dev-proof.md`
+- [ ] updated README
+- [ ] readiness report
 
 ---
 
